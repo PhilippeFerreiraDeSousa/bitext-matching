@@ -15,11 +15,7 @@ Mise en correspondance de bitextes dans des langues différentes
   - Django REST Framework : http://www.django-rest-framework.org
 
 ## Install
-- `pip install virtualenv`
-- `cd back/`
-- `virtualenv venv`
-- `source venv/bin/activate`
-- `pip install -r requirements.txt`
+Sous Débian ou dérivé exécutez `./install-debian.sh`
 
 ## Alignment algorithms
 

@@ -12,7 +12,7 @@ class App extends Component {
         </header>
         <section className="App-body">
           <h2>What is bitext alignment ?</h2>
-          <p className="App-intro">
+          <p>
             Bitext alignment consists in aligning to texts written in two different
             languages assumed to be transolations of one another. The goal is to match
             paragraphs and sentences. It is mainly used my translators across the
@@ -26,6 +26,8 @@ class App extends Component {
             <li><a href="https://elizia.net/alignator/alignator.cgi">Elizia&#39;s alignator</a></li>
             <li><a href="http://miaojun.net/alignoscope/">Miaojun&#39;s alignoscope</a></li>
           </ul>
+          <a href="https://github.com/PhilippeFerreiraDeSousa/bitext-matching" target="_blank" rel="noopener noreferrer"
+          class="ui button"><i class="github icon"></i>Visit our dev Repo</a>
         </section>
       </div>
     );

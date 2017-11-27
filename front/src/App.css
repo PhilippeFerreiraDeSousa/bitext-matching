@@ -9,7 +9,7 @@
 
 .App-header {
   background-color: #222;
-  height: 150px;
+  height: 200x;
   padding: 20px;
   color: white;
 }
@@ -18,17 +18,15 @@
   font-size: 1.5em;
 }
 
-.App-intro {
-  font-size: large;
-}
-
 .App-body {
   margin: 0 50px 0;
+  font-size: large;
   text-align: justify;
 }
 
 .App-body h2 {
   text-align: center;
+  margin: 20px;
 }
 
 @keyframes App-logo-spin {

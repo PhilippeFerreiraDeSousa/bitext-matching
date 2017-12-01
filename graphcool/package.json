@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "graphcool": "^0.9.2"
+  }
+}

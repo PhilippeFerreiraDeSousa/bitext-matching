@@ -8,13 +8,12 @@ Mise en correspondance de bitextes dans des langues différentes
   - https://reactjs.org/tutorial/tutorial.html
   - React-redux : https://redux.js.org/docs/basics/UsageWithReact.html
   - Semantic UI React : https://react.semantic-ui.com/usage
-- Fetch API :
-  - https://developers.google.com/web/updates/2015/03/introduction-to-fetch?hl=en
-  - https://developer.mozilla.org/fr/docs/Web/API/Fetch_API/Using_Fetch
+- GraphQL : http://graphql.org
+  - Tuto : https://www.howtographql.com
+  - Graphene-Django : http://docs.graphene-python.org/projects/django/en/latest/
 - Python : https://openclassrooms.com/courses/apprenez-a-programmer-en-python
 - Ctypes : https://docs.python.org/3/library/ctypes.html
 - Django : https://www.djangoproject.com
-  - Django REST Framework : http://www.django-rest-framework.org
 
 ## Install
 Sous Debian ou dérivé, exécutez `./install-debian.sh`

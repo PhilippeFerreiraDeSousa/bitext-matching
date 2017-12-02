@@ -10,7 +10,7 @@ class Category(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(max_length=100)
     notes = models.TextField()
-    category = models.ForeignKey(Category, related_name='core')
+    category = models.ForeignKey(Category, related_name='ingredients')  # enable to call ingredients: [IngredientType] as a field of category
 
     def __str__(self):
         return self.name

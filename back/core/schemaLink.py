@@ -9,9 +9,8 @@ class LinkType(DjangoObjectType):
         model = Link
 
 
-class Query(graphene.AbstractType):
+class Query(object):
     links = graphene.List(LinkType)
 
-    @graphene.resolve_only_args
-    def resolve_links(self):
+    def resolve_links(self, info, **kwargs):
         return Link.objects.all()

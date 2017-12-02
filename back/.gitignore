@@ -1,4 +1,2 @@
 venv/
-bitext_matching/__pycache__/
-bitext_matching/__pycache__/*
-bitext_matching/*.pyc
+**/__pycache__/

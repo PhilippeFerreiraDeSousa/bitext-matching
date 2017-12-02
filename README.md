@@ -28,4 +28,5 @@ Sous Debian ou dérivé, exécutez `./install-debian.sh`
 
 
 ## TODO :
-- Extension Chrome
+- https://github.com/pdfminer/pdfminer.six
+- https://github.com/gaearon/redux-devtools

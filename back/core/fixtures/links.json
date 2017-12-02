@@ -1,0 +1,18 @@
+[
+  {
+    "model": "core.link",
+    "pk": 1,
+    "fields": {
+      "url": "https://www.howtographql.com/",
+      "description": "The Fullstack Tutorial for GraphQL"
+    }
+  },
+  {
+    "model": "core.link",
+    "pk": 2,
+    "fields": {
+      "url": "https://fdesousa.fr/",
+      "description": "The better website ever discovered !"
+    }
+  }
+]

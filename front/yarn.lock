@@ -176,6 +176,27 @@ apollo-client@^2.1.0:
   optionalDependencies:
     "@types/async" "2.0.45"
 
+apollo-fetch@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/apollo-fetch/-/apollo-fetch-0.6.0.tgz#aae9b28c117af344b091ec8ba4d1a5aa0474dc5d"
+  dependencies:
+    isomorphic-fetch "^2.2.1"
+
+apollo-link-batch-http@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/apollo-link-batch-http/-/apollo-link-batch-http-1.0.2.tgz#49aa173b7e905e7c5bb5c08d15972d20dd430a53"
+  dependencies:
+    apollo-fetch "^0.6.0"
+    apollo-link "^1.0.4"
+    apollo-link-batch "^1.0.2"
+    graphql "^0.11.0"
+
+apollo-link-batch@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/apollo-link-batch/-/apollo-link-batch-1.0.2.tgz#04362f09477142418527e164f22146e0d92af5ef"
+  dependencies:
+    apollo-link "^1.0.4"
+
 apollo-link-dedup@^1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/apollo-link-dedup/-/apollo-link-dedup-1.0.3.tgz#10df05214afb53ffb19c361451f8ae19d1964c83"
@@ -2896,7 +2917,7 @@ graphql-tag@^2.4.2, graphql-tag@^2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.5.0.tgz#b43bfd8b5babcd2c205ad680c03e98b238934e0f"
 
-graphql@^0.11.7:
+graphql@^0.11.0, graphql@^0.11.7:
   version "0.11.7"
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-0.11.7.tgz#e5abaa9cb7b7cccb84e9f0836bf4370d268750c6"
   dependencies:
@@ -3499,7 +3520,7 @@ isobject@^2.0.0:
   dependencies:
     isarray "1.0.0"
 
-isomorphic-fetch@^2.1.1:
+isomorphic-fetch@^2.1.1, isomorphic-fetch@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
   dependencies:

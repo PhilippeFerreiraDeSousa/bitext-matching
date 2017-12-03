@@ -1,4 +1,4 @@
-# bitext-matching
+# Bitext-matching
 Mise en correspondance de bitextes dans des langues différentes
 
 ## Support ressources
@@ -78,6 +78,10 @@ python manage.py runserver
 ```
 Go to http://localhost:8000/admin
 
+## [Query Batching](https://www.apollographql.com/docs/react/basics/network-layer.html)
+
+Apollo lets you automatically batch multiple queries into one request when they are made within a certain interval. This means that if you render several components, for example a navbar, sidebar, and content, and each of those do their own GraphQL query, they will all be sent in one roundtrip. Batching works only with server that support batched queries (for example graphql-server). Batched requests to servers that don’t support batching will fail. To learn how to use batching with Apollo checkout the [indepth guide](https://www.apollographql.com/docs/link/links/batch-http.html)
+
 ## [Mixer for Django's ORM](http://mixer.readthedocs.io/en/latest/quickstart.html)
 
 ```
@@ -123,6 +127,20 @@ assert message.client in Client.objects.all()
 
 ### Algo Victoriya
 
+## Run optimized version for production
+
+Execute
+```
+yarn global add serve
+
+cd back/
+python manage.py runserver
+
+cd ../front/
+yarn build
+serve -s build
+```
+Go to http://localhost:3000
 
 ## TODO :
 - https://github.com/pdfminer/pdfminer.six

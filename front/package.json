@@ -1,10 +1,31 @@
 {
   "name": "bitext-matching",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "",
+  "main": "front/src/components/App.js",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PhilippeFerreiraDeSousa/bitext-matching.git"
+  },
+  "keywords": ["enpc"],
+  "author": "Philippe Ferreira De Sousa <philippe@fdesousa.fr> (https://philippe.fdesousa.fr)",
+  "contributors": ["Victoriya Kashtanova", "Nada Soussi"],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PhilippeFerreiraDeSousa/bitext-matching/issues"
+  },
+  "homepage": "https://fdesousa.fr/alignment",
   "dependencies": {
+    "apollo-client-preset": "^1.0.4",
+    "apollo-link-batch-http": "^1.0.2",
+    "graphql": "^0.11.7",
+    "graphql-tag": "^2.5.0",
     "react": "^16.1.1",
+    "react-apollo": "^2.0.1",
     "react-dom": "^16.1.1",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.17",
     "semantic-ui-css": "^2.2.12",
     "semantic-ui-react": "^0.77.0"

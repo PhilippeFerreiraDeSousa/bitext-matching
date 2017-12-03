@@ -1,1 +1,9 @@
 django==1.11.7
+graphene
+graphene-django
+django-filter
+pytest
+pytest-django
+pytest-cov
+mixer
+django-cors-headers

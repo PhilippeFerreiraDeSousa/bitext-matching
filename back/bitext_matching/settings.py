@@ -46,6 +46,7 @@ CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000' # Allow only the React frontend to send graphQL queries
+    'http://philippeferreiradesousa.github.io'
 )
 
 MIDDLEWARE = [

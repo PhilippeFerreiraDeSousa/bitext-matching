@@ -14,7 +14,7 @@
     "webapp",
     "enpc"
   ],
-  "author": "Philippe Ferreira De Sousa <philippe@fdesousa.fr> (https://philippe.fdesousa.fr)",
+  "author": "Philippe Ferreira De Sousa <philippe@fdesousa.fr> (https://fdesousa.fr)",
   "contributors": [
     "Victoriya Kashtanova",
     "Nada Soussi"
@@ -23,7 +23,7 @@
   "bugs": {
     "url": "https://github.com/PhilippeFerreiraDeSousa/bitext-matching/issues"
   },
-  "homepage": "https://fdesousa.fr/alignment",
+  "homepage": "http://philippeferreiradesousa.github.io/bitext-matching/",
   "dependencies": {
     "apollo-client-preset": "^1.0.4",
     "apollo-link-batch-http": "^1.0.2",
@@ -40,6 +40,9 @@
     "semantic-ui-css": "^2.2.12",
     "semantic-ui-react": "^0.77.0"
   },
+  "devDependencies": {
+    "gh-pages": "^1.1.0"
+  },
   "scripts": {
     "build-css": "node-sass-chokidar --include-path ./src/styles/sass --include-path ./node_modules src/styles/sass/ -o src/styles/css/",
     "watch-css": "yarn build-css && node-sass-chokidar src/styles/sass/ -o src/styles/css/ --watch --recursive",
@@ -47,6 +50,7 @@
     "start": "npm-run-all -p watch-css start-js",
     "build-js": "react-scripts build",
     "build": "npm-run-all build-css build-js",
+    "deploy": "yarn build && gh-pages -d build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }

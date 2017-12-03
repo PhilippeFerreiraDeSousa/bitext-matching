@@ -8,9 +8,17 @@
     "type": "git",
     "url": "https://github.com/PhilippeFerreiraDeSousa/bitext-matching.git"
   },
-  "keywords": ["enpc"],
+  "keywords": [
+    "science",
+    "alignment",
+    "webapp",
+    "enpc"
+  ],
   "author": "Philippe Ferreira De Sousa <philippe@fdesousa.fr> (https://philippe.fdesousa.fr)",
-  "contributors": ["Victoriya Kashtanova", "Nada Soussi"],
+  "contributors": [
+    "Victoriya Kashtanova",
+    "Nada Soussi"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/PhilippeFerreiraDeSousa/bitext-matching/issues"
@@ -21,6 +29,8 @@
     "apollo-link-batch-http": "^1.0.2",
     "graphql": "^0.11.7",
     "graphql-tag": "^2.5.0",
+    "node-sass-chokidar": "^0.0.3",
+    "npm-run-all": "^4.1.2",
     "react": "^16.1.1",
     "react-apollo": "^2.0.1",
     "react-dom": "^16.1.1",
@@ -31,8 +41,12 @@
     "semantic-ui-react": "^0.77.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build-css": "node-sass-chokidar --include-path ./src/styles/sass --include-path ./node_modules src/styles/sass/ -o src/styles/css/",
+    "watch-css": "yarn build-css && node-sass-chokidar src/styles/sass/ -o src/styles/css/ --watch --recursive",
+    "start-js": "react-scripts start",
+    "start": "npm-run-all -p watch-css start-js",
+    "build-js": "react-scripts build",
+    "build": "npm-run-all build-css build-js",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }

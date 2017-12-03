@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import 'semantic-ui-css/semantic.min.css'
-import './styles/index.css'
+import './styles/css/index.css'
 import App from './components/App'
 import registerServiceWorker from './registerServiceWorker'
-// 1
+
 import { ApolloProvider } from 'react-apollo'
 import { ApolloClient } from 'apollo-client'
 import { BatchHttpLink } from "apollo-link-batch-http";

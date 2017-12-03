@@ -4,6 +4,9 @@ Mise en correspondance de bitextes dans des langues différentes
 ## Support ressources
 - Html : https://www.w3schools.com/html/
 - CSS : https://www.w3schools.com/css/
+- SASS : http://sass-lang.com/guide
+- BEM : https://en.bem.info/methodology/quick-start/
+- BEM with SASS : https://css-tricks.com/snippets/sass/bem-mixins/
 - Javascript : https://openclassrooms.com/courses/dynamisez-vos-sites-web-avec-javascript
 - Yarn : https://yarnpkg.com
 

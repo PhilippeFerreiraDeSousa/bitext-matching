@@ -4,7 +4,7 @@ import Header from './Header'
 import Homepage from './Homepage'
 import Aligner from './Aligner'
 import NotFound from './NotFound'
-import '../styles/App.css'
+import '../styles/css/App.css'
 
 class App extends Component {
   render() {

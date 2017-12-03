@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import '../styles/NotFound.css'
+import '../styles/css/NotFound.css'
 class NotFound extends Component {
   render () {
     return (
-      <div className="NotFound-container">
-        <img src='/img/error-404.svg' />
+      <div className='NotFound'>
+        <img src='/img/error-404.svg' className='NotFound__image'/>
       </div>
     )
   }

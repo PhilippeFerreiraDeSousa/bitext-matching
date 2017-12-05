@@ -27,6 +27,7 @@ Mise en correspondance de bitextes dans des langues différentes
   - Graphene-Django : http://docs.graphene-python.org/projects/django/en/latest/
   - Pytest-django : https://pytest-django.readthedocs.io/en/latest/
   - Django-cors-headers : https://github.com/ottoyiu/django-cors-headers
+- Docker : https://docs.docker.com/get-started/
 
 Extra ressources :
 - https://github.com/mbrochh/django-graphql-apollo-react-demo (admin pannel, testing, JWT authentication, routing parameters, error handling, filtering, pagination but with deprecated Apollo v1 networkInterface instead of Link)
@@ -165,6 +166,69 @@ yarn build
 serve -s build
 ```
 Go to http://localhost:3000
+
+## Django deployment
+
+### settings
+
+Reference : https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
+> Many of these settings are sensitive and should be treated as confidential. If you’re releasing the source code for your project, a common practice is to publish suitable settings for development, and to use a private settings module for production.
+
+### Dockerization
+
+Reference : https://www.caktusgroup.com/blog/2017/03/14/production-ready-dockerfile-your-python-django-app/
+
+Docker repo : https://hub.docker.com/r/philippefds/bitext-matching/
+
+Image development :
+```
+docker build -t django-alignment .   # ajouter *--no-cache* pour désactiver l'usage du cache
+docker run -e DATABASE_URL=none -p 8000:8000 -t django-alignment
+```
+Useful commands :
+```
+docker container ls
+docker stop back
+docker exec -it back /bin/sh   # /bin contient très peu de programmes sur Alpine Linux (optimisé pour la production), il y a /bin/sh mais pas /bin/bash !
+docker cp file back:file
+```
+
+Image deployment :
+```
+docker pull philippefds/bitext-matching
+```
+
+### Wsgi
+
+- How it work : http://sametmax.com/quest-ce-que-wsgi-et-a-quoi-ca-sert/
+- Gunicorn, uWSGI, or mod_wsgi : https://djangodeployment.com/2017/01/02/which-wsgi-server-should-i-use/
+- Install on VPS : https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-django-with-postgres-nginx-and-gunicorn
+
+### mod_wsgi
+
+References :
+- Static Files : https://docs.djangoproject.com/fr/1.11/howto/static-files/
+- Mod_wsgi : https://github.com/GrahamDumpleton/mod_wsgi
+
+Add *mod_wsgi* to requirements.txt and *'mod_wsgi.server'* to INSTALLED_APPS in settings
+
+
+To prepare for running mod_wsgi-express, ensure that you first collect up any Django static file assets into the directory specified for them in the Django settings file:
+`python manage.py collectstatic`
+
+You can now run the Apache server with mod_wsgi hosting your Django application by running:
+`python manage.py runmodwsgi`
+
+If working in a development environment and you would like to have any code changes automatically reloaded, then you can use the *--reload-on-changes* option.
+`python manage.py runmodwsgi --reload-on-changes`
+
+If wanting to have Apache started as root in order to listen on port 80, instead of using mod_wsgi-express setup-server as described above, use the *--setup-only* option to the `runmodwsgi` management command.
+```
+python manage.py runmodwsgi --setup-only --port=80 \
+    --user www-data --group www-data \
+    --server-root=/etc/mod_wsgi-express-80
+```
+This will setup all the required files and you can use apachectl to start and stop the Apache instance as explained previously.
 
 ## Images
 - Error page : https://pixabay.com/en/error-404-page-was-not-found-news-1349562/

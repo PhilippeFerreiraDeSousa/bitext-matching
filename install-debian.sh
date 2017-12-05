@@ -7,14 +7,16 @@ read -p "Prénom Nom : " name
 
 ### INSTALL ###
 echo -e "\e[1m\e[34mInstallation des dépendances...\e[0m"
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 sudo -E apt-get update
-sudo -E apt-get install -y python-pip yarn # atom qtcreator
+sudo -E apt-get install -y python3-pip apt-transport-https yarn # atom qtcreator
 
 cd back/
-pip install virtualenv
+pip3 install virtualenv
 virtualenv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip3 install -r requirements_dev.txt
 python manage.py migrate
 python manage.py loaddata links ingredients
 python manage.py runserver

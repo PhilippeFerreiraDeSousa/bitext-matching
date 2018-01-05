@@ -167,6 +167,15 @@ serve -s build
 ```
 Go to http://localhost:3000
 
+## Front deployment
+
+With the delorean ssh alias for the VPS, execute
+```
+cd front
+yarn build
+scp -r build/* delorean:/var/www/alignment
+```
+
 ## Django deployment
 
 ### settings

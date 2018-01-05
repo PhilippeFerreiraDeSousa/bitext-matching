@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 class Homepage extends Component {
   render() {
     return(
-      <section className='App-body'>
+      <section>
         <h2>What is bitext alignment ?</h2>
         <p>
           Bitext alignment consists in aligning to texts written in two different

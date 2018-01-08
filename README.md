@@ -144,6 +144,20 @@ A React app has routes/components that can use several React plugins. Without co
 ### Add SASS preprocessing
 https://www.youtube.com/watch?v=tWp0oxbzZ3s
 
+
+## Texts sources
+
+* Bible
+  * fr : http://godieu.com/doc/telechargement.html (Bible Jean Frédéric Ostervald 1996)
+  * en : http://www.truth.info/download/bible.htm (King James Bible also known as the Authorised Version)
+* Le petit prince
+  * fr : http://lepetitprinceexupery.free.fr/telecharger/le-petit-prince--antoine-de-saint-exupery.txt
+  * en : https://www.odaha.com/antoine-de-saint-exupery/maly-princ/the-little-prince
+En 20 langues : http://www.malyksiaze.net/us/ksiazka
+* Pinocchio :
+  * fr : https://www.ebooksgratuits.com/pdf/collodi_pinocchio.pdf
+  * en : http://www.gutenberg.org/files/500/500-0.txt
+
 ## Alignment algorithms
 
 ### Dynamic Text Wrapping
@@ -245,6 +259,12 @@ This will setup all the required files and you can use apachectl to start and st
 ## Components (to do)
 - React spinkits : https://github.com/KyleAMathews/react-spinkit
 - Semantic UI React : https://react.semantic-ui.com
+
+## Tester
+
+http://delorean.fdesousa.fr:8000/graphiql?query={%20%20allCategories%20{%20%20%20%20id%20%20%20%20name%20%20%20%20ingredients%20{%20%20%20%20%20%20id%20%20%20%20%20%20name%20%20%20%20}%20%20}%20%20links%20{%20%20%20%20id%20%20%20%20description%20%20%20%20url%20%20}}&operationName=null&variables=null
+http://delorean.fdesousa.fr:8000/admin
+http://alignment.fdesousa.fr
 
 ## TODO :
 - https://github.com/pdfminer/pdfminer.six

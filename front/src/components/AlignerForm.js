@@ -18,9 +18,24 @@ class AlignerForm extends Component {
     }
   }
 
-  handleSubmit = () => {
+  createLink = () => {
+    const description = this.state.data.get('french')
+    const url = this.state.data.get('english')
+    this.props.createLinkMutation({
+      variables: {
+        description,
+        url
+      }
+    })
+  }
+
+  handleSubmit = async () => {
     this.setState(({status}) => ({
       status: status.update('loading', () => true)
+    }))
+    await this.createLink()
+    this.setState(({status}) => ({
+      status: status.update('loading', () => false)
     }))
     console.log(this.state)
   }
@@ -57,4 +72,17 @@ class AlignerForm extends Component {
   }
 }
 
-export default AlignerForm
+const CREATE_LINK_MUTATION = gql`
+  mutation CreateLinkMutation($description: String!, $url: String!) {
+    createLink(
+      description: $description,
+      url: $url,
+    ) {
+      id
+      url
+      description
+    }
+  }
+`
+
+export default graphql(CREATE_LINK_MUTATION, { name: 'createLinkMutation' })(AlignerForm)

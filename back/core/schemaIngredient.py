@@ -25,7 +25,7 @@ class Query(object):
         return Ingredient.objects.select_related('category').all()
 
 # select_related(*fields)
-# renvoie un QuerySet qui « suit » les relations de clé étrangère, sélectionnant 
+# renvoie un QuerySet qui « suit » les relations de clé étrangère, sélectionnant
 # les données supplémentaires d’éventuels objets liés au moment d’exécuter la requête.
 # Il s’agit d’une optimisation en performances qui produit une requête unique plus
 # complexe, mais qui évite ensuite de générer de nouvelles requêtes en base de données

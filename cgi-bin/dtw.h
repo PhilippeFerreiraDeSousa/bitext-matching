@@ -7,5 +7,10 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <iostream>
 #include <stdexcept>
+using namespace std;
+
+void clean(string& word);
+void read_text();

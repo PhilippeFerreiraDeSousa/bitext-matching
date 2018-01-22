@@ -18,13 +18,13 @@ class AlignerForm extends Component {
     }
   }
 
-  createLink = () => {
-    const description = this.state.data.get('french')
-    const url = this.state.data.get('english')
-    this.props.createLinkMutation({
+  submitBitext = () => {
+    const french = this.state.data.get('french')
+    const english = this.state.data.get('english')
+    this.props.submitBitextMutation({
       variables: {
-        description,
-        url
+        french,
+        english
       }
     })
   }
@@ -33,7 +33,7 @@ class AlignerForm extends Component {
     this.setState(({status}) => ({
       status: status.update('loading', () => true)
     }))
-    await this.createLink()
+    await this.submitBitext()
     this.setState(({status}) => ({
       status: status.update('loading', () => false)
     }))
@@ -65,24 +65,24 @@ class AlignerForm extends Component {
             <Form.TextArea label='French text' language='french' value={data.get('french')} placeholder='Il était une fois...' onChange={this.handleChange}/>
             <Form.TextArea label='English text' language='english' value={data.get('english')} placeholder='Once upon a time...' onChange={this.handleChange}/>
           </Form.Group>
-          <Form.Button primary>Envoyer</Form.Button>
+          <Form.Button primary>Send</Form.Button>
         </Form>
       </div>
     );
   }
 }
 
-const CREATE_LINK_MUTATION = gql`
-  mutation CreateLinkMutation($description: String!, $url: String!) {
-    createLink(
-      description: $description,
-      url: $url,
+const SUBMIT_BITEXT_MUTATION = gql`
+  mutation SubmitBitextMutation($french: String!, $english: String!) {
+    submitBitext(
+      french: $french,
+      english: $english,
     ) {
       id
-      url
-      description
+      french
+      english
     }
   }
 `
 
-export default graphql(CREATE_LINK_MUTATION, { name: 'createLinkMutation' })(AlignerForm)
+export default graphql(SUBMIT_BITEXT_MUTATION, { name: 'submitBitextMutation' })(AlignerForm)

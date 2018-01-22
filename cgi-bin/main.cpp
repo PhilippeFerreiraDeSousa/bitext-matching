@@ -9,6 +9,6 @@
 // Build a quadtree example and print it
 int main()
 {
-
-  return 0
+  read_text();
+  return 0;
 }

@@ -14,11 +14,11 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Link',
+            name='Bitext',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('url', models.URLField()),
-                ('description', models.TextField(blank=True, null=True)),
+                ('french', models.TextField(blank=True, null=True)),
+                ('english', models.TextField(blank=True, null=True)),
             ],
         ),
     ]

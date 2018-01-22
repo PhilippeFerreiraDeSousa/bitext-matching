@@ -22,6 +22,6 @@ class Ingredient(models.Model):
     def __str__(self):
         return self.name
 
-class Link(models.Model):
-    url = models.URLField()
-    description = models.TextField(null=True, blank=True)
+class Bitext(models.Model):
+    french = models.TextField(null=True, blank=True)
+    english = models.TextField(null=True, blank=True)

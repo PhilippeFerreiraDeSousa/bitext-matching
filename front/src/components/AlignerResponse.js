@@ -6,10 +6,10 @@ import { Form, Message } from 'semantic-ui-react'
 class AlignerResponse extends Component {
 
   render() {
-    const linksToRender = this.props.allDataQuery.links
+    const bitextsToRender = this.props.allDataQuery.bitexts
     const CategoriesToRender = this.props.allDataQuery.allCategories
 
-    console.log(linksToRender)
+    console.log(bitextsToRender)
     console.log(CategoriesToRender)
 
     if (this.props.allDataQuery && this.props.allDataQuery.loading) {
@@ -21,8 +21,11 @@ class AlignerResponse extends Component {
     return(
       <div>
         <ul>
-          {linksToRender.map(link => (
-            <li key={link.id}><a href={link.url}>{link.description}</a></li>
+          {bitextsToRender.map(bitext => (
+            <li key={bitext.id}> Bitext #{bitext.id} :
+              <p>{bitext.french}</p>
+              <p>{bitext.english}</p>
+            </li>
           ))}
         </ul>
         {CategoriesToRender.map(category => (
@@ -54,12 +57,15 @@ const ALL_DATA = gql`
         name
       }
     }
-    links {
+    bitexts {
       id
-      description
-      url
+      french
+      english
     }
   }
 `
 
-export default graphql(ALL_DATA, { name: 'allDataQuery' }) (AlignerResponse)
+export default graphql(ALL_DATA, {
+  name: 'allDataQuery',
+  options: { pollInterval: 5000 }
+}) (AlignerResponse)

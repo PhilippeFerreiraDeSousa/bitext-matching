@@ -1,12 +1,12 @@
 import graphene
 
-import core.schemaLink, core.schemaIngredient
+import core.schemaBitext, core.schemaIngredient
 
 
-class Query(core.schemaLink.Query, core.schemaIngredient.Query, graphene.ObjectType):
+class Query(core.schemaBitext.Query, core.schemaIngredient.Query, graphene.ObjectType):
     pass
 
-class Mutation(core.schemaLink.Mutation, graphene.ObjectType):
+class Mutation(core.schemaBitext.Mutation, graphene.ObjectType):
     pass
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

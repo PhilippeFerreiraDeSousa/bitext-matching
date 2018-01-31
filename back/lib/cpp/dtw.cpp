@@ -1,44 +1,70 @@
+#include <limits>
+#include <cmath>
+#include "dtw.h"
+using namespace std;
 
-extern "C" float dtw(vect* rec1, vect* rec2, float freq) {
-	n = rec1->length;
-	m = rec2->length;
+float mu(float a, float b) {
+	return abs(a-b);
+}
 
-	float** tab = new float*[m*n];
-    for (int k=0; k<m*n; k++) {
-        tab[k] = new int[3];
-    }
-    for (int j=0; j<n; j++) {
-        // cout  << " | ";
+float dtw(const vector& rec1, const vector& rec2, float freq, threshold) {
+	n = rec1.length;
+	m = rec2.length;
+	tableau tab(n, m);
+	for (int j=0; j<n; j++) {
         for (int i=0; i<m; i++) {
-            if (j == 0) {
-                tab[i][0] = i;
-                tab[i][1] = 0;
-            } else if (i == 0) {
-                tab[id(0, j)][0] = j;
-                tab[id(0, j)][1] = 1;
-            } else {
-                if (word1[i-1] == word2[j-1]) {
-                    tab[j*(m+1)+i][0] = tab[(j-1)*(m+1)+i-1][0];
-                    tab[j*(m+1)+i][1] = -1;
-                }
-                else {
-                    if (tab[j*(m+1)+i-1][0] <= tab[(j-1)*(m+1)+i][0] &&
-                        tab[j*(m+1)+i-1][0] <= tab[(j-1)*(m+1)+i-1][0]) {
-                        tab[j*(m+1)+i][0] = tab[j*(m+1)+i-1][0]+1;
-                        tab[j*(m+1)+i][1] = 0;
-                    } else if (tab[(j-1)*(m+1)+i][0] <= tab[(j-1)*(m+1)+i-1][0]) {
-                        tab[j*(m+1)+i][0] = tab[(j-1)*(m+1)+i][0]+1;
-                        tab[j*(m+1)+i][1] = 1;
-                    } else {
-                        tab[j*(m+1)+i][0] = tab[(j-1)*(m+1)+i-1][0]+1;
-                        tab[j*(m+1)+i][1] = 2;
-                    }
-                }
-            }
-            // cout << tab[j*(m+1)+i][0] << " | ";
+        	weight(i, j) = numeric_limits<float>::infinity();
         }
-        // cout << endl;
     }
+    weight(0, 0) = mu(rec1[0], rec2[0])
+    tab.ancestor(0, 0) = 0;
+	tab.weight(1, 0) = mu(rec2[0], rec1[0]+rec1[1]);
+	tab.ancestor(1, 0) = 1;
+	tab.weight(0, 1) = mu(rec1[0], rec2[0]+rec2[1]);
+	tab.ancestor(0, 1) = 2;
+    for (int j=1; j<n; j++) {
+    	int inf = max(ceil((i-1.)/2.), m-2*(n-i)+1);
+		int sup = min(2*i+2, m-floor((n-i)/2.));
+        for (int i=inf; i<sup; i++) {
+        	float min_val = tab.weight(i-1, j-1)+mu(rec1[i], rec2[j]);
+        	int min_ancestor = 0;
+			if (i>=2) {
+				float cost = tab.weight(i-2, j-1)+mu(rec1[i]+rec1[i-1], rec2[j]);
+				if (cost < min_val) {
+					min_val = cost;
+					min_ancestor = 1;
+				}
+			}
+			if (j>=2) {
+				float cost = tab.weight(i-1, j-2)+mu(rec2[j]+rec2[j-1], rec1[i]);
+				if (cost < min_val) {
+					min_val = cost;
+					min_ancestor = 2;
+				}
+			}
+			tab.weight(i, j) = min_val;
+			tab.ancestor(i, j) = min_ancestor;
+        }
+    }
+
+    if tab.weight(n-1, m-1)/freq <= threshold:
+		backtracking = vector<pair<int,int>>(n-1, m-1);
+
+	/////////////////////////////////	A convertir / merge
+		while backtracking[-1] != (-1, -1):
+			#print(backtracking[-1])
+			backtracking.append((warp_antecedant[0][backtracking[-1]], warp_antecedant[1][backtracking[-1]]))
+		backtracking.reverse()
+		print(word1, "|", word2, "(", freq, "):", value)
+		if graph:
+			adjustedrec1 = [sum([rec1[k] for k in range(backtracking[idx-1][0]+1, backtracking[idx][0]+1)]) for idx in range(1, len(backtracking))]
+			adjustedrec2 = [sum([rec2[k] for k in range(backtracking[idx-1][1]+1, backtracking[idx][1]+1)]) for idx in range(1, len(backtracking))]
+			plot(adjustedrec1)
+			plot(adjustedrec2)
+			show()
+		return value, backtracking[:-1]
+
+
     int d_L = tab[(m+1)*(n+1)-1][0];
     int k = m, l = n;
     int* backtrack = new int[m+1+n+1];
@@ -63,65 +89,7 @@ extern "C" float dtw(vect* rec1, vect* rec2, float freq) {
                 l--;
         }
     }
-    k = l = 0;
-    for (int i=pathLen-1; i>=0; i--) {
-        switch (backtrack[i]) {
-            case -1:
-                k++;
-                l++;
-                break;
-            case 0:
-                cout << "Insérer '"
-                     << word1[k]
-                     << "' en position "
-                     << k+1;
-                word2 = word2.insert(l, word1.substr(k, 1));
-                k++;
-                l++;
-                break;
-            case 1:
-                cout << "Supprimer '"
-                     << word2[l]
-                     << "' en position "
-                     << l+1;
-                word2 = word2.erase(l, 1);
-                break;
-            case 2:
-                cout << "Substituer '"
-                     << word2[l]
-                     << "' par '"
-                     << word1[k]
-                     << "' en position "
-                     << l+1;
-                word2.replace(l, 1, word1.substr(k, 1));
-                k++;
-                l++;
-        }
-        if (backtrack[i] != -1) {
-            cout << " -> "
-                 << word2
-                 << endl;
-        }
-    }
-
-    cout << endl
-         << "La distance de Levenshtein entre "
-         << word1
-         << " et "
-         << word2
-         << " est "
-         << d_L
-         << "."
-         << endl
-         << "____________________________________________________________________"
-         << endl
-         << endl;
-
-    for (int k=0; k<(m+1)*(n+1); k++) {
-        delete[] tab[k];
-    }
-    delete[] tab;
-    delete[] backtrack;
+    ////////////////////////////////////////////////////////////:
 }
 
 void free_mem(double* a)

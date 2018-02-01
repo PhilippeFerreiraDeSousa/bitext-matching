@@ -3,7 +3,7 @@ from IBM2_func import _train_IBM2, show_matrix
 import re
 from math import ceil, floor
 from operator import itemgetter
-from matplotlib.pyplot import plot, show, title, xlim, ylim, xlabel, ylabel, xticks, legend
+from matplotlib.pyplot import plot, show, title, xlim, ylim, xlabel, ylabel, xticks, legend, matshow
 from numpy import zeros, ones, infty
 
 # Rsultults
@@ -19,9 +19,10 @@ from numpy import zeros, ones, infty
 
 OCCUR_MIN = 4
 FREQ_STEP = 0.001
-FREQ_MAX = 0.005	# temps que l'incertitude sur la position du mot correspondant dans le texte d'en face est inférieur à l'écart entre 2 occurences.
+FREQ_MAX = 0.002	# temps que l'incertitude sur la position du mot correspondant dans le texte d'en face est inférieur à l'écart entre 2 occurences.
 FREQ_RATIO = 1.25
-DTW_FACTOR = 1.2
+DTW_FACTOR = 1
+BEGINNING_THRESHOLD = infty
 
 # Pinocchio (pas bon)
 #THRESHOLD = 10000
@@ -87,9 +88,9 @@ def parse(clean_text):
 	recency_vect = {}
 	for word, indices_list in word_indices.items():
 		recency_vect[word] = [indices_list[0][3]/nb_words]
-		for indices in indices_list[1:]:
-			recency_vect[word].append(indices[3]/nb_words-recency_vect[word][-1])
-		recency_vect[word].append(1-recency_vect[word][-1])
+		for idx in range(1, len(indices_list)):
+			recency_vect[word].append((indices_list[idx][3]-indices_list[idx-1][3])/nb_words)
+		recency_vect[word].append(1-indices_list[-1][3]/nb_words)
 
 	for word, indices in word_indices.items():
 		word_freq[word] = len(indices)/nb_words
@@ -146,8 +147,12 @@ def _dtw(rec1, rec2, freq):
 				else:
 					break
 			warp[i, j] = minimum[0]
+			#print(warp[i,j])
 			warp_antecedant[0][i, j] = minimum[1][0]
 			warp_antecedant[1][i, j] = minimum[1][1]
+		#print("\n")
+	#matshow(warp)
+	show()
 	#for i in range(n):
 	#	print([(warp_antecedant[0][i, j], warp_antecedant[1][i, j]) for j in range(m)])
 	return warp[n-1, m-1]/freq**DTW_FACTOR, warp_antecedant
@@ -165,12 +170,28 @@ def dtw(word1, word2, rec1, rec2, freq, threshold, graph=False):
 		if graph:
 			adjustedrec1 = [sum([rec1[k] for k in range(backtracking[idx-1][0]+1, backtracking[idx][0]+1)]) for idx in range(1, len(backtracking))]
 			adjustedrec2 = [sum([rec2[k] for k in range(backtracking[idx-1][1]+1, backtracking[idx][1]+1)]) for idx in range(1, len(backtracking))]
-			plot(adjustedrec1)
-			plot(adjustedrec2)
+			plot(adjustedrec1, label=word1)
+			plot(adjustedrec2, label=word2)
 			title("Correspondance par dilatation temporelle")
 			xlabel("Indice de portion entre occurences")
 			ylabel("Longueur relative de portion")
 			legend()
+			show()
+		draw = False
+		if draw:
+			freqs1 = [sum(rec1[:i]) for i in range(len(rec1))]
+			freqs2 = [sum(rec2[:i]) for i in range(len(rec2))]
+			match_points1 = [freqs1[backtracking[idx][0]+1] for idx in range(len(backtracking)-1)]
+			match_points2 = [freqs2[backtracking[idx][1]+1] for idx in range(len(backtracking)-1)]
+			#print(backtracking)
+			#for p in freqs1:
+			#	plot([0.95, 1.05], [p, p])
+			#for p in freqs1:
+			#	plot([1.95, 2.05], [p, p])
+			for idx in range(len(match_points1)):
+				plot([1, 2], [match_points1[idx], match_points2[idx]])
+			plot([1, 1], [1, 2])
+			plot([2, 2], [1, 2])
 			show()
 		return value, backtracking[:-1]
 	else:
@@ -253,7 +274,7 @@ def estimate_threshold(en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_rec
 			bound_sup+=1
 		for idx in range(bound_inf, bound_sup):
 			fr_word = fr_freq_ranking[idx][0]
-			value, path = dtw(en_word, fr_word, en_recency_vect[en_word], fr_recency_vect[fr_word], freq, 5000)
+			value, path = dtw(en_word, fr_word, en_recency_vect[en_word], fr_recency_vect[fr_word], freq, BEGINNING_THRESHOLD)
 			if path:
 				for match in path:
 					match_list.append((en_word_indices[en_word][match[0]], fr_word_indices[fr_word][match[1]], value))
@@ -285,32 +306,32 @@ def matching_layer(threshold, match_list, en_freq_ranking, fr_freq_ranking, en_r
 
 def filtration_layer(match_list, en_clean_text, fr_clean_text):
 	print("Avant filtration :", len(match_list))
-	plot([item[0][3] for item in match_list], [item[1][3] for item in match_list])
+	plot([item[0][3] for item in match_list], [item[1][3] for item in match_list], label="sans filtration")
 	#show()
 
 	match_list, non_bijective_removed = filter_non_bijective_matches(match_list, en_clean_text, fr_clean_text)
 	print("Après filtration des matches non bijectifs :", len(match_list))
-	plot([item[0][3] for item in match_list], [item[1][3] for item in match_list])
+	plot([item[0][3] for item in match_list], [item[1][3] for item in match_list], label="(1) par bijection")
 	#show()
 
 	match_list, smooth_removed = filter_smooth(match_list)
 	print("Après filtration par lissage :", len(match_list))
-	plot([item[0][3] for item in match_list], [item[1][3] for item in match_list])
-	#show()
+	plot([item[0][3] for item in match_list], [item[1][3] for item in match_list], label="(2) par lissage")
 
 	match_list, per_par_removed = filter_per_par(match_list)
 	print("Après filtration par paragraphe croissant :", len(match_list))
-	plot([item[0][3] for item in match_list], [item[1][3] for item in match_list])
-	#show()
+	plot([item[0][3] for item in match_list], [item[1][3] for item in match_list], label="(3) par paragraphe croissant")
+	title("Alignement après filtration (1), (2) puis (3)")
+	xlabel("Indice de mot anglais")
+	ylabel("Indice de mot français")
+	legend()
+	show()
 	#plot([item[0][2] for item in match_list], [item[1][2] for item in match_list])
 	#plot([item[0][2] for item in smooth_match_list], [item[1][2] for item in smooth_match_list])
 	#show()
 	#plot([item[0][0][0] for item in match_list], [item[1][0][0] for item in match_list])
 	#plot([item[0][0][0] for item in smooth_match_list], [item[1][0][0] for item in smooth_match_list])
 	#show()
-
-	print("Nombre de phrases en anglais :", en_nb_sen)
-	print("Nombre de phrases en français :", fr_nb_sen)
 
 	print("Non bijective matches removed")
 	for match in non_bijective_removed:
@@ -348,7 +369,7 @@ def draw_occurences_chart(en_freq_ranking, fr_freq_ranking, en_nb_words, fr_nb_w
 	title("Effectif avec même nombre d'occurrences")
 	xlabel("Nombre d'occurrences d'un mot")
 	ylabel("Nombre de mots")
-	xlim(0, 90)
+	xlim(0, FREQ_MAX*en_nb_words+OCCUR_MIN)
 	ylim(0, 100)
 	show()
 
@@ -386,24 +407,28 @@ def main(instance):
 
 	draw_occurences_chart(en_freq_ranking, fr_freq_ranking, en_nb_words, fr_nb_words)
 
-	#compare_recency("but", "mais", en_recency_vect["but"], fr_recency_vect["mais"])
-	#dtw("but", "mais", en_recency_vect["but"], fr_recency_vect["mais"], en_word_freq["but"], True)
+	compare_recency("but", "mais", en_recency_vect["but"], fr_recency_vect["mais"])
+	dtw("but", "mais", en_recency_vect["but"], fr_recency_vect["mais"], en_word_freq["but"], infty, True)
 
 	#compare_recency("cat", "chat", en_recency_vect["cat"], fr_recency_vect["chat"])
-	#dtw("cat", "chat", en_recency_vect["cat"], fr_recency_vect["chat"], en_word_freq["cat"], True)
-	#compare_recency("flowers", "fleurs")
-	#dtw("flowers", "fleurs", en_word_freq["flowers"], True)
-	#compare_recency("king", "roi", en_recency_vect["king"], fr_recency_vect["roi"])
-	#dtw("king", "roi", en_recency_vect["king"], fr_recency_vect["roi"], en_word_freq["king"], True)
-	#compare_recency("prince", "prince")
-	#dtw("prince", "prince", en_word_freq["prince"], True)
+	#dtw("cat", "chat", en_recency_vect["cat"], fr_recency_vect["chat"], en_word_freq["cat"], infty, True)
+	compare_recency("flowers", "fleurs", en_recency_vect["flowers"], fr_recency_vect["fleurs"])
+	dtw("flowers", "fleurs", en_recency_vect["flowers"], fr_recency_vect["fleurs"], en_word_freq["flowers"], infty, True)
+	compare_recency("king", "roi", en_recency_vect["king"], fr_recency_vect["roi"])
+	dtw("king", "roi", en_recency_vect["king"], fr_recency_vect["roi"], en_word_freq["king"], infty, True)
+	compare_recency("prince", "prince", en_recency_vect["prince"], fr_recency_vect["prince"])
+	dtw("prince", "prince", en_recency_vect["prince"], fr_recency_vect["prince"], en_word_freq["prince"], infty, True)
 	compare_recency("why", "pourquoi", en_recency_vect["why"], fr_recency_vect["pourquoi"])
 	dtw("why", "pourquoi", en_recency_vect["why"], fr_recency_vect["pourquoi"], en_word_freq["why"], infty, True)
 	#print(dtw("!", "!", en_word_freq["!"]))
 
 	threshold, match_list, idx_freq_min, idx_freq_max, bound_inf, bound_sup = estimate_threshold(en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, en_nb_words)
 	matching_layer(threshold, match_list, en_freq_ranking[idx_freq_min: idx_freq_max+1], fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, bound_inf, bound_sup)
-	filtration_layer(match_list)
+	print("Nombre de phrases en anglais :", en_nb_sen)
+	print("Nombre de phrases en français :", fr_nb_sen)
+	filtration_layer(match_list, en_clean_text, fr_clean_text)
+
+
 
 	for match in match_list:
 		print(en_original_text[match[0][0][0]][match[0][0][1]])
@@ -438,3 +463,8 @@ main("le-petit-prince--antoine-de-saint-exupery")
 # dtw en c++ avec multiprocessing sur Leviathan
 # appliqué dtw localement avec MIN_OCCUR plus le-petit-prince--antoine-de-saint-exupery
 # aligner
+
+# remove dulicate aligned
+# we can  keep only duplicate match to filter
+# bisect filter
+# matshow

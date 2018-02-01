@@ -3,7 +3,7 @@ from IBM2_func import _train_IBM2, show_matrix
 import re
 from math import ceil, floor
 from operator import itemgetter
-from matplotlib.pyplot import plot, show
+from matplotlib.pyplot import plot, show, title, xlim, ylim, xlabel, ylabel, xticks, legend
 from numpy import zeros, ones, infty
 
 # Rsultults
@@ -104,8 +104,12 @@ def parse(clean_text):
 	return word_indices, recency_vect, word_freq, freq_ranking, nb_words, nb_sen
 
 def compare_recency(en_word, fr_word, en_recency, fr_recency):
-	plot(list(range(len(en_recency))), en_recency)
-	plot(list(range(len(fr_recency))), fr_recency)
+	plot(list(range(len(en_recency))), en_recency, label=en_word)
+	plot(list(range(len(fr_recency))), fr_recency, label=fr_word)
+	title("Vecteur de récence")
+	xlabel("Indice de portions correspondantes")
+	ylabel("Longueur relative de portion")
+	legend()
 	show()
 
 mu = lambda a, b: abs(a-b) 
@@ -163,6 +167,10 @@ def dtw(word1, word2, rec1, rec2, freq, threshold, graph=False):
 			adjustedrec2 = [sum([rec2[k] for k in range(backtracking[idx-1][1]+1, backtracking[idx][1]+1)]) for idx in range(1, len(backtracking))]
 			plot(adjustedrec1)
 			plot(adjustedrec2)
+			title("Correspondance par dilatation temporelle")
+			xlabel("Indice de portion entre occurences")
+			ylabel("Longueur relative de portion")
+			legend()
 			show()
 		return value, backtracking[:-1]
 	else:
@@ -314,20 +322,34 @@ def filtration_layer(match_list, en_clean_text, fr_clean_text):
 	for match in per_par_removed:
 		print(en_clean_text[match[0][0][0]][match[0][0][1]][match[0][0][2]], "|", fr_clean_text[match[1][0][0]][match[1][0][1]][match[1][0][2]])
 
-def draw_occurences_chart(en_freq_ranking, en_nb_words):
-	nb_occurs = [en_freq_ranking[0][1]]
+def zipf_curve(freq_ranking, nb_words, label, show=True):
+	freqs = [freq_ranking[0][1]]
 	zipf_law = [1]
-	for word, freq in en_freq_ranking[1:]:
-		if nb_occurs[-1] == freq:
+	for word, freq in freq_ranking[1:]:
+		if freqs[-1] == freq:
 			zipf_law[-1]+=1
 		else:
-			nb_occurs.append(freq)
+			freqs.append(freq)
 			zipf_law.append(1)
-	# print(sum([nb_occurs[i]*zipf_law[i] for i in range(len(nb_occurs))])/len(nb_occurs))	# constante de la loi de Zipf 1/90
-	plot([occurs*en_nb_words for occurs in nb_occurs], zipf_law)
-	plot([1/1000]+[occurs*en_nb_words for occurs in nb_occurs], [1000]+[90/(occurs*en_nb_words) for occurs in nb_occurs])
+	# print(sum([freqs[i]*zipf_law[i]**2 for i in range(len(freqs))])/len(freqs))
+	nb_occurs = [freq*nb_words for freq in freqs]
+	if show:
+		line = plot(nb_occurs, zipf_law, label=label)
+
+	return nb_occurs, zipf_law, line
+
+def draw_occurences_chart(en_freq_ranking, fr_freq_ranking, en_nb_words, fr_nb_words):
+	en_nb_occurs, en_zipf_law, en_line = zipf_curve(en_freq_ranking, en_nb_words, "anglais")
+	fr_nb_occurs, fr_zipf_law, fr_line = zipf_curve(fr_freq_ranking, fr_nb_words, "français")
+	inverse_square = plot([occurs for occurs in en_nb_occurs], [2000/occurs**2 for occurs in en_nb_occurs], ls=":", label=r"$\dfrac{1}{n^2}$")
 	plot([OCCUR_MIN, OCCUR_MIN], [0, 1000], ls="--")
 	plot([FREQ_MAX*en_nb_words, FREQ_MAX*en_nb_words], [0, 1000], ls="--")
+	legend()
+	title("Effectif avec même nombre d'occurrences")
+	xlabel("Nombre d'occurrences d'un mot")
+	ylabel("Nombre de mots")
+	xlim(0, 90)
+	ylim(0, 100)
 	show()
 
 def apply_IBM(match_list, en_clean_text, fr_clean_text):
@@ -337,15 +359,19 @@ def apply_IBM(match_list, en_clean_text, fr_clean_text):
 			corpus_IBM2.append((en_clean_text[match[0][0][0]][match[0][0][1]], fr_clean_text[match[1][0][0]][match[1][0][1]]))
 	t_IBM2, a_IBM2 = _train_IBM2(corpus_IBM2, loop_count=1000)
 
-		len(t_IBM2)
-		len(a_IBM2)
+	len(t_IBM2)
+	len(a_IBM2)
 
-		for (es, fs) in corpus_IBM2:
-			#max_a = viterbi_alignment(es, fs, t_IBM2, a_IBM2).items()
-			m = len(es)
-			n = len(fs)
-			args = (es, fs, t_IBM2, a_IBM2)
-			print(show_matrix(*args))
+	for (es, fs) in corpus_IBM2:
+		#max_a = viterbi_alignment(es, fs, t_IBM2, a_IBM2).items()
+		m = len(es)
+		n = len(fs)
+		args = (es, fs, t_IBM2, a_IBM2)
+		print(show_matrix(*args))
+
+def bisect_match(en_clean_text, fr_clean_text):
+	pass
+
 def main(instance):
 	en_original_text, en_clean_text = read_file(instance, "en")
 	en_word_indices, en_recency_vect, en_word_freq, en_freq_ranking, en_nb_words, en_nb_sen = parse(en_clean_text)
@@ -356,7 +382,9 @@ def main(instance):
 	print("Longueur du texte {} ({}): {} mots.".format(instance, "fr", fr_nb_words))
 	print("Nombres de mots différents : {}.".format(len(fr_word_indices)))
 
-	#draw_occurences_chart(en_freq_ranking, en_nb_words)
+	#bisect_match()
+
+	draw_occurences_chart(en_freq_ranking, fr_freq_ranking, en_nb_words, fr_nb_words)
 
 	#compare_recency("but", "mais", en_recency_vect["but"], fr_recency_vect["mais"])
 	#dtw("but", "mais", en_recency_vect["but"], fr_recency_vect["mais"], en_word_freq["but"], True)
@@ -369,8 +397,8 @@ def main(instance):
 	#dtw("king", "roi", en_recency_vect["king"], fr_recency_vect["roi"], en_word_freq["king"], True)
 	#compare_recency("prince", "prince")
 	#dtw("prince", "prince", en_word_freq["prince"], True)
-	#compare_recency("why", "pourquoi", en_recency_vect["why"], fr_recency_vect["pourquoi"])
-	#dtw("why", "pourquoi", en_recency_vect["why"], fr_recency_vect["pourquoi"], en_word_freq["why"], True)
+	compare_recency("why", "pourquoi", en_recency_vect["why"], fr_recency_vect["pourquoi"])
+	dtw("why", "pourquoi", en_recency_vect["why"], fr_recency_vect["pourquoi"], en_word_freq["why"], infty, True)
 	#print(dtw("!", "!", en_word_freq["!"]))
 
 	threshold, match_list, idx_freq_min, idx_freq_max, bound_inf, bound_sup = estimate_threshold(en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, en_nb_words)
@@ -408,5 +436,5 @@ main("le-petit-prince--antoine-de-saint-exupery")
 # portugais, YT, Illuin
 
 # dtw en c++ avec multiprocessing sur Leviathan
-# appliqué dtw localement avec MIN_OCCUR plsu le-petit-prince--antoine-de-saint-exupery
+# appliqué dtw localement avec MIN_OCCUR plus le-petit-prince--antoine-de-saint-exupery
 # aligner

@@ -16,10 +16,11 @@ from numpy import zeros, ones, infty
 #     8             16               16
 #    9-20           73               73
 #                                                                                                                                           
-THRESHOLD = 600	#*nb_words
+
 OCCUR_MIN = 4
+FREQ_STEP = 0.001
 FREQ_MAX = 0.005	# temps que l'incertitude sur la position du mot correspondant dans le texte d'en face est inférieur à l'écart entre 2 occurences.
-FREQ_RATIO = 1.2
+FREQ_RATIO = 1.25
 DTW_FACTOR = 1.2
 
 # Pinocchio (pas bon)
@@ -51,15 +52,20 @@ def clean(element):
 		[clean(subelement) for subelement in element]
 	)
 
-def parse(instance, language):
+def print_text(text):	# not used
+	print('\n\n'.join(['\n'.join([str(sentence) for sentence in paragraph]) for paragraph in text]))
+
+def read_file(instance, language):
 	with open("../../text/{}/{}.txt".format(language, instance), "r") as text_file:
 	    text = "\n".join([line for line in text_file])
 
 	WORD_RE = EN_WORD_RE if language == "en" else FR_WORD_RE
 	original_text = [sentences(paragraph) for paragraph in paragraphs(text)]
 	clean_text = [[clean(words(sentence, WORD_RE)) for sentence in paragraph] for paragraph in original_text]
-	#print('\n\n'.join(['\n'.join([str(sentence) for sentence in paragraph]) for paragraph in data]))
 
+	return original_text, clean_text
+
+def parse(clean_text):
 	word_indices = {}
 	word_freq = {}
 	word_offset = 0
@@ -78,8 +84,6 @@ def parse(instance, language):
 			sen_offset+=1
 	nb_words = word_offset
 	nb_sen = sen_offset
-	print("Longueur du texte {} ({}): {} mots.".format(instance, language, nb_words))
-	print("Nombres de mots différents : {}.".format(len(word_indices)))
 	recency_vect = {}
 	for word, indices_list in word_indices.items():
 		recency_vect[word] = [indices_list[0][3]/nb_words]
@@ -97,7 +101,7 @@ def parse(instance, language):
 	#for i in range(20):
 	#	print(top_freq[i])
 
-	return original_text, clean_text, word_indices, recency_vect, word_freq, freq_ranking, nb_words, nb_sen
+	return word_indices, recency_vect, word_freq, freq_ranking, nb_words, nb_sen
 
 def compare_recency(en_word, fr_word, en_recency, fr_recency):
 	plot(list(range(len(en_recency))), en_recency)
@@ -119,17 +123,24 @@ def _dtw(rec1, rec2, freq):
 	warp[0, 1] = mu(rec1[0], rec2[0]+rec2[1])
 	warp_antecedant[0][0, 1] = -1
 	warp_antecedant[1][0, 1] = -1
+	k = (1 if freq <= FREQ_STEP else 2)
 	for i in range(1, n):
 		for j in range(max(ceil((i-1)/2), m-2*(n-i)+1), min(2*i+2, m-floor((n-i)/2))):
 			minimum = [warp[i-1, j-1]+mu(rec1[i], rec2[j]), (i-1, j-1)]
-			if i>=2:
-				cost = warp[i-2, j-1]+mu(rec1[i]+rec1[i-1], rec2[j])
-				if cost < minimum[0]:
-					minimum = [cost, (i-2, j-1)]
-			if j>=2:
-				cost = warp[i-1, j-2]+mu(rec2[j]+rec2[j-1], rec1[i])
-				if cost < minimum[0]:
-					minimum = [cost, (i-1, j-2)]
+			for l in range(1, k):
+				if i >= 1+l:
+					cost = warp[i-1-l, j-1]+mu(sum([rec1[t] for t in range(i-l, i+1)]), rec2[j])
+					if cost < minimum[0]:
+						minimum = [cost, (i-1-l, j-1)]
+				else:
+					break
+			for l in range(1, k+1):
+				if j >= 1+l:
+					cost = warp[i-1, j-1-l]+mu(rec1[i], sum([rec2[t] for t in range(j-l, j+1)]))
+					if cost < minimum[0]:
+						minimum = [cost, (i-1, j-1-l)]
+				else:
+					break
 			warp[i, j] = minimum[0]
 			warp_antecedant[0][i, j] = minimum[1][0]
 			warp_antecedant[1][i, j] = minimum[1][1]
@@ -137,10 +148,10 @@ def _dtw(rec1, rec2, freq):
 	#	print([(warp_antecedant[0][i, j], warp_antecedant[1][i, j]) for j in range(m)])
 	return warp[n-1, m-1]/freq**DTW_FACTOR, warp_antecedant
 
-def dtw(word1, word2, rec1, rec2, freq, graph=False):
+def dtw(word1, word2, rec1, rec2, freq, threshold, graph=False):
 	value, warp_antecedant = _dtw(rec1, rec2, freq)
 	n, m = len(rec1), len(rec2)
-	if  value <= THRESHOLD:
+	if  value <= threshold:
 		backtracking = [(n-1, m-1)]
 		while backtracking[-1] != (-1, -1):
 			#print(backtracking[-1])
@@ -155,7 +166,7 @@ def dtw(word1, word2, rec1, rec2, freq, graph=False):
 			show()
 		return value, backtracking[:-1]
 	else:
-		return None, None
+		return value, None
 
 
 def filter_smooth(match_list):	# the list must be ordered
@@ -211,47 +222,61 @@ def filter_non_bijective_matches(match_list, en_clean_text, fr_clean_text):
 
 	return sorted(filtered_match_list, key=lambda x: x[0][3]), removed
 
-def main(instance):
-	en_original_text, en_clean_text, en_word_indices, en_recency_vect, en_word_freq, en_freq_ranking, en_nb_words, en_nb_sen = parse(instance, "en")
-	fr_original_text, fr_clean_text, fr_word_indices, fr_recency_vect, fr_word_freq, fr_freq_ranking, fr_nb_words, fr_nb_sen = parse(instance, "fr")
-
-	#compare_recency("cat", "chat", en_recency_vect["cat"], fr_recency_vect["chat"])
-	#dtw("cat", "chat", en_recency_vect["cat"], fr_recency_vect["chat"], en_word_freq["cat"], True)
-	#compare_recency("flowers", "fleurs")
-	#dtw("flowers", "fleurs", en_word_freq["flowers"], True)
-	#compare_recency("king", "roi", en_recency_vect["king"], fr_recency_vect["roi"])
-	#dtw("king", "roi", en_recency_vect["king"], fr_recency_vect["roi"], en_word_freq["king"], True)
-	#compare_recency("prince", "prince")
-	#dtw("prince", "prince", en_word_freq["prince"], True)
-	#compare_recency("why", "pourquoi", en_recency_vect["why"], fr_recency_vect["pourquoi"])
-	#dtw("why", "pourquoi", en_recency_vect["why"], fr_recency_vect["pourquoi"], en_word_freq["why"], True)
-	#print(dtw("!", "!", en_word_freq["!"]))
-
-	nb_fr_words = len(fr_freq_ranking)
-	nb_en_words = len(en_freq_ranking)
+def estimate_threshold(en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, en_nb_words):
+	en_nb_different_words = len(en_freq_ranking)
+	fr_nb_different_words = len(fr_freq_ranking)
 	bound_inf, bound_sup = 0, 0
-	idx_freq_min, idx_freq_max = 0, nb_en_words-1
 	match_list = []
+	idx_freq_min, idx_freq_max = 0, en_nb_different_words-1
 
-	while en_freq_ranking[idx_freq_min][1]*en_nb_words < OCCUR_MIN:	# au moins 5 occurrences 0.00015
+	while en_freq_ranking[idx_freq_min][1]*en_nb_words < OCCUR_MIN:	# au moins 4 occurrences 0.00023
 		idx_freq_min+=1
 	while en_freq_ranking[idx_freq_max][1] > FREQ_MAX:
 		idx_freq_max-=1
 
-	for en_word, freq in en_freq_ranking[idx_freq_min: idx_freq_max+1]:
-		while bound_inf < nb_fr_words-1 and fr_freq_ranking[bound_inf][1] < freq/FREQ_RATIO:	#*nb_fr_words/nb_en_words
+	while idx_freq_min <= idx_freq_max:
+		en_word, freq = en_freq_ranking[idx_freq_min]
+		idx_freq_min+=1
+		if freq*en_nb_words > OCCUR_MIN:
+			break
+		while bound_inf < fr_nb_different_words-1 and fr_freq_ranking[bound_inf][1] < freq/FREQ_RATIO:
 			bound_inf+=1
-		while bound_sup < nb_fr_words-1 and fr_freq_ranking[bound_sup][1] <= freq*FREQ_RATIO:	#*nb_fr_words/nb_en_words
+		while bound_sup < fr_nb_different_words-1 and fr_freq_ranking[bound_sup][1] <= freq*FREQ_RATIO:
 			bound_sup+=1
 		for idx in range(bound_inf, bound_sup):
 			fr_word = fr_freq_ranking[idx][0]
-			value, path = dtw(en_word, fr_word, en_recency_vect[en_word], fr_recency_vect[fr_word], freq)
+			value, path = dtw(en_word, fr_word, en_recency_vect[en_word], fr_recency_vect[fr_word], freq, 5000)
+			if path:
+				for match in path:
+					match_list.append((en_word_indices[en_word][match[0]], fr_word_indices[fr_word][match[1]], value))
+	match_list.sort(key=itemgetter(2))
+	match_list = match_list[:min(len(match_list), ceil(en_nb_words/250))]	# calibrer pour garder les 16 meilleures matches parmis les mots de 4 lettres pour ce texte de 16 000 mots
+	threshold = match_list[-1][2]
+	print("THRESHOLD :", threshold)
+	return threshold, match_list, idx_freq_min, idx_freq_max, bound_inf, bound_sup
+
+def matching_layer(threshold, match_list, en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, bound_inf, bound_sup):
+	en_nb_different_words = len(en_freq_ranking)
+	fr_nb_different_words = len(fr_freq_ranking)
+
+	for en_word, freq in en_freq_ranking:
+		#if freq >= FREQ_STEP:
+		#	adjusted_freq_ratio = 2*FREQ_RATIO
+		while bound_inf < fr_nb_different_words-1 and fr_freq_ranking[bound_inf][1] < freq/FREQ_RATIO:	#*nb_fr_words/nb_en_words
+			bound_inf+=1
+		while bound_sup < fr_nb_different_words-1 and fr_freq_ranking[bound_sup][1] <= freq*FREQ_RATIO:	#*nb_fr_words/nb_en_words
+			bound_sup+=1
+		for idx in range(bound_inf, bound_sup):
+			fr_word = fr_freq_ranking[idx][0]
+			value, path = dtw(en_word, fr_word, en_recency_vect[en_word], fr_recency_vect[fr_word], freq, threshold)
 			if path:
 				for match in path:
 					match_list.append((en_word_indices[en_word][match[0]], fr_word_indices[fr_word][match[1]], value))
 
-	print("Avant filtration :", len(match_list))
 	match_list.sort(key=lambda x: x[0][3])
+
+def filtration_layer(match_list, en_clean_text, fr_clean_text):
+	print("Avant filtration :", len(match_list))
 	plot([item[0][3] for item in match_list], [item[1][3] for item in match_list])
 	#show()
 
@@ -289,27 +314,76 @@ def main(instance):
 	for match in per_par_removed:
 		print(en_clean_text[match[0][0][0]][match[0][0][1]][match[0][0][2]], "|", fr_clean_text[match[1][0][0]][match[1][0][1]][match[1][0][2]])
 
+def draw_occurences_chart(en_freq_ranking, en_nb_words):
+	nb_occurs = [en_freq_ranking[0][1]]
+	zipf_law = [1]
+	for word, freq in en_freq_ranking[1:]:
+		if nb_occurs[-1] == freq:
+			zipf_law[-1]+=1
+		else:
+			nb_occurs.append(freq)
+			zipf_law.append(1)
+	# print(sum([nb_occurs[i]*zipf_law[i] for i in range(len(nb_occurs))])/len(nb_occurs))	# constante de la loi de Zipf 1/90
+	plot([occurs*en_nb_words for occurs in nb_occurs], zipf_law)
+	plot([1/1000]+[occurs*en_nb_words for occurs in nb_occurs], [1000]+[90/(occurs*en_nb_words) for occurs in nb_occurs])
+	plot([OCCUR_MIN, OCCUR_MIN], [0, 1000], ls="--")
+	plot([FREQ_MAX*en_nb_words, FREQ_MAX*en_nb_words], [0, 1000], ls="--")
+	show()
+
+def apply_IBM(match_list, en_clean_text, fr_clean_text):
+	corpus_IBM2 = []
+	for match in match_list[:4]:
+		if (en_clean_text[match[0][0][0]][match[0][0][1]], fr_clean_text[match[1][0][0]][match[1][0][1]]) not in corpus_IBM2:	
+			corpus_IBM2.append((en_clean_text[match[0][0][0]][match[0][0][1]], fr_clean_text[match[1][0][0]][match[1][0][1]]))
+	t_IBM2, a_IBM2 = _train_IBM2(corpus_IBM2, loop_count=1000)
+
+		len(t_IBM2)
+		len(a_IBM2)
+
+		for (es, fs) in corpus_IBM2:
+			#max_a = viterbi_alignment(es, fs, t_IBM2, a_IBM2).items()
+			m = len(es)
+			n = len(fs)
+			args = (es, fs, t_IBM2, a_IBM2)
+			print(show_matrix(*args))
+def main(instance):
+	en_original_text, en_clean_text = read_file(instance, "en")
+	en_word_indices, en_recency_vect, en_word_freq, en_freq_ranking, en_nb_words, en_nb_sen = parse(en_clean_text)
+	print("Longueur du texte {} ({}): {} mots.".format(instance, "en", en_nb_words))
+	print("Nombres de mots différents : {}.".format(len(en_word_indices)))
+	fr_original_text, fr_clean_text = read_file(instance, "fr")
+	fr_word_indices, fr_recency_vect, fr_word_freq, fr_freq_ranking, fr_nb_words, fr_nb_sen = parse(fr_clean_text)
+	print("Longueur du texte {} ({}): {} mots.".format(instance, "fr", fr_nb_words))
+	print("Nombres de mots différents : {}.".format(len(fr_word_indices)))
+
+	#draw_occurences_chart(en_freq_ranking, en_nb_words)
+
+	#compare_recency("but", "mais", en_recency_vect["but"], fr_recency_vect["mais"])
+	#dtw("but", "mais", en_recency_vect["but"], fr_recency_vect["mais"], en_word_freq["but"], True)
+
+	#compare_recency("cat", "chat", en_recency_vect["cat"], fr_recency_vect["chat"])
+	#dtw("cat", "chat", en_recency_vect["cat"], fr_recency_vect["chat"], en_word_freq["cat"], True)
+	#compare_recency("flowers", "fleurs")
+	#dtw("flowers", "fleurs", en_word_freq["flowers"], True)
+	#compare_recency("king", "roi", en_recency_vect["king"], fr_recency_vect["roi"])
+	#dtw("king", "roi", en_recency_vect["king"], fr_recency_vect["roi"], en_word_freq["king"], True)
+	#compare_recency("prince", "prince")
+	#dtw("prince", "prince", en_word_freq["prince"], True)
+	#compare_recency("why", "pourquoi", en_recency_vect["why"], fr_recency_vect["pourquoi"])
+	#dtw("why", "pourquoi", en_recency_vect["why"], fr_recency_vect["pourquoi"], en_word_freq["why"], True)
+	#print(dtw("!", "!", en_word_freq["!"]))
+
+	threshold, match_list, idx_freq_min, idx_freq_max, bound_inf, bound_sup = estimate_threshold(en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, en_nb_words)
+	matching_layer(threshold, match_list, en_freq_ranking[idx_freq_min: idx_freq_max+1], fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, bound_inf, bound_sup)
+	filtration_layer(match_list)
+
 	for match in match_list:
 		print(en_original_text[match[0][0][0]][match[0][0][1]])
 		print(fr_original_text[match[1][0][0]][match[1][0][1]])
 		print("\n")
 
-	corpus_IBM2 = []
-	for match in match_list[:4]:
-		if (en_clean_text[match[0][0][0]][match[0][0][1]], fr_clean_text[match[1][0][0]][match[1][0][1]]) not in corpus_IBM2:	
-			corpus_IBM2.append((en_clean_text[match[0][0][0]][match[0][0][1]], fr_clean_text[match[1][0][0]][match[1][0][1]]))
+	#apply_IBM(match_list)
 
-	t_IBM2, a_IBM2 = _train_IBM2(corpus_IBM2, loop_count=1000)
-
-	len(t_IBM2)
-	len(a_IBM2)
-
-	for (es, fs) in corpus_IBM2:
-		#max_a = viterbi_alignment(es, fs, t_IBM2, a_IBM2).items()
-		m = len(es)
-		n = len(fs)
-		args = (es, fs, t_IBM2, a_IBM2)
-		print(show_matrix(*args))
 
 main("le-petit-prince--antoine-de-saint-exupery")
 # main("bible")
@@ -335,5 +409,4 @@ main("le-petit-prince--antoine-de-saint-exupery")
 
 # dtw en c++ avec multiprocessing sur Leviathan
 # appliqué dtw localement avec MIN_OCCUR plsu le-petit-prince--antoine-de-saint-exupery
-# faire graphe avec loi de Zipf et fréquences
 # aligner

@@ -45,7 +45,7 @@ index-servers =
     pypi
 
 [pypi]
-repository: https://pypi.python.org/pypi
+repository: https://pypi.org/project/ENPC-Aligner/
 username: <username>
 password: <password>
 ```

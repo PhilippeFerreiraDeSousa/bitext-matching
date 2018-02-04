@@ -1,5 +1,5 @@
 from string import ascii_uppercase, ascii_lowercase, digits
-from enpc_aligner.IBM2_func import _train_IBM2
+from enpc_aligner.IBM2_func import _train_IBM2, show_matrix
 import re
 from math import ceil, floor
 from operator import itemgetter
@@ -40,17 +40,20 @@ def clean(element):
 def print_text(text):
 	print('\n\n'.join(['\n'.join([str(sentence) for sentence in paragraph]) for paragraph in text]))
 
-def read_example(instance, language):
-	with open("../examples/{}/{}.txt".format(language, instance), "r") as text_file:
-	    text = "\n".join([line for line in text_file])
-
+def parse(text, language):
 	WORD_RE = EN_WORD_RE if language == "en" else FR_WORD_RE
 	original_text = [sentences(paragraph) for paragraph in paragraphs(text)]
 	clean_text = [[clean(words(sentence, WORD_RE)) for sentence in paragraph] for paragraph in original_text]
 
 	return original_text, clean_text
 
-def parse(clean_text):
+def read_example(instance, language):
+	with open("../examples/{}/{}.txt".format(language, instance), "r") as text_file:
+	    text = "\n".join([line for line in text_file])
+
+	return parse(text, language)
+
+def process(clean_text):
 	word_indices = {}
 	word_freq = {}
 	word_offset = 0

@@ -1,52 +1,8 @@
 Carlo Collodi
-Traduction de Claude Sartirano
-LES AVENTURES
-DE PINOCCHIO
-Histoire d’une marionnette
-(1883)
-Édition du groupe « Ebooks libres et gratuits »
-Table des matières
-Chapitre 1 ................................................................................. 4
-Chapitre 2 ..................................................................................7
-Chapitre 3 ................................................................................ 11
-Chapitre 4 ................................................................................16
-Chapitre 5 ................................................................................19
-Chapitre 6............................................................................... 22
-Chapitre 7 ............................................................................... 24
-Chapitre 8............................................................................... 28
-Chapitre 9............................................................................... 32
-Chapitre 10 ............................................................................. 36
-Chapitre 11.............................................................................. 40
-Chapitre 12 ............................................................................. 45
-Chapitre 13 ..............................................................................51
-Chapitre 14 ..............................................................................55
-Chapitre 15 ............................................................................. 59
-Chapitre 16 ............................................................................. 63
-Chapitre 17...............................................................................67
-Chapitre 18 ..............................................................................74
-Chapitre 19 ............................................................................. 80
-Chapitre 20............................................................................. 85
-Chapitre 21 ............................................................................. 88
-- 3 -
-Chapitre 22..............................................................................91
-Chapitre 23............................................................................. 95
-Chapitre 24............................................................................ 101
-Chapitre 25 ........................................................................... 108
-Chapitre 26............................................................................ 113
-Chapitre 27 ............................................................................ 117
-Chapitre 28............................................................................125
-Chapitre 29............................................................................132
-Chapitre 30............................................................................ 141
-Chapitre 31 ............................................................................149
-Chapitre 32............................................................................156
-Chapitre 33 ............................................................................164
-Chapitre 34............................................................................ 173
-Chapitre 35 ............................................................................ 181
-Chapitre 36............................................................................187
-Note du traducteur............................................................... 202
-Biographie ............................................................................ 203
-À propos de cette édition électronique ................................ 205
-- 4 -
+
+LES AVENTURES DE PINOCCHIO
+Histoire d’une marionnette (1883)
+
 Chapitre 1
 Comment Maître Cerise, le menuisier, trouva un morceau de
 bois qui pleurait et riait comme un enfant.
@@ -71,7 +27,6 @@ premier coup, son bras resta suspendu en l’air car il venait
 d’entendre une toute petite voix qui le suppliait :
 – Ne frappe pas si fort !
 Imaginez la tête de ce brave Maître Cerise !
-- 5 -
 Ses yeux égarés firent le tour de la pièce pour comprendre
 d’où pouvait bien venir cette voix fluette, mais il ne vit personne.
 Il regarda sous l’établi : personne ! Il ouvrit une armoire
@@ -102,7 +57,6 @@ attendit cinq minutes, dix minutes : toujours rien !
 – J’ai compris – dit-il en s’efforçant de rire et en se grattant la
 perruque – voilà la preuve que cette voix qui fait « aïe » sort tout
 droit de mon imagination ! Remettons-nous au travail.
-- 6 -
 Et parce qu’il avait eu très peur, il s’essaya à chantonner pour
 se donner un peu de courage.
 Posant sa hache, il prit le rabot pour rendre bien lisse et
@@ -113,7 +67,7 @@ foudroyé. Quand il rouvrit les yeux, il était assis à même le sol.
 Son visage était décomposé. Une terrible peur avait changé
 jusqu’à la couleur de son nez qui, de rouge, avait viré au bleu
 foncé.
-- 7 -
+
 Chapitre 2
 Maître Cerise offre le morceau de bois à son ami Geppetto
 qui le prend pour se fabriquer une marionnette extraordinaire
@@ -137,7 +91,6 @@ une faveur.
 – Me voici, prêt à vous rendre service – répondit le menuisier
 en se relevant.
 – Ce matin, il m’est venu une idée.
-- 8 -
 – Voyons cela.
 – J’ai pensé que je pourrais faire une belle marionnette en
 bois, mais une marionnette extraordinaire capable de danser, de
@@ -158,7 +111,6 @@ vous.
 – Si !
 – Non !
 – Si !
-- 9 -
 S’échauffant de plus en plus, ils passèrent des paroles aux
 actes. Ils s’agrippèrent, se chiffonnèrent, se griffèrent et se
 mordirent.
@@ -183,7 +135,6 @@ des cadeaux ! Vous m’avez quasiment estropié !
 – Mais je vous jure que ce n’est pas moi !
 – Alors, c’est moi !
 – C’est la faute de ce bout de bois
-- 10 -
 – Je vois bien que c’est du bois, mais c’est vous qui me l’avez
 envoyé dans les jambes !
 – Moi, je n’ai rien envoyé !
@@ -203,7 +154,7 @@ sa vareuse. Leurs comptes réglés, ils se serrèrent la main et
 jurèrent de rester bons amis la vie entière.
 Sur ce, Geppetto prit le fameux morceau de bois et, après
 avoir remercié le menuisier, rentra chez lui en boitillant.
-- 11 -
+
 Chapitre 3
 De retour chez lui, Geppetto se met tout de suite à fabriquer
 sa marionnette et lui donne le nom de Pinocchio. Premières
@@ -231,7 +182,6 @@ s’aperçut qu’ils bougeaient et le regardaient avec impudence.
 Ces deux yeux qui le fixaient énervèrent Geppetto. Il dit d’un
 ton irrité :
 – Gros yeux du bois, pourquoi me regardez-vous ainsi ?
-- 12 -
 Pas de réponse.
 Alors il fit le nez, mais le nez à peine fini commença à grandir.
 Il grandit, grandit, grandit tellement qu’il devint, en quelques
@@ -255,7 +205,6 @@ mains de la marionnette !
 – Pinocchio !… Rends-moi tout de suite ma perruque !
 Mais au lieu de la lui rendre, Pinocchio la mit sur sa tête. La
 perruque lui mangeait la moitié du visage.
-- 13 -
 Ces manières insolentes avaient rendu triste Geppetto,
 comme jamais il ne l’avait été de toute sa vie. Il se tourna vers
 Pinocchio et lui dit :
@@ -282,7 +231,6 @@ comme un lièvre. Ses pieds de bois frappaient le pavé de la rue en
 faisant autant de tapage que vingt paires de sabots.
 Arrêtez-le ! Arrêtez-le ! criait Geppetto, mais les gens, dans la
 rue, voyant cette marionnette en bois cavalant comme un cheval
-- 14 -
 arabe, étaient enchantés de la regarder et ils riaient, riaient, vous
 ne pouvez pas savoir comme ils riaient.
 Survint heureusement un carabinier qui, entendant tout ce
@@ -309,7 +257,6 @@ marcher.
 Immédiatement, curieux et badauds se rapprochèrent et
 commencèrent à former un cercle autour d’eux.
 Chacun donnait son avis. Certains disaient :
-- 15 -
 – Pauvre marionnette, elle a raison de ne pas vouloir rentrer.
 Qui sait si elle ne serait pas battue par ce diable de Geppetto !
 Et les autres, malicieusement, en rajoutaient :
@@ -325,7 +272,7 @@ pour fabriquer une marionnette bien comme il faut ! Tout reste à
 faire ! J’aurais dû y penser plus tôt !
 Ce qui arriva ensuite est une incroyable histoire. C’est cette
 histoire que je vais vous raconter maintenant.
-- 16 -
+
 Chapitre 4
 L’histoire de Pinocchio et du Grillon-qui-parle. Où l’on voit
 que les méchants garçons ne supportent pas d’être contrariés
@@ -350,7 +297,7 @@ sur le mur.
 – Dis-moi, Grillon, qui es-tu ?
 – Je suis le Grillon-qui-parle, et je vis dans cette pièce depuis
 plus de cent ans.
-- 17 -
+
 – Ouais, mais maintenant c’est ma maison à moi – dit la
 marionnette – et si tu veux vraiment me faire plaisir, va-t-en tout
 de suite et ne reviens pas.
@@ -377,7 +324,7 @@ prendre mal cette impertinence, continua sur le même ton :
 – S’il ne te plait pas d’aller à l’école, tu pourrais au moins
 apprendre un métier, de façon à pouvoir gagner ta vie
 honnêtement.
-- 18 -
+
 – Tu veux que je te dise ? – répliqua Pinocchio, qui
 commençait à s’énerver – Parmi tous les métiers du monde, un
 seul me conviendrait parfaitement.
@@ -400,7 +347,7 @@ qu’il ne le toucherait même pas.
 Malheureusement, il le frappa en plein sur la tête, si bien que
 le pauvre Grillon, après avoir fait une dernière fois cri-cri-cri,
 resta collé au mur, raide mort.
-- 19 -
+
 Chapitre 5
 Pinocchio a faim et cherche un œuf pour faire une omelette.
 Mais au moment de la manger, l’omelette s’envole par la fenêtre.
@@ -429,7 +376,6 @@ Désespéré, il se mit à pleurer :
 révolter contre mon papa ni me sauver de la maison. Si papa était
 là, je n’en serais pas réduit à bailler à en mourir ! Oh ! Quelle sale
 maladie que d’avoir faim !
-- 20 -
 Mais voilà qu’il lui sembla voir, dans un tas de poussière,
 quelque chose de rond et blanc, comme un œuf de poule. Il se jeta
 dessus d’un seul bond. C’était bien un œuf.
@@ -457,14 +403,13 @@ se mit à pleurer, à crier, à taper des pieds par terre de désespoir
 et, tout en pleurant, s’exclama :
 – Le Grillon-qui-parle avait donc raison ! Si je ne m’étais pas
 sauvé de la maison et si mon papa était encore ici, je n’en serais
-- 21 -
 pas réduit à mourir de faim ! Oh ! Quelle sale maladie que la
 faim !
 Et, parce que son corps rouspétait plus que jamais et qu’il ne
 savait quoi faire pour le contenter, il songea à sortir pour une
 virée dans le voisinage, histoire de trouver quelque personne
 charitable qui lui ferait l’aumône d’un peu de pain.
-- 22 -
+
 Chapitre 6
 Pinocchio s’endort les pieds posés sur le brasero et le
 lendemain matin ils sont entièrement calcinés.
@@ -492,7 +437,6 @@ morceau de pain ?
 le vieil homme qui croyait avoir à faire à l’un de ces vauriens
 capables de tout et qui, la nuit, s’amusent à tirer les sonnettes
 pour le seul plaisir de déranger les gens dormant tranquillement.
-- 23 -
 Trente secondes plus tard, la fenêtre s’ouvrit de nouveau et le
 petit vieux cria à Pinocchio :
 – Mets-toi bien dessous et tends ton chapeau.
@@ -513,7 +457,7 @@ l’aube parce que quelqu’un avait frappé à la porte.
 les yeux.
 – C’est moi – répondit une voix.
 Cette voix était celle de Geppetto.
-- 24 -
+
 Chapitre 7
 Revenu chez lui, Geppetto va refaire les pieds de la
 marionnette et lui donner son propre repas.
@@ -538,7 +482,6 @@ mais ce sera du chat à neuf queues !
 – Je vous supplie de me croire : je ne peux pas me tenir
 debout. Oh ! Pauvre de moi ! Je devrai, toute ma vie, me traîner
 sur les genoux !…
-- 25 -
 Geppetto était persuadé que toutes ces pleurnicheries étaient
 encore une espièglerie de la marionnette. Pour en finir, il
 s’accrocha au mur et rentra dans la maison par la fenêtre.
@@ -569,7 +512,6 @@ pieds étaient brûlés. Maintenant, la faim, je l’ai toujours mais les
 pieds, je n’en ai plus ! Hi !… Hi !… Hi !…
 Et Pinocchio de recommencer à pleurer et à brailler si fort
 qu’on pouvait l’entendre à cinq kilomètres à la ronde.
-- 26 -
 Geppetto, du long discours embrouillé de sa marionnette
 n’avait retenu que le fait qu’elle mourait de faim et il tira de sa
 poche trois poires qu’il lui tendit :
@@ -595,7 +537,6 @@ Geppetto lui arrêta le bras :
 – Bah ! Le trognon, c’est sûr que je ne le mangerai pas ! –
 hurla la marionnette, menaçante comme une vipère.
 – Qui sait ? Tout est possible !… répéta Geppetto calmement.
-- 27 -
 Les trois trognons, au lieu de passer par la fenêtre,
 rejoignirent donc les épluchures sur la table.
 Ayant mangé ou plutôt dévoré les trois poires, Pinocchio se
@@ -615,7 +556,7 @@ contentement. Il jubilait :
 raison quand je te disais qu’il ne fallait pas être si délicat. Mon
 cher, on ne sait jamais ce qui peut arriver en ce bas monde. Tout
 est possible !
-- 28 -
+
 Chapitre 8
 Geppeto taille de nouveaux pieds à Pinocchio et vend son
 manteau pour lui acheter un abécédaire.
@@ -640,7 +581,6 @@ j’apprendrai un métier et je serai votre bâton de vieillesse.
 Geppetto, tout en affichant un air terriblement sévère, avait
 les yeux pleins de larmes et le cœur gros en voyant dans quel état
 pitoyable était son Pinocchio.
-- 29 -
 Il se tut, prit ses outils, deux bouts de bois sec et se mit
 farouchement au travail.
 En moins d’une heure, les pieds étaient faits, et bien faits :
@@ -656,7 +596,6 @@ l’endroit où il les avait collés.
 Dés que Pinocchio se rendit compte qu’il avait des pieds, il
 sauta de la table où il était étendu et, fou de joie, commença à
 faire mille entrechats et cabrioles.
-- 30 -
 – Pour vous remercier de ce que vous avez fait pour moi –
 dit-il alors à son père – j’irai tout de suite à l’école.
 – Bravo, mon garçon !
@@ -679,7 +618,6 @@ procurer ?
 – Ben, c’est très facile. On va dans une librairie et on l’achète.
 – Et les sous ?
 – Moi, je n’en ai pas.
-- 31 -
 – Et moi non plus.
 Le visage du brave Geppetto s’assombrit. Et, bien que
 Pinocchio fut d’une nature insouciante et joyeuse, lui aussi devint
@@ -697,7 +635,7 @@ en bras de chemise et, dehors, il neigeait.
 – Il me tenait trop chaud.
 Pinocchio avait bon cœur. Comprenant à demi-mot, il sauta
 au cou de Geppetto et lui couvrit le visage de baisers.
-- 32 -
+
 Chapitre 9
 Pinocchio vend son abécédaire pour aller au théâtre de
 marionnettes.
@@ -725,7 +663,6 @@ au bord de la mer. La musique venait de là-bas.
 Pinocchio – Dommage que je sois obligé d’aller à l’école, sinon…
 Il restait là, perplexe. Il lui fallait choisir entre l’école et les
 fifres.
-- 33 -
 – Disons qu’aujourd’hui, je pourrais aller écouter les fifres.
 Dans ce cas, j’irai à l’école demain. Pour aller à l’école, il sera
 toujours temps – finit-il par conclure en haussant les épaules.
@@ -749,7 +686,6 @@ cette pancarte, il est écrit en lettres rouges comme du feu :
 – Quatre sous.
 Pinocchio, dévoré par la curiosité, perdit toute retenue. Toute
 honte bue, il demanda au jeune garçon :
-- 34 -
 – Tu pourrais me prêter quatre sous jusqu’à demain ?
 – Je te les donnerais bien volontiers – ricana l’autre – mais il
 se trouve qu’aujourd’hui je ne peux pas les donner.
@@ -773,11 +709,10 @@ les autres enfants – lui répondit son jeune interlocuteur qui avait
 beaucoup plus de jugeote que lui.
 – Pour quatre sous, moi je le prends – intervint un
 chiffonnier qui avait entendu leur conversation.
-- 35 -
 Le livre fut vendu sur-le-champ. Et dire que, pour avoir
 acheté ce même abécédaire à son fils chéri, le brave Geppetto, en
 bras de chemise, grelottait de froid chez lui !
-- 36 -
+
 Chapitre 10
 Les marionnettes reconnaissent en Pinocchio l’une des leurs
 et lui font fête. Au moment où l’allégresse est à son comble
@@ -804,7 +739,6 @@ Pinocchio que je vois là-bas !
 tête passa à travers le décor.
 – C’est Pinocchio ! C’est Pinocchio ! – reprirent en chœur
 toutes les marionnettes surgissant des coulisses.
-- 37 -
 C’est Pinocchio ! C’est notre frère à tous ! Vive Pinocchio !
 – Pinocchio, viens-là ! – cria Arlequin – Viens te jeter dans
 les bras de tes frères en bois !
@@ -832,7 +766,6 @@ qu’elle traînait par terre et qu’il s’emmêlait les pieds dedans
 quand il marchait. Sa bouche était vaste comme un four, ses yeux
 ressemblaient à des lanternes rouges et il faisait claquer un fouet
 tressé de peaux de serpents et de queues de renards.
-- 38 -
 Le tapage cessa brusquement à son apparition. Chacun
 retenait sa respiration et l’on aurait pu entendre une mouche
 voler. Toutes les pauvres marionnettes, les hommes comme les
@@ -848,7 +781,6 @@ le marionnettiste se rendit à la cuisine où il s’était préparé pour le
 dîner un mouton entier qui cuisait lentement à la broche. Or,
 comme il lui manquait du bois pour parachever la cuisson afin
 qu’il soit bien doré, il appela Arlequin et Polichinelle et leur dit :
-- 39 -
 – Apportez-moi donc cette marionnette qui est accrochée au
 clou. Elle m’a paru d’un bois très sec et fera une belle flambée
 pour mon rôti.
@@ -859,7 +791,7 @@ débattait comme une anguille hors de l’eau et qui criait
 désespérément :
 – Papa, papa, sauve-moi ! Je ne veux pas mourir ! Je ne veux
 pas mourir !
-- 40 -
+
 Chapitre 11
 Mangiafoco éternue et pardonne à Pinocchio, lequel sauve
 de la mort son ami Arlequin.
@@ -876,7 +808,6 @@ marionnette. Il résista bien un bon moment mais, ne se
 contrôlant plus, il finit par émettre un très sonore éternuement.
 Arlequin, qui semblait avoir été transformé en saule pleureur
 tellement il était affligé, retrouva subitement un visage joyeux à la
-- 41 -
 suite de cet éternuement et, se penchant vers Pinocchio, lui
 souffla :
 – Bonne nouvelle, mon frère : le maître vient d’éternuer, ce
@@ -902,7 +833,6 @@ atchoum !
 – Merci ! Mais il faut aussi éprouver de la compassion pour
 moi car, comme tu le vois, je n’ai plus de bois pour finir de cuire
 ce mouton. En vérité, te jeter dans le feu m’aurait bien arrangé.
-- 42 -
 Mais, que veux-tu, j’ai eu pitié. Maintenant c’est trop tard. Je vais
 donc te remplacer par l’une de mes marionnettes. Holà, les
 gendarmes !
@@ -925,7 +855,6 @@ marionnettiste.
 – Pitié, Monsieur le Commandeur !
 – Où vois-tu des commandeurs ici ?
 – Pitié, Excellence !
-- 43 -
 Cette fois, très flatté de s’entendre appelé Excellence, le
 montreur de marionnette s’humanisa et demanda à Pinocchio
 d’un ton plus affable :
@@ -952,7 +881,6 @@ son nez.
 – Je suis gracié ? – demanda, à peine audible, le pauvre
 Arlequin qui n’avait plus qu’un filet de voix.
 – Gracié ! – répondit Mangiafoco.
-- 44 -
 Tout en soupirant et en hochant la tête, il ajouta :
 – Tant pis ! Aujourd’hui, je me contenterai d’un mouton à
 moitié cru mais, la prochaine fois, gare à celui sur qui ça
@@ -962,7 +890,7 @@ marionnettes se précipitèrent sur la scène et, après avoir allumé
 toutes les lumières comme pour une soirée de gala, se mirent à
 danser et à sauter dans tous les sens. A l’aube, elles dansaient
 encore.
-- 45 -
+
 Chapitre 12
 Mangiafoco, le marionnettiste, donne cinq pièces d’or à
 Pinocchio pour qu’il les porte à son papa Geppetto. Mais

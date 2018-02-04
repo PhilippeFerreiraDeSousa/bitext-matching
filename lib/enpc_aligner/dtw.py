@@ -1,21 +1,10 @@
 from string import ascii_uppercase, ascii_lowercase, digits
-from IBM2_func import _train_IBM2, show_matrix
+from enpc_aligner.IBM2_func import _train_IBM2
 import re
 from math import ceil, floor
 from operator import itemgetter
 from matplotlib.pyplot import plot, show, title, xlim, ylim, xlabel, ylabel, xticks, legend, matshow
 from numpy import zeros, ones, infty
-
-# Rsultults
-# nb occurr     nb matches    nb après lissage
-#     3            166              138
-#     4             71               62
-#     5             58               58
-#     6             13               13
-#     7             47               47
-#     8             16               16
-#    9-20           73               73
-#                                                                                                                                           
 
 OCCUR_MIN = 4
 FREQ_STEP = 0.001
@@ -24,13 +13,7 @@ FREQ_RATIO = 1.25
 DTW_FACTOR = 1
 BEGINNING_THRESHOLD = infty
 BOOTSTRAP_FREQ = 0.005
-
-# Pinocchio (pas bon)
-#THRESHOLD = 10000
-#FREQ_MIN = 0.00002
-#FREQ_MAX = 0.01
-#FREQ_RATIO = 1.2
-#DTW_FACTOR = 1.5
+LOG = False
 
 FR_WORD_RE = r"\w+'?"
 EN_WORD_RE = r"'?\w+"
@@ -54,11 +37,11 @@ def clean(element):
 		[clean(subelement) for subelement in element]
 	)
 
-def print_text(text):	# not used
+def print_text(text):
 	print('\n\n'.join(['\n'.join([str(sentence) for sentence in paragraph]) for paragraph in text]))
 
-def read_file(instance, language):
-	with open("../../text/{}/{}.txt".format(language, instance), "r") as text_file:
+def read_example(instance, language):
+	with open("../examples/{}/{}.txt".format(language, instance), "r") as text_file:
 	    text = "\n".join([line for line in text_file])
 
 	WORD_RE = EN_WORD_RE if language == "en" else FR_WORD_RE
@@ -98,11 +81,6 @@ def parse(clean_text):
 
 	freq_ranking = sorted([(word, freq) for word, freq in word_freq.items()], key=itemgetter(1))
 
-	# print(word_indices["i"])
-	# print(word_freq["i"])
-	#for i in range(20):
-	#	print(top_freq[i])
-
 	return word_indices, recency_vect, word_freq, freq_ranking, nb_words, nb_sen
 
 def compare_recency(en_word, fr_word, en_recency, fr_recency):
@@ -114,7 +92,7 @@ def compare_recency(en_word, fr_word, en_recency, fr_recency):
 	legend()
 	show()
 
-mu = lambda a, b: abs(a-b) 
+mu = lambda a, b: abs(a-b)
 
 def _dtw(rec1, rec2, freq):
 	n, m = len(rec1), len(rec2)
@@ -133,12 +111,9 @@ def _dtw(rec1, rec2, freq):
 	for i in range(1, n):
 		for j in range(max(1, ceil((i-1)/2), m-2*(n-i)+1), min(2*i+2, m-floor((n-i)/2))):
 			minimum = [warp[i-1, j-1]+mu(rec1[i], rec2[j]), (i-1, j-1)]
-			#print(i, j)
-			#print(minimum)
 			for l in range(1, k):
 				if i >= 1+l:
 					cost = warp[i-1-l, j-1]+mu(sum([rec1[t] for t in range(i-l, i+1)]), rec2[j])
-					#print(cost)
 					if cost < minimum[0]:
 						minimum = [cost, (i-1-l, j-1)]
 				else:
@@ -146,17 +121,12 @@ def _dtw(rec1, rec2, freq):
 			for l in range(1, k+1):
 				if j >= 1+l:
 					cost = warp[i-1, j-1-l]+mu(rec1[i], sum([rec2[t] for t in range(j-l, j+1)]))
-					#print(cost)
 					if cost < minimum[0]:
 						minimum = [cost, (i-1, j-1-l)]
 				else:
 					break
 			warp[i, j] = minimum[0]
-			#print(warp[i,j])
 			warp_ancestor[0][i, j], warp_ancestor[1][i, j] = minimum[1]
-		#print("\n")
-	#for i in range(n):
-	#	print([(warp_ancestor[0][i, j], warp_ancestor[1][i, j]) for j in range(m)])
 	return warp[n-1, m-1]/freq**DTW_FACTOR, warp_ancestor, warp
 
 def dtw(word1, word2, rec1, rec2, freq, threshold, graph=False, log=False, matrix=False):
@@ -194,7 +164,6 @@ def dtw(word1, word2, rec1, rec2, freq, threshold, graph=False, log=False, matri
 
 def filter_smooth(match_list):	# the list must be ordered
 	assert match_list, "Aucun match trouvé"
-	print("Smooth filtering")
 	filtered_match_list = [match_list[0]]
 	removed = []
 	for i in range(1, len(match_list)-1):	# borne par 10 la dérivée disrète
@@ -207,7 +176,6 @@ def filter_smooth(match_list):	# the list must be ordered
 
 def filter_per_par(match_list):	# the list must be ordered
 	assert match_list, "Aucun match trouvé"
-	print("Per paragraph filtering")
 	filtered_match_list = [match_list[0]]
 	removed = []
 	for i in range(1, len(match_list)-1):	# check that paragraph number is increasing
@@ -298,44 +266,41 @@ def matching_layer(threshold, match_list, en_freq_ranking, fr_freq_ranking, en_r
 
 	match_list.sort(key=lambda x: x[0][3])
 
-def filtration_layer(match_list, en_clean_text, fr_clean_text):
-	print("Avant filtration :", len(match_list))
-	plot([item[0][3] for item in match_list], [item[1][3] for item in match_list], label="sans filtration")
-	#show()
+def filtration_layer(match_list, en_clean_text, fr_clean_text, log=False):
+	if log:
+		print("Avant filtration :", len(match_list))
+		plot([item[0][3] for item in match_list], [item[1][3] for item in match_list], label="sans filtration")
 
 	match_list, non_bijective_removed = filter_non_bijective_matches(match_list, en_clean_text, fr_clean_text)
-	print("Après filtration des matches non bijectifs :", len(match_list))
-	plot([item[0][3] for item in match_list], [item[1][3] for item in match_list], label="(1) par bijection")
-	#show()
+	if log:
+		print("Après filtration des matches non bijectifs :", len(match_list))
+		plot([item[0][3] for item in match_list], [item[1][3] for item in match_list], label="(1) par bijection")
 
 	match_list, smooth_removed = filter_smooth(match_list)
-	print("Après filtration par lissage :", len(match_list))
-	plot([item[0][3] for item in match_list], [item[1][3] for item in match_list], label="(2) par lissage")
+	if log:
+		print("Après filtration par lissage :", len(match_list))
+		plot([item[0][3] for item in match_list], [item[1][3] for item in match_list], label="(2) par lissage")
 
 	match_list, per_par_removed = filter_per_par(match_list)
-	print("Après filtration par paragraphe croissant :", len(match_list))
-	plot([item[0][3] for item in match_list], [item[1][3] for item in match_list], label="(3) par paragraphe croissant")
-	title("Alignement après filtration (1), (2) puis (3)")
-	xlabel("Indice de mot anglais")
-	ylabel("Indice de mot français")
-	legend()
-	show()
-	#plot([item[0][2] for item in match_list], [item[1][2] for item in match_list])
-	#plot([item[0][2] for item in smooth_match_list], [item[1][2] for item in smooth_match_list])
-	#show()
-	#plot([item[0][0][0] for item in match_list], [item[1][0][0] for item in match_list])
-	#plot([item[0][0][0] for item in smooth_match_list], [item[1][0][0] for item in smooth_match_list])
-	#show()
+	if log:
+		print("Après filtration par paragraphe croissant :", len(match_list))
+		plot([item[0][3] for item in match_list], [item[1][3] for item in match_list], label="(3) par paragraphe croissant")
+		title("Alignement après filtration (1), (2) puis (3)")
+		xlabel("Indice de mot anglais")
+		ylabel("Indice de mot français")
+		legend()
+		show()
 
-	print("Non bijective matches removed")
-	for match in non_bijective_removed:
-		print(en_clean_text[match[0][0][0]][match[0][0][1]][match[0][0][2]], "|", fr_clean_text[match[1][0][0]][match[1][0][1]][match[1][0][2]])
-	print("Smooth removed")
-	for match in smooth_removed:
-		print(en_clean_text[match[0][0][0]][match[0][0][1]][match[0][0][2]], "|", fr_clean_text[match[1][0][0]][match[1][0][1]][match[1][0][2]])
-	print("Per par removed")
-	for match in per_par_removed:
-		print(en_clean_text[match[0][0][0]][match[0][0][1]][match[0][0][2]], "|", fr_clean_text[match[1][0][0]][match[1][0][1]][match[1][0][2]])
+	if log:
+		print("Non bijective matches removed")
+		for match in non_bijective_removed:
+			print(en_clean_text[match[0][0][0]][match[0][0][1]][match[0][0][2]], "|", fr_clean_text[match[1][0][0]][match[1][0][1]][match[1][0][2]])
+		print("Smooth removed")
+		for match in smooth_removed:
+			print(en_clean_text[match[0][0][0]][match[0][0][1]][match[0][0][2]], "|", fr_clean_text[match[1][0][0]][match[1][0][1]][match[1][0][2]])
+		print("Per par removed")
+		for match in per_par_removed:
+			print(en_clean_text[match[0][0][0]][match[0][0][1]][match[0][0][2]], "|", fr_clean_text[match[1][0][0]][match[1][0][1]][match[1][0][2]])
 
 def zipf_curve(freq_ranking, nb_words, label, show=True):
 	freqs = [freq_ranking[0][1]]
@@ -346,7 +311,6 @@ def zipf_curve(freq_ranking, nb_words, label, show=True):
 		else:
 			freqs.append(freq)
 			zipf_law.append(1)
-	# print(sum([freqs[i]*zipf_law[i]**2 for i in range(len(freqs))])/len(freqs))
 	nb_occurs = [freq*nb_words for freq in freqs]
 	if show:
 		line = plot(nb_occurs, zipf_law, label=label)
@@ -367,10 +331,10 @@ def draw_occurences_chart(en_freq_ranking, fr_freq_ranking, en_nb_words, fr_nb_w
 	ylim(0, 100)
 	show()
 
-def apply_IBM(match_list, en_clean_text, fr_clean_text):
+def apply_IBM(match_list, en_clean_text, fr_clean_text, log=False):
 	corpus_IBM2 = []
 	for match in match_list[:4]:
-		if (en_clean_text[match[0][0][0]][match[0][0][1]], fr_clean_text[match[1][0][0]][match[1][0][1]]) not in corpus_IBM2:	
+		if (en_clean_text[match[0][0][0]][match[0][0][1]], fr_clean_text[match[1][0][0]][match[1][0][1]]) not in corpus_IBM2:
 			corpus_IBM2.append((en_clean_text[match[0][0][0]][match[0][0][1]], fr_clean_text[match[1][0][0]][match[1][0][1]]))
 	t_IBM2, a_IBM2 = _train_IBM2(corpus_IBM2, loop_count=1000)
 
@@ -382,84 +346,5 @@ def apply_IBM(match_list, en_clean_text, fr_clean_text):
 		m = len(es)
 		n = len(fs)
 		args = (es, fs, t_IBM2, a_IBM2)
-		print(show_matrix(*args))
-
-def bisect_match(en_clean_text, fr_clean_text):
-	pass
-
-def main(instance):
-	en_original_text, en_clean_text = read_file(instance, "en")
-	en_word_indices, en_recency_vect, en_word_freq, en_freq_ranking, en_nb_words, en_nb_sen = parse(en_clean_text)
-	print("Longueur du texte {} ({}): {} mots.".format(instance, "en", en_nb_words))
-	print("Nombres de mots différents : {}.".format(len(en_word_indices)))
-	fr_original_text, fr_clean_text = read_file(instance, "fr")
-	fr_word_indices, fr_recency_vect, fr_word_freq, fr_freq_ranking, fr_nb_words, fr_nb_sen = parse(fr_clean_text)
-	print("Longueur du texte {} ({}): {} mots.".format(instance, "fr", fr_nb_words))
-	print("Nombres de mots différents : {}.".format(len(fr_word_indices)))
-
-	#bisect_match()
-
-	#draw_occurences_chart(en_freq_ranking, fr_freq_ranking, en_nb_words, fr_nb_words)
-
-	#compare_recency("but", "mais", en_recency_vect["but"], fr_recency_vect["mais"])
-	#dtw("but", "mais", en_recency_vect["but"], fr_recency_vect["mais"], en_word_freq["but"], infty, True)
-
-	#compare_recency("cat", "chat", en_recency_vect["cat"], fr_recency_vect["chat"])
-	#dtw("cat", "chat", en_recency_vect["cat"], fr_recency_vect["chat"], en_word_freq["cat"], infty, True)
-	#compare_recency("flowers", "fleurs", en_recency_vect["flowers"], fr_recency_vect["fleurs"])
-	#dtw("flowers", "fleurs", en_recency_vect["flowers"], fr_recency_vect["fleurs"], en_word_freq["flowers"], infty, True, True)
-	#compare_recency("king", "roi", en_recency_vect["king"], fr_recency_vect["roi"])
-	#dtw("king", "roi", en_recency_vect["king"], fr_recency_vect["roi"], en_word_freq["king"], infty, True, True)
-	#compare_recency("prince", "prince", en_recency_vect["prince"], fr_recency_vect["prince"])
-	#dtw("prince", "prince", en_recency_vect["prince"], fr_recency_vect["prince"], en_word_freq["prince"], infty, True, True)
-	#compare_recency("why", "pourquoi", en_recency_vect["why"], fr_recency_vect["pourquoi"])
-	#dtw("why", "pourquoi", en_recency_vect["why"], fr_recency_vect["pourquoi"], en_word_freq["why"], infty, True, True)
-	#print(dtw("!", "!", en_word_freq["!"]))
-
-	threshold, match_list, idx_freq_min, idx_freq_max, bound_inf, bound_sup = estimate_threshold(en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, en_nb_words, BOOTSTRAP_FREQ)
-	for match in match_list:
-		print(en_clean_text[match[0][0][0]][match[0][0][1]][match[0][0][2]], "|", fr_clean_text[match[1][0][0]][match[1][0][1]][match[1][0][2]], "(", match[3], "):", match[2])
-	matching_layer(threshold, match_list, en_freq_ranking[idx_freq_min: idx_freq_max+1], fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, bound_inf, bound_sup)
-	print("Nombre de phrases en anglais :", en_nb_sen)
-	print("Nombre de phrases en français :", fr_nb_sen)
-	filtration_layer(match_list, en_clean_text, fr_clean_text)
-
-	light_match_list = [match_list[0]]
-	for match in match_list[1:]:
-		if match[0][2] != light_match_list[-1][0][2]:
-			light_match_list.append(match)
-
-	for match in light_match_list:
-		print(en_original_text[match[0][0][0]][match[0][0][1]])
-		print(fr_original_text[match[1][0][0]][match[1][0][1]])
-		print("\n")
-
-	#apply_IBM(match_list)
-
-
-main("le-petit-prince--antoine-de-saint-exupery")
-# main("bible")
-# main("pinocchio")
-
-
-# TODO
-# Cognat avec inflexions : distance de Levenshtein, distance de Jaro-Winkler, virer n't  ou tout mot avec '
-# tester dtw de l'article
-# aligner sur ponctuation
-# générer lists de par, phrases
-# tester algo Victoriya / Nada
-# tester sur la bible et pinocchio
-
-#dans le formulaire
-#alignement paragraphe par paragraphe
-#alignement phrase par phrase
-#séparateur de paragraphe et phrase
-
-# portugais, YT, Illuin
-
-# dtw en c++ avec multiprocessing sur Leviathan
-# appliqué dtw localement avec MIN_OCCUR plus le-petit-prince--antoine-de-saint-exupery
-# aligner
-
-# we can  keep only duplicate match to filter
-# bisect filter
+		if log:
+			print(show_matrix(*args))

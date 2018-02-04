@@ -1,0 +1,6 @@
+**/__pycache__
+**/*.pyc
+
+# Pypi
+dist/
+ENPC_Aligner.egg-info/

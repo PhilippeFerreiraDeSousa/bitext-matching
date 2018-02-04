@@ -1,6 +1,10 @@
 # Bitext-matching
 Mise en correspondance de bitextes dans des langues différentes
 
+## Alignment algorithms
+
+See Pypi's ENPC-Aligner documentation [here](/lib/README.md)
+
 ## Support ressources
 - Html : https://www.w3schools.com/html/
 - CSS : https://www.w3schools.com/css/
@@ -144,28 +148,6 @@ A React app has routes/components that can use several React plugins. Without co
 
 ### Add SASS preprocessing
 https://www.youtube.com/watch?v=tWp0oxbzZ3s
-
-
-## Texts sources
-
-* Bible
-  * fr : http://godieu.com/doc/telechargement.html (Bible Jean Frédéric Ostervald 1996)
-  * en : http://www.truth.info/download/bible.htm (King James Bible also known as the Authorised Version)
-* Le petit prince
-  * fr : http://lepetitprinceexupery.free.fr/telecharger/le-petit-prince--antoine-de-saint-exupery.txt
-  * en : https://www.odaha.com/antoine-de-saint-exupery/maly-princ/the-little-prince
-En 20 langues : http://www.malyksiaze.net/us/ksiazka
-* Pinocchio :
-  * fr : https://www.ebooksgratuits.com/pdf/collodi_pinocchio.pdf
-  * en : http://www.gutenberg.org/files/500/500-0.txt
-
-## Alignment algorithms
-
-### Dynamic Text Wrapping
-
-### IBM Model 2
-
-### Algo Victoriya
 
 ## Run optimized version for production
 

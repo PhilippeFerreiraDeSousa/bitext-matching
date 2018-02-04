@@ -35,7 +35,7 @@ class tableau {
 		assert(0 <= i && i < nb_rows && 0 <= j && j < nb_cols);
 		return _weight[j+m*i];
 	}
-	float& antecedants(int i, int j) {
+	float& ancestors(int i, int j) {
 		assert(0 <= i && i < nb_rows && 0 <= j && j < nb_cols);
 		return _ancestor[j+m*i];
 	}

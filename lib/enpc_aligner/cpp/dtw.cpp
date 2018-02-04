@@ -1,3 +1,9 @@
+/***********************************************************************************
+ * Basic bitext alignment algorithm implementations                                *
+ *                                                                                 *
+ * Authors: Philippe Ferreira De Sousa, Victoriya Kashtanova, Nada Soussi (c) 2017 *
+ ***********************************************************************************/
+
 #include <limits>
 #include <cmath>
 #include "dtw.h"
@@ -53,7 +59,7 @@ float dtw(const vector& rec1, const vector& rec2, float freq, threshold) {
 	/////////////////////////////////	A convertir / merge
 		while backtracking[-1] != (-1, -1):
 			#print(backtracking[-1])
-			backtracking.append((warp_antecedant[0][backtracking[-1]], warp_antecedant[1][backtracking[-1]]))
+			backtracking.append((warp_ancestor[0][backtracking[-1]], warp_ancestor[1][backtracking[-1]]))
 		backtracking.reverse()
 		print(word1, "|", word2, "(", freq, "):", value)
 		if graph:

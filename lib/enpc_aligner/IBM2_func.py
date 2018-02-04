@@ -8,7 +8,7 @@ import collections
 import decimal
 from decimal import Decimal as D
 
-from IBM1_func import _train_IBM1
+from enpc_aligner.IBM1_func import _train_IBM1
 
 class _keydefaultdict(collections.defaultdict): ## like map in C++
     '''define a local function for uniform probability initialization'''
@@ -47,7 +47,7 @@ def _train_IBM2(corpus, loop_count=1000):
         for (es, fs) in corpus:
             l_e = len(es)
             l_f = len(fs)
-            
+
             # compute normalization
             for (j, e) in enumerate(es, 1):
                 s_total[e] = 0
@@ -73,8 +73,8 @@ def _train_IBM2(corpus, loop_count=1000):
         for (i, j, l_e, l_f) in count_a.keys():
             a[(i, j, l_e, l_f)] = count_a[(i, j, l_e, l_f)] / \
                 total_a[(j, l_e, l_f)]
-    
-    return (t, a) 
+
+    return (t, a)
 
 
 def train_IBM2(sentences, loop_count=1000):
@@ -128,7 +128,7 @@ def matrix(
             else:
                 fmt += " |"
         fmt += "\n"
-    return fmt 
+    return fmt
 
 def show_matrix(es, fs, t, a):
     '''
@@ -141,51 +141,49 @@ def show_matrix(es, fs, t, a):
      | | |x| |
      -------------
     '''
-    
+
     max_a = viterbi_alignment(es, fs, t, a).items()
     m = len(es)
     n = len(fs)
     return matrix(m, n, max_a, es, fs)
-  
+
 ### ---------------------------------------------------------------------- ###
-    
+
 if __name__ == '__main__':
-    
-   
+
+
    sentences = [("Je suis un homme", "I am a man"),
               ("Je suis une fille", "I am a girl"),
               ("Je suis enseignant", "I am a teacher"),
               ("Elle est enseignante", "She is a teacher"),
               ("Il est enseignant", "He is a teacher"),
              ]
-   
+
    text_1 = ["Je suis un homme", "Je suis une fille",
             "Je suis enseignant","Elle est enseignante",
             "Il est enseignant"]
-   
-   text_2 = [ "I am a man", "I am a girl", "I am a teacher", 
+
+   text_2 = [ "I am a man", "I am a girl", "I am a teacher",
              "She is a teacher", "He is a teacher"]
-   
+
    sen_1 = [sentences[0], sentences [1]]
    sen_2 = [sentences[3], sentences [4], sentences [2]]
-   
-          
-   t_IBM2, a_IBM2 = train_IBM2(sentences, loop_count=1000) 
+
+
+   t_IBM2, a_IBM2 = train_IBM2(sentences, loop_count=1000)
    # a_IBM2 (номер слова в предложении fs, номер слова в предложении es, \
    #         len(es), len(fs))
    corpus_IBM2 = [(es.split(), fs.split()) for (es, fs) in sentences]
-   
+
    len(t_IBM2)
    len(a_IBM2)
-   
-   # нужно создать функцию 
+
+   # нужно создать функцию
    # IBM2(text_1_sep, text_2_sep, 1000, t_IBM1_sep, type ='normalise')
-    
+
    for (es, fs) in corpus_IBM2:
        #max_a = viterbi_alignment(es, fs, t_IBM2, a_IBM2).items()
        m = len(es)
        n = len(fs)
        args = (es, fs, t_IBM2, a_IBM2)
        print(show_matrix(*args))
-
-    

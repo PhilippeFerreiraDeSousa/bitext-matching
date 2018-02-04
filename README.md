@@ -71,18 +71,16 @@ python manage.py runserver
 Go to http://localhost:8000/graphiql and query for
 ```
 {
-  allCategories {
-    id
-    name
-    ingredients {
-      id
-      name
+  bitexts {
+    title
+    texts {
+      language
+      paragraphs {
+        sentences {
+          content
+        }
+      }
     }
-  }
-  links {
-    id
-    description
-    url
   }
 }
 ```
@@ -239,17 +237,16 @@ This will setup all the required files and you can use apachectl to start and st
 ## Images
 - Error page : https://pixabay.com/en/error-404-page-was-not-found-news-1349562/
 
-## Components (to do)
-- React spinkits : https://github.com/KyleAMathews/react-spinkit
+## Components
+- React spinkits : https://github.com/KyleAMathews/react-spinkit (TODO)
 - Semantic UI React : https://react.semantic-ui.com
 
 ## Tester
 
-http://delorean.fdesousa.fr:8000/graphiql?query={%20%20allCategories%20{%20%20%20%20id%20%20%20%20name%20%20%20%20ingredients%20{%20%20%20%20%20%20id%20%20%20%20%20%20name%20%20%20%20}%20%20}%20%20links%20{%20%20%20%20id%20%20%20%20description%20%20%20%20url%20%20}}&operationName=null&variables=null
+http://delorean.fdesousa.fr:8000/graphiql?query={bitexts{title texts{language paragraphs{sentences {content}}}}}
 http://delorean.fdesousa.fr:8000/admin
 http://alignment.fdesousa.fr
 
 ## TODO :
-- https://github.com/pdfminer/pdfminer.six
 - https://github.com/gaearon/redux-devtools
 - React redux saga : https://scotch.io/tutorials/build-a-media-library-with-react-redux-and-redux-saga-part-1

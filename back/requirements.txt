@@ -4,3 +4,4 @@ graphene-django
 django-filter
 django-cors-headers
 uwsgi	# pas mod_wsgi plutot ?
+ENPC-Aligner

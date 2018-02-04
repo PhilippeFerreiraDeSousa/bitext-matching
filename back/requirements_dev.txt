@@ -7,3 +7,4 @@ pytest-django
 pytest-cov
 mixer
 django-cors-headers
+ENPC-Aligner

@@ -18,7 +18,7 @@ virtualenv venv
 source venv/bin/activate
 pip3 install -r requirements_dev.txt
 python manage.py migrate
-python manage.py loaddata links ingredients
+python manage.py loaddata bitexts
 python manage.py runserver
 
 cd ../front/

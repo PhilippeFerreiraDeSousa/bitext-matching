@@ -217,34 +217,35 @@ def filter_non_bijective_matches(match_list, en_clean_text, fr_clean_text):
 	return sorted(filtered_match_list, key=lambda x: x[0][3]), removed
 
 def estimate_threshold(en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, en_nb_words, kept_freq):
-	en_nb_different_words = len(en_freq_ranking)
-	fr_nb_different_words = len(fr_freq_ranking)
-	bound_inf, bound_sup = 0, 0
 	match_list = []
-	idx_freq_min, idx_freq_max = 0, en_nb_different_words-1
+	while not match_list:
+		en_nb_different_words = len(en_freq_ranking)
+		fr_nb_different_words = len(fr_freq_ranking)
+		bound_inf, bound_sup = 0, 0
+		idx_freq_min, idx_freq_max = 0, en_nb_different_words-1
 
-	while en_freq_ranking[idx_freq_min][1]*en_nb_words < OCCUR_MIN:	# au moins 4 occurrences 0.00023
-		idx_freq_min+=1
-	while en_freq_ranking[idx_freq_max][1] > FREQ_MAX:
-		idx_freq_max-=1
+		while en_freq_ranking[idx_freq_min][1]*en_nb_words < OCCUR_MIN:	# au moins 4 occurrences 0.00023
+			idx_freq_min+=1
+		while en_freq_ranking[idx_freq_max][1] > FREQ_MAX:
+			idx_freq_max-=1
 
-	while idx_freq_min <= idx_freq_max:
-		en_word, freq = en_freq_ranking[idx_freq_min]
-		idx_freq_min+=1
-		if freq*en_nb_words > OCCUR_MIN:
-			break
-		while bound_inf < fr_nb_different_words-1 and fr_freq_ranking[bound_inf][1] < freq/FREQ_RATIO:
-			bound_inf+=1
-		while bound_sup < fr_nb_different_words-1 and fr_freq_ranking[bound_sup][1] <= freq*FREQ_RATIO:
-			bound_sup+=1
-		for idx in range(bound_inf, bound_sup):
-			fr_word = fr_freq_ranking[idx][0]
-			value, path = dtw(en_word, fr_word, en_recency_vect[en_word], fr_recency_vect[fr_word], freq, BEGINNING_THRESHOLD)
-			if path:
-				for match in path:
-					match_list.append((en_word_indices[en_word][match[0]], fr_word_indices[fr_word][match[1]], value, freq))
-	match_list.sort(key=itemgetter(2))
-	match_list = match_list[:min(len(match_list), ceil(en_nb_words*kept_freq))]	# calibrer pour garder les 16 meilleures matches parmis les mots de 4 lettres pour ce texte de 16 000 mots
+		while idx_freq_min <= idx_freq_max:
+			en_word, freq = en_freq_ranking[idx_freq_min]
+			idx_freq_min+=1
+			if freq*en_nb_words > OCCUR_MIN:
+				break
+			while bound_inf < fr_nb_different_words-1 and fr_freq_ranking[bound_inf][1] < freq/FREQ_RATIO:
+				bound_inf+=1
+			while bound_sup < fr_nb_different_words-1 and fr_freq_ranking[bound_sup][1] <= freq*FREQ_RATIO:
+				bound_sup+=1
+			for idx in range(bound_inf, bound_sup):
+				fr_word = fr_freq_ranking[idx][0]
+				value, path = dtw(en_word, fr_word, en_recency_vect[en_word], fr_recency_vect[fr_word], freq, BEGINNING_THRESHOLD)
+				if path:
+					for match in path:
+						match_list.append((en_word_indices[en_word][match[0]], fr_word_indices[fr_word][match[1]], value, freq))
+		match_list.sort(key=itemgetter(2))
+		match_list = match_list[:min(len(match_list), ceil(en_nb_words*kept_freq))]	# calibrer pour garder les 16 meilleures matches parmis les mots de 4 lettres pour ce texte de 16 000 mots
 	threshold = match_list[-1][2]
 	print("THRESHOLD :", threshold)
 	return threshold, match_list, idx_freq_min, idx_freq_max, bound_inf, bound_sup
@@ -375,7 +376,6 @@ def align_paragraphs(en_clean_text, fr_clean_text):
 
 	clustered_aligned_par = [([aligned_paragraphs[0][0]], [aligned_paragraphs[0][1]])]
 	for idx in range(1, len(aligned_paragraphs)):
-		print(aligned_paragraphs[idx][1])
 		if aligned_paragraphs[idx][1] != aligned_paragraphs[idx-1][1]:
 			clustered_aligned_par.append(([aligned_paragraphs[idx][0]], [id for id in range(aligned_paragraphs[idx-1][1]+1, aligned_paragraphs[idx][1]+1)]))
 		elif aligned_paragraphs[idx][0] != aligned_paragraphs[idx-1][0]:

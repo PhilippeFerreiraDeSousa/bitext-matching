@@ -57,8 +57,8 @@ class AlignerResponse extends Component {
 }
 
 const ALIGNMENT = gql`
-  query alignment {
-    alignments(bitextId:1) {
+  query alignment($bitextId: ID!) {
+    alignments(bitextId: $bitextId) {
       id
       paragraphs {
         id
@@ -76,5 +76,7 @@ const ALIGNMENT = gql`
 
 export default graphql(ALIGNMENT, {
   name: 'alignmentQuery',
-  options: { pollInterval: 5000 }
+  options: ({ bitextId }) => ({
+    variables: { bitextId }
+  })
 }) (AlignerResponse)

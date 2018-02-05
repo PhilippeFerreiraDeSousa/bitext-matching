@@ -1,7 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 
-from core.models import Bitext, Text, Paragraph, Sentence, Alignment
+from core.models import Bitext, Text, Paragraph, Sentence, Alignment, Translation
 from enpc_aligner.dtw import *
 
 
@@ -25,10 +25,15 @@ class AlignmentType(DjangoObjectType):
     class Meta:
         model = Alignment
 
+class TranslationType(DjangoObjectType):
+    class Meta:
+        model = Translation
+
 class Query(object):
     bitext = graphene.Field(BitextType, id=graphene.Int(), name=graphene.String())
     all_bitexts = graphene.List(BitextType)
     alignments = graphene.List(AlignmentType, bitext_id=graphene.Int())
+    translations = graphene.List(TranslationType, bitext_id=graphene.Int())
 
     def resolve_all_bitexts(self, info, **kwargs):
         return Bitext.objects.all()
@@ -65,6 +70,10 @@ class Query(object):
         bitext_id = kwargs.get('bitext_id')
         return Alignment.objects.filter(bitext_id=bitext_id).order_by('id_alignment')   # bitext_id : on peut filtrer sur l'id d'une clef étrangère !
 
+    def resolve_alignments(self, info, **kwargs):
+        bitext_id = kwargs.get('bitext_id')
+        return Translation.objects.filter(bitext_id=bitext_id).order_by('score')
+
 class CreateBitext(graphene.Mutation):
     id = graphene.Int()
     french = graphene.String()
@@ -77,27 +86,34 @@ class CreateBitext(graphene.Mutation):
     def mutate(self, info, french, english):
         bitext = Bitext.objects.create()
 
-        fr_original_text, fr_clean_text = parse(french)
-        fr_text = Text.objects.create(language="french", bitext=bitext)
-
-        en_original_text, en_clean_text = parse(english)
+        en_original_text, en_clean_text = parse(english, "en")
         en_text = Text.objects.create(language="english", bitext=bitext)
 
-        alignments, translations = align_paragraphs(en_clean_text, fr_clean_text)
-        for id_alignment, alignment in enumerate(alignments):
-            Alignment.objects.create(bitext=bitext, id_alignment=id_alignment)
-            for en_id_par in alignment[0]:
-                paragraph = Paragraph.objects.create(id_par=en_id_par, text=en_text)
+        fr_original_text, fr_clean_text = parse(french, "fr")
+        fr_text = Text.objects.create(language="french", bitext=bitext)
+
+        alignments, matches = align_paragraphs(en_clean_text, fr_clean_text)
+        for id_alignment, align in enumerate(alignments):
+            alignment = Alignment.objects.create(bitext=bitext, id_alignment=id_alignment)
+            for en_id_par in align[0]:
+                print(en_id_par)
+                paragraph = Paragraph.objects.create(id_par=en_id_par, text=en_text, alignment=alignment)
                 for id_sen, sen in enumerate(en_original_text[en_id_par]):
-                    Sentence.objects.create(id_sen=id_sen, content=sen, paragraph=paragraph)
-            for fr_id_par in alignment[1]:
-                paragraph = Paragraph.objects.create(id_par=fr_id_par, text=fr_text)
+                    Sentence.objects.create(id_sen=id_sen, text=sen, paragraph=paragraph)
+            for fr_id_par in align[1]:
+                print(fr_id_par)
+                paragraph = Paragraph.objects.create(id_par=fr_id_par, text=fr_text, alignment=alignment)
                 for id_sen, sen in enumerate(fr_original_text[fr_id_par]):
-                    Sentence.objects.create(id_sen=id_sen, content=sen, paragraph=paragraph)
+                    Sentence.objects.create(id_sen=id_sen, text=sen, paragraph=paragraph)
 
         return CreateBitext(
             id=bitext.id
         )
+        #for match in matches:
+        #    en_sentence = Sentence.objects.get()
+        #    word_1 = Word.objects.create(text=match[0], sentence=en_sentence)
+        #    word_2 = Word.objects.create(text=match[1])
+        #    Translation.objects.create(bitext=bitext, word_1=word_1, word_2=word_2, score=match[2])
 
 class Mutation(graphene.ObjectType):
     submit_bitext = CreateBitext.Field()

@@ -27,6 +27,11 @@ class AlignerForm extends Component {
         english
       }
     })
+    .then(({ data }) => {
+      this.props.set_bitext(data.id)
+    }).catch((error) => {
+      console.log('there was an error sending the query', error)
+    });
   }
 
   handleSubmit = async () => {
@@ -37,7 +42,6 @@ class AlignerForm extends Component {
     this.setState(({status}) => ({
       status: status.update('loading', () => false)
     }))
-    console.log(this.state)
   }
 
   handleChange = (e, { language, value }) => {
@@ -79,8 +83,6 @@ const SUBMIT_BITEXT_MUTATION = gql`
       english: $english,
     ) {
       id
-      french
-      english
     }
   }
 `

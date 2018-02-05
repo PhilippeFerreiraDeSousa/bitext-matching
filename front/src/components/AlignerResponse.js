@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Form, Message, Segment } from 'semantic-ui-react'
+import { Form, Message, Segment, Grid } from 'semantic-ui-react'
 
 class AlignerResponse extends Component {
 
@@ -18,17 +18,39 @@ class AlignerResponse extends Component {
     }
     return(
       <div>
+        <p>C&#39;est partie !</p>
+        <Grid columns={2} divided='vertically'>
           {alignmentsToRender.map(alignment => (
-            <Segment key={alignment.id}>
-              {alignment.paragraphs.map(paragraph => (
-                <p key={paragraph.id}>
-                  {paragraph.sentences.map(sentence => (
-                    <span>{sentence.text}</span>
-                  ))}
-                </p>
-              ))}
-            </Segment>
+            <Grid.Row>
+              <Grid.Column>
+                <Segment key={alignment.id}>
+                  {alignment.paragraphs.filter(paragraph => paragraph.text.language == 'english')
+                    .map(paragraph => (
+                      <p key={paragraph.id}>
+                        {paragraph.sentences.map(sentence => (
+                          <span key={sentence.id}>{sentence.text} </span>
+                        ))}
+                      </p>
+                    )
+                  )}
+                </Segment>
+              </Grid.Column>
+              <Grid.Column>
+                <Segment key={alignment.id}>
+                  {alignment.paragraphs.filter(paragraph => paragraph.text.language == 'french')
+                    .map(paragraph => (
+                      <p key={paragraph.id}>
+                        {paragraph.sentences.map(sentence => (
+                          <span>{sentence.text} </span>
+                        ))}
+                      </p>
+                    )
+                  )}
+                </Segment>
+              </Grid.Column>
+            </Grid.Row>
           ))}
+        </Grid>
       </div>
     );
   }

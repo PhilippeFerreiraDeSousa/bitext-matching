@@ -71,7 +71,7 @@ python manage.py runserver
 Go to http://localhost:8000/graphiql and query for
 ```
 {
-  bitexts {
+  all_bitexts {
     title
     texts {
       language
@@ -243,7 +243,7 @@ This will setup all the required files and you can use apachectl to start and st
 
 ## Tester
 
-http://delorean.fdesousa.fr:8000/graphiql?query={bitexts{title texts{language paragraphs{sentences {content}}}}}
+http://delorean.fdesousa.fr:8000/graphiql?query={all_bitexts{title texts{language paragraphs{sentences {content}}}}}
 http://delorean.fdesousa.fr:8000/admin
 http://alignment.fdesousa.fr
 

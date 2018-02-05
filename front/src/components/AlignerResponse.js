@@ -1,71 +1,58 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Form, Message } from 'semantic-ui-react'
+import { Form, Message, Segment } from 'semantic-ui-react'
 
 class AlignerResponse extends Component {
 
   render() {
-    const bitextsToRender = this.props.allDataQuery.bitexts
-    const CategoriesToRender = this.props.allDataQuery.allCategories
+    const alignmentsToRender = this.props.alignmentQuery.alignments
 
-    console.log(bitextsToRender)
-    console.log(CategoriesToRender)
+    console.log(alignmentsToRender)
 
-    if (this.props.allDataQuery && this.props.allDataQuery.loading) {
+    if (this.props.alignmentQuery && this.props.alignmentQuery.loading) {
       return <div>Loading</div>
     }
-    if (this.props.allDataQuery && this.props.allDataQuery.error) {
+    if (this.props.alignmentQuery && this.props.alignmentQuery.error) {
       return <div>Error</div>
     }
     return(
       <div>
-        <ul>
-          {bitextsToRender.map(bitext => (
-            <li key={bitext.id}> Bitext #{bitext.id} :
-              <p>{bitext.french}</p>
-              <p>{bitext.english}</p>
-            </li>
-          ))}
-        </ul>
-        {CategoriesToRender.map(category => (
-          <ul key={category.id}>
-            <li>
-              Catégorie {category.id} <br />
-              Nom : {category.name} <br />
-              Ingrédients :
-              <ul>
-              {category.ingredients.map(ingredient => (
-                <li key={ingredient.id}>{ingredient.name}</li>
+          {alignmentsToRender.map(alignment => (
+            <Segment key={alignment.id}>
+              {alignment.paragraphs.map(paragraph => (
+                <p key={paragraph.id}>
+                  {paragraph.sentences.map(sentence => (
+                    <span>{sentence.text}</span>
+                  ))}
+                </p>
               ))}
-              </ul>
-            </li>
-          </ul>
-        ))}
+            </Segment>
+          ))}
       </div>
     );
   }
 }
 
-const ALL_DATA = gql`
-  query allData {
-    allCategories {
+const ALIGNMENT = gql`
+  query alignment {
+    alignments(bitextId:1) {
       id
-      name
-      ingredients {
+      paragraphs {
         id
-        name
-      }
-    }
-    bitexts {
-      id
-      french
-      english
-    }
+        text {
+          language
+        }
+        sentences {
+          id
+          text
+        }
+    	}
+  	}
   }
 `
 
-export default graphql(ALL_DATA, {
-  name: 'allDataQuery',
+export default graphql(ALIGNMENT, {
+  name: 'alignmentQuery',
   options: { pollInterval: 5000 }
 }) (AlignerResponse)

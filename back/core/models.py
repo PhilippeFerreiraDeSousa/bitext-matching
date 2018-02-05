@@ -20,21 +20,33 @@ class Text(models.Model):
 
     @property
     def content(self):
-        return "\n\n".join(map(str, Paragraph.objects.filter(text=self)))
+        return "\n".join(map(str, Paragraph.objects.filter(text=self)))
+
+class Alignment(models.Model):
+    bitext = models.ForeignKey(Bitext, related_name='alignments', on_delete=models.CASCADE)
+    id_alignment = models.IntegerField()
+
+    def __str__(self):
+        return "{} - {}".format(self.bitext.title, self.id_alignment)
+
+    @property
+    def content(self):
+        return "\n".join(map(str, Paragraph.objects.filter(alignment=self)))
 
 class Paragraph(models.Model):
     text = models.ForeignKey(Text, related_name='paragraphs', on_delete=models.CASCADE)  # enable to call paragraphs: [ParagraphType] as a field of text
     id_par = models.IntegerField()
+    alignment = models.ForeignKey(Alignment, related_name='paragraphs', on_delete=models.CASCADE, null=True)
 
     @property
     def content(self):
-        return "\n".join(map(str, Sentence.objects.filter(paragraph=self)))
+        return " ".join(map(str, Sentence.objects.filter(paragraph=self).order_by('id_sen')))
 
     def __str__(self):
         return self.content
 
 class Sentence(models.Model):
-    content = models.TextField(null=False, blank=False)
+    text = models.TextField(null=False, blank=False)
     paragraph = models.ForeignKey(Paragraph, related_name='sentences', on_delete=models.CASCADE)  # enable to call sentences: [SentenceType] as a field of paragraph
     id_sen = models.IntegerField()
     #id_sen_in_text = models.IntegerField()
@@ -43,8 +55,17 @@ class Sentence(models.Model):
         return self.content
 
 class Word(models.Model):
-    content = models.CharField(max_length=30)
+    text = models.CharField(max_length=30)
     sentence = models.ForeignKey(Sentence, related_name='words', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.content
+
+class Translation(models.Model):
+    bitext = models.ForeignKey(Bitext, related_name='translations', on_delete=models.CASCADE)
+    word_1 = models.ForeignKey(Word, related_name='translations_1', on_delete=models.CASCADE)
+    word_2 = models.ForeignKey(Word, related_name='translations_2', on_delete=models.CASCADE)
+    score = models.IntegerField()
+
+    def __str__(self):
+        return "{} - {} | {} ({})".format(self.bitext.title, self.word_1, self.word_2, self.score)

@@ -8,6 +8,7 @@ class Aligner extends Component {
     return(
       <div>
         <AlignerForm />
+        <br />
         <AlignerResponse />
       </div>
     );

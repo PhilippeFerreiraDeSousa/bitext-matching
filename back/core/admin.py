@@ -6,3 +6,4 @@ admin.site.register(models.Bitext) # For the model to be administered in the adm
 admin.site.register(models.Text)
 admin.site.register(models.Paragraph)
 admin.site.register(models.Sentence)
+admin.site.register(models.Alignment)

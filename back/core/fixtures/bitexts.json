@@ -28,7 +28,8 @@
     "pk": 1,
     "fields": {
       "id_par": 0,
-      "text": 1
+      "text": 1,
+      "alignment": 1
     }
   },
   {
@@ -36,7 +37,8 @@
     "pk": 2,
     "fields": {
       "id_par": 1,
-      "text": 1
+      "text": 1,
+      "alignment": 1
     }
   },
   {
@@ -44,7 +46,8 @@
     "pk": 3,
     "fields": {
       "id_par": 2,
-      "text": 1
+      "text": 1,
+      "alignment": 2
     }
   },
   {
@@ -52,7 +55,8 @@
     "pk": 4,
     "fields": {
       "id_par": 0,
-      "text": 2
+      "text": 2,
+      "alignment": 1
     }
   },
   {
@@ -60,7 +64,8 @@
     "pk": 5,
     "fields": {
       "id_par": 1,
-      "text": 2
+      "text": 2,
+      "alignment": 2
     }
   },
   {
@@ -68,14 +73,15 @@
     "pk": 6,
     "fields": {
       "id_par": 2,
-      "text": 2
+      "text": 2,
+      "alignment": 2
     }
   },
   {
     "model": "core.sentence",
     "fields": {
       "id_sen": 0,
-      "content": "Lorsque j'avais six ans j'ai vu, une fois, une magnifique image, dans un livre sur la Forêt Vierge qui s'appelait \"Histoires Vécues\".",
+      "text": "Lorsque j'avais six ans j'ai vu, une fois, une magnifique image, dans un livre sur la Forêt Vierge qui s'appelait \"Histoires Vécues\".",
       "paragraph": 1
     }
   },
@@ -83,7 +89,7 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 1,
-      "content": "Ça représentait un serpent boa qui avalait un fauve." ,
+      "text": "Ça représentait un serpent boa qui avalait un fauve." ,
       "paragraph": 1
     }
   },
@@ -91,7 +97,7 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 2,
-      "content": "Voilà la copie du dessin." ,
+      "text": "Voilà la copie du dessin." ,
       "paragraph": 1
     }
   },
@@ -99,7 +105,7 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 0,
-      "content": "On disait dans le livre :" ,
+      "text": "On disait dans le livre :" ,
       "paragraph": 2
     }
   },
@@ -107,7 +113,7 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 1,
-      "content": "\"Les serpents boas avalent leur proie tout entière, sans la mâcher." ,
+      "text": "\"Les serpents boas avalent leur proie tout entière, sans la mâcher." ,
       "paragraph": 2
     }
   },
@@ -115,7 +121,7 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 2,
-      "content": "Ensuite ils ne peuvent plus bouger et ils dorment pendant les six mois de leur digestion.\"" ,
+      "text": "Ensuite ils ne peuvent plus bouger et ils dorment pendant les six mois de leur digestion.\"" ,
       "paragraph": 2
     }
   },
@@ -123,7 +129,7 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 0,
-      "content": "J'ai alors beaucoup réfléchi sur les aventures de la jungle et, à mon tour, j'ai réussi, avec un crayon de couleur, à tracer mon premier dessin." ,
+      "text": "J'ai alors beaucoup réfléchi sur les aventures de la jungle et, à mon tour, j'ai réussi, avec un crayon de couleur, à tracer mon premier dessin." ,
       "paragraph": 3
     }
   },
@@ -131,7 +137,7 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 1,
-      "content": "Mon dessin numéro i. Il était comme ça :" ,
+      "text": "Mon dessin numéro i. Il était comme ça :" ,
       "paragraph": 3
     }
   },
@@ -139,7 +145,7 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 0,
-      "content": "Once when I was six years old I saw a magnificent picture in a book, called True Stories from Nature, about the primeval forest." ,
+      "text": "Once when I was six years old I saw a magnificent picture in a book, called True Stories from Nature, about the primeval forest." ,
       "paragraph": 4
     }
   },
@@ -147,7 +153,7 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 1,
-      "content": "It was a picture of a boa constrictor in the act of swallowing an animal." ,
+      "text": "It was a picture of a boa constrictor in the act of swallowing an animal." ,
       "paragraph": 4
     }
   },
@@ -155,7 +161,7 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 2,
-      "content": "Here is a copy of the drawing." ,
+      "text": "Here is a copy of the drawing." ,
       "paragraph": 4
     }
   },
@@ -163,7 +169,7 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 0,
-      "content": "In the book it said:" ,
+      "text": "In the book it said:" ,
       "paragraph": 5
     }
   },
@@ -171,7 +177,7 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 1,
-      "content": "\"Boa constrictors swallow their prey whole, without chewing it." ,
+      "text": "\"Boa constrictors swallow their prey whole, without chewing it." ,
       "paragraph": 5
     }
   },
@@ -179,7 +185,7 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 2,
-      "content": "After that they are not able to move, and they sleep through the six months that they need for digestion.\"" ,
+      "text": "After that they are not able to move, and they sleep through the six months that they need for digestion.\"" ,
       "paragraph": 5
     }
   },
@@ -187,7 +193,7 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 0,
-      "content": "I pondered deeply, then, over the adventures of the jungle." ,
+      "text": "I pondered deeply, then, over the adventures of the jungle." ,
       "paragraph": 6
     }
   },
@@ -195,7 +201,7 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 1,
-      "content": "And after some work with a colored pencil I succeeded in making my first drawing." ,
+      "text": "And after some work with a colored pencil I succeeded in making my first drawing." ,
       "paragraph": 6
     }
   },
@@ -203,7 +209,7 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 2,
-      "content": "My Drawing Number One." ,
+      "text": "My Drawing Number One." ,
       "paragraph": 6
     }
   },
@@ -211,8 +217,24 @@
     "model": "core.sentence",
     "fields": {
       "id_sen": 3,
-      "content": "It looked something like this:" ,
+      "text": "It looked something like this:" ,
       "paragraph": 6
+    }
+  },
+  {
+    "model": "core.alignment",
+    "pk": 1,
+    "fields": {
+      "id_alignment": 0,
+      "bitext": 1
+    }
+  },
+  {
+    "model": "core.alignment",
+    "pk": 2,
+    "fields": {
+      "id_alignment": 1,
+      "bitext": 1
     }
   }
 ]

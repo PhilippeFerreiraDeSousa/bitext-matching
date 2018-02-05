@@ -351,3 +351,34 @@ def apply_IBM(match_list, en_clean_text, fr_clean_text, log=False):
 		args = (es, fs, t_IBM2, a_IBM2)
 		if log:
 			print(show_matrix(*args))
+
+lin_interp = lambda t, a, b, f_a, f_b: f_a+(f_b-f_a)*(t-a)/(b-a)
+
+def align_paragraphs(en_clean_text, fr_clean_text):
+	en_word_indices, en_recency_vect, en_word_freq, en_freq_ranking, en_nb_words, en_nb_sen = process(en_clean_text)
+	fr_word_indices, fr_recency_vect, fr_word_freq, fr_freq_ranking, fr_nb_words, fr_nb_sen = process(fr_clean_text)
+
+	threshold, match_list, idx_freq_min, idx_freq_max, bound_inf, bound_sup = estimate_threshold(en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, en_nb_words, BOOTSTRAP_FREQ)
+	matching_layer(threshold, match_list, en_freq_ranking[idx_freq_min: idx_freq_max+1], fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, bound_inf, bound_sup)
+	filtration_layer(match_list, en_clean_text, fr_clean_text)
+
+	word_matches = [(en_clean_text[match[0][0][0]][match[0][0][1]][match[0][0][2]], fr_clean_text[match[1][0][0]][match[1][0][1]][match[1][0][2]], match[2]) for match in match_list]
+
+	aligned_matches = [(0, 0)]+[(match[0][0][0], match[1][0][0]) for match in match_list]+[(len(en_clean_text)-1, len(fr_clean_text)-1)]
+	aligned_paragraphs = []
+
+	for i in range(1, len(aligned_matches)):
+		aligned_paragraphs.append((aligned_matches[i-1][0], aligned_matches[i-1][1]))
+		for j in range(aligned_matches[i-1][0]+1, aligned_matches[i][0]):
+			aligned_paragraphs.append((j, int(round(lin_interp(j, aligned_matches[i-1][0], aligned_matches[i][0], aligned_matches[i-1][1], aligned_matches[i][1])))))
+	aligned_paragraphs.append((aligned_matches[len(aligned_matches)-1][0], aligned_matches[len(aligned_matches)-1][1]))
+
+	clustered_aligned_par = [([aligned_paragraphs[0][0]], [aligned_paragraphs[0][1]])]
+	for idx in range(1, len(aligned_paragraphs)):
+		print(aligned_paragraphs[idx][1])
+		if aligned_paragraphs[idx][1] != aligned_paragraphs[idx-1][1]:
+			clustered_aligned_par.append(([aligned_paragraphs[idx][0]], [id for id in range(aligned_paragraphs[idx-1][1]+1, aligned_paragraphs[idx][1]+1)]))
+		elif aligned_paragraphs[idx][0] != aligned_paragraphs[idx-1][0]:
+			clustered_aligned_par[-1][0].append(aligned_paragraphs[idx][0])
+
+	return clustered_aligned_par, word_matches

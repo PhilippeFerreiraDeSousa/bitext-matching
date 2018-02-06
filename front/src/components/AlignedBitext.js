@@ -1,82 +1,38 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Form, Message, Segment, Grid } from 'semantic-ui-react'
+import { Dropdown } from 'semantic-ui-react'
 
-class AlignerResponse extends Component {
-
+class BitextList extends Component {
   render() {
-    const alignmentsToRender = this.props.alignmentQuery.alignments
+    const bitextsToRender = this.props.bitextQuery.allBitexts
 
-    console.log(alignmentsToRender)
+    console.log(bitextsToRender)
 
-    if (this.props.alignmentQuery && this.props.alignmentQuery.loading) {
+    if (this.props.bitextQuery && this.props.bitextQuery.loading) {
       return <div>Loading</div>
     }
-    if (this.props.alignmentQuery && this.props.alignmentQuery.error) {
+    if (this.props.bitextQuery && this.props.bitextQuery.error) {
       return <div>Error</div>
     }
+    const countryOptions = bitextsToRender.map(bitext => ({key: bitext.id, value: bitext.id, text: bitext.title+(bitext.author ? ' - '+bitext.author : '')}) )
     return(
-      <div>
-        <p>C&#39;est partie !</p>
-        <Grid columns={2} divided='vertically'>
-          {alignmentsToRender.map(alignment => (
-            <Grid.Row>
-              <Grid.Column>
-                <Segment key={alignment.id}>
-                  {alignment.paragraphs.filter(paragraph => paragraph.text.language == 'english')
-                    .map(paragraph => (
-                      <p key={paragraph.id}>
-                        {paragraph.sentences.map(sentence => (
-                          <span key={sentence.id}>{sentence.text} </span>
-                        ))}
-                      </p>
-                    )
-                  )}
-                </Segment>
-              </Grid.Column>
-              <Grid.Column>
-                <Segment key={alignment.id}>
-                  {alignment.paragraphs.filter(paragraph => paragraph.text.language == 'french')
-                    .map(paragraph => (
-                      <p key={paragraph.id}>
-                        {paragraph.sentences.map(sentence => (
-                          <span>{sentence.text} </span>
-                        ))}
-                      </p>
-                    )
-                  )}
-                </Segment>
-              </Grid.Column>
-            </Grid.Row>
-          ))}
-        </Grid>
-      </div>
+      <Dropdown placeholder='Select bitext' fluid search selection options={countryOptions} />
     );
   }
 }
 
-const ALIGNMENT = gql`
-  query alignment($bitextId: Int!) {
-    alignments(bitextId: $bitextId) {
+const BITEXTS = gql`
+  query bitexts {
+    allBitexts {
       id
-      paragraphs {
-        id
-        text {
-          language
-        }
-        sentences {
-          id
-          text
-        }
-    	}
+      title
+      author
   	}
   }
 `
 
-export default graphql(ALIGNMENT, {
-  name: 'alignmentQuery',
-  options: ({ bitextId }) => ({
-    variables: { bitextId }
-  })
-}) (AlignerResponse)
+export default graphql(BITEXTS, {
+  name: 'bitextQuery',
+  options: { pollInterval: 5000 }
+}) (BitextList)

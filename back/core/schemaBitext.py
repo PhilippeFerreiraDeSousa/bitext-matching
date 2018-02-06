@@ -78,13 +78,17 @@ class CreateBitext(graphene.Mutation):
     id = graphene.Int()
     french = graphene.String()
     english = graphene.String()
+    title = graphene.String()
+    author = graphene.String()
 
     class Arguments:
         french = graphene.String()
         english = graphene.String()
+        title = graphene.String()
+        author = graphene.String()
 
-    def mutate(self, info, french, english):
-        bitext = Bitext.objects.create()
+    def mutate(self, info, french, english, title, author):
+        bitext = Bitext.objects.create(title=title, author=author)
 
         en_original_text, en_clean_text = parse(english, "en")
         en_text = Text.objects.create(language="english", bitext=bitext)

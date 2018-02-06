@@ -218,13 +218,14 @@ def filter_non_bijective_matches(match_list, en_clean_text, fr_clean_text):
 
 def estimate_threshold(en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, en_nb_words, kept_freq):
 	match_list = []
-	while not match_list:
+	occur_min = OCCUR_MIN
+	while not match_list and occur_min >= 1:
 		en_nb_different_words = len(en_freq_ranking)
 		fr_nb_different_words = len(fr_freq_ranking)
 		bound_inf, bound_sup = 0, 0
 		idx_freq_min, idx_freq_max = 0, en_nb_different_words-1
 
-		while en_freq_ranking[idx_freq_min][1]*en_nb_words < OCCUR_MIN:	# au moins 4 occurrences 0.00023
+		while en_freq_ranking[idx_freq_min][1]*en_nb_words < occur_min:	# au moins 4 occurrences 0.00023
 			idx_freq_min+=1
 		while en_freq_ranking[idx_freq_max][1] > FREQ_MAX:
 			idx_freq_max-=1
@@ -232,7 +233,7 @@ def estimate_threshold(en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_rec
 		while idx_freq_min <= idx_freq_max:
 			en_word, freq = en_freq_ranking[idx_freq_min]
 			idx_freq_min+=1
-			if freq*en_nb_words > OCCUR_MIN:
+			if freq*en_nb_words > occur_min:
 				break
 			while bound_inf < fr_nb_different_words-1 and fr_freq_ranking[bound_inf][1] < freq/FREQ_RATIO:
 				bound_inf+=1
@@ -246,6 +247,7 @@ def estimate_threshold(en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_rec
 						match_list.append((en_word_indices[en_word][match[0]], fr_word_indices[fr_word][match[1]], value, freq))
 		match_list.sort(key=itemgetter(2))
 		match_list = match_list[:min(len(match_list), ceil(en_nb_words*kept_freq))]	# calibrer pour garder les 16 meilleures matches parmis les mots de 4 lettres pour ce texte de 16 000 mots
+		occur_min-=1
 	threshold = match_list[-1][2]
 	print("THRESHOLD :", threshold)
 	return threshold, match_list, idx_freq_min, idx_freq_max, bound_inf, bound_sup
@@ -363,7 +365,7 @@ def align_paragraphs(en_clean_text, fr_clean_text):
 	matching_layer(threshold, match_list, en_freq_ranking[idx_freq_min: idx_freq_max+1], fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, bound_inf, bound_sup)
 	filtration_layer(match_list, en_clean_text, fr_clean_text)
 
-	word_matches = [(en_clean_text[match[0][0][0]][match[0][0][1]][match[0][0][2]], fr_clean_text[match[1][0][0]][match[1][0][1]][match[1][0][2]], match[2]) for match in match_list]
+	# word_matches = [[(en_clean_text[match[0][0][0]][match[0][0][1]][match[0][0][2]], match[0][0][0], match[0][0][1]), (fr_clean_text[match[1][0][0]][match[1][0][1]][match[1][0][2]]], match[1][0][0], match[1][0][1]), match[2]] for match in match_list]
 
 	aligned_matches = [(0, 0)]+[(match[0][0][0], match[1][0][0]) for match in match_list]+[(len(en_clean_text)-1, len(fr_clean_text)-1)]
 	aligned_paragraphs = []
@@ -381,4 +383,4 @@ def align_paragraphs(en_clean_text, fr_clean_text):
 		elif aligned_paragraphs[idx][0] != aligned_paragraphs[idx-1][0]:
 			clustered_aligned_par[-1][0].append(aligned_paragraphs[idx][0])
 
-	return clustered_aligned_par, word_matches
+	return clustered_aligned_par, match_list

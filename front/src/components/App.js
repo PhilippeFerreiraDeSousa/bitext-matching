@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import Header from './Header'
 import Homepage from './Homepage'
-import Aligner from './Aligner'
+import AppMenu from './AppMenu'
 import NotFound from './NotFound'
 import '../styles/css/App.css'
 
@@ -13,7 +13,7 @@ class App extends Component {
         <Header />
         <Switch>
           <Route exact path='/' component={Homepage}/>
-          <Route exact path='/aligner' component={Aligner}/>
+          <Route exact path='/aligner' component={AppMenu}/>
           <Route path="*" component={NotFound} />
         </Switch>
       </div>

@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
 import AlignerForm from './AlignerForm'
 import AlignerResponse from './AlignerResponse'
-import { Container } from 'semantic-ui-react'
 
 class Aligner extends Component {
   constructor() {
     super();
     this.state = {
-      bitextId: null
+      bitextId: null,
     }
   }
-  set_bitext(id) {
+
+  set_bitext = (id) => {
     this.setState({
       bitextId: id
     })
@@ -19,12 +19,12 @@ class Aligner extends Component {
 
   render() {
     return(
-      <Container className='App-body'>
+      <div>
         <AlignerForm set_bitext={this.set_bitext}/>
         <br />
         { this.state.bitextId ? <AlignerResponse bitextId={this.state.bitextId} /> : null }
-      </Container>
-    );
+      </div>
+    )
   }
 }
 

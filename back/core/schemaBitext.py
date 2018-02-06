@@ -110,9 +110,15 @@ class CreateBitext(graphene.Mutation):
             id=bitext.id
         )
         #for match in matches:
-        #    en_sentence = Sentence.objects.get()
-        #    word_1 = Word.objects.create(text=match[0], sentence=en_sentence)
-        #    word_2 = Word.objects.create(text=match[1])
+        #    word_1 = Word.objects.get(text=match[0][0])
+        #    if not word_1:
+        #        word_1 = Word.objects.create(text=match[0][0], language="english")
+        #    word_1.sentences.add()
+
+        #    word_2 = Word.objects.get(text=match[1][0])
+        #    if not word_2:
+        #        word_2 = Word.objects.create(text=match[1][0], language="french")
+        #    word_2.sentences.add()
         #    Translation.objects.create(bitext=bitext, word_1=word_1, word_2=word_2, score=match[2])
 
 class Mutation(graphene.ObjectType):

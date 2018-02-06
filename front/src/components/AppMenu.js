@@ -22,7 +22,7 @@ class AppMenu extends Component {
             active={activeItem === 'aligner'}
             onClick={this.handleItemClick}
           >
-            Aligneur
+            <i class='tasks icon'></i>Aligner
           </Menu.Item>
 
           <Menu.Item
@@ -30,7 +30,7 @@ class AppMenu extends Component {
             active={activeItem === 'aligned'}
             onClick={this.handleItemClick}
           >
-            Bitextes alignés
+            <i class='unhide icon'></i>Aligned bitexts
           </Menu.Item>
 
           <Menu.Item
@@ -38,7 +38,7 @@ class AppMenu extends Component {
             active={activeItem === 'dictionnary'}
             onClick={this.handleItemClick}
           >
-            Dictionnaire
+            <i class='translate icon'></i>Translate
           </Menu.Item>
         </Menu>
         {   this.state.activeItem === 'aligner' ? (

@@ -1,7 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 
-from core.models import Bitext, Text, Paragraph, Sentence, Alignment, Translation
+from core.models import Bitext, Text, Paragraph, Sentence, Alignment, Translation, Word
 from enpc_aligner.dtw import *
 
 
@@ -25,6 +25,10 @@ class AlignmentType(DjangoObjectType):
     class Meta:
         model = Alignment
 
+class WordType(DjangoObjectType):
+    class Meta:
+        model = Word
+
 class TranslationType(DjangoObjectType):
     class Meta:
         model = Translation
@@ -32,11 +36,15 @@ class TranslationType(DjangoObjectType):
 class Query(object):
     bitext = graphene.Field(BitextType, id=graphene.Int(), name=graphene.String())
     all_bitexts = graphene.List(BitextType)
+    all_words = graphene.List(WordType)
     alignments = graphene.List(AlignmentType, bitext_id=graphene.Int())
     translations = graphene.List(TranslationType, bitext_id=graphene.Int())
 
     def resolve_all_bitexts(self, info, **kwargs):
         return Bitext.objects.all()
+
+    def resolve_all_words(self, info, **kwargs):
+        return Word.objects.all()
 
     def resolve_texts(self, info, **kwargs):
         return Text.objects.select_related('bitext').all()
@@ -56,13 +64,13 @@ class Query(object):
 
     def resolve_bitext(self, info, **kwargs):
         id = kwargs.get('id')
-        name = kwargs.get('name')
+        title = kwargs.get('title')
 
         if id is not None:
-            return Category.objects.get(pk=id)
+            return Bitext.objects.get(pk=id)
 
         if title is not None:
-            return Category.objects.get(title=title)
+            return Bitext.objects.get(title=title)
 
         return None
 
@@ -70,7 +78,7 @@ class Query(object):
         bitext_id = kwargs.get('bitext_id')
         return Alignment.objects.filter(bitext_id=bitext_id).order_by('id_alignment')   # bitext_id : on peut filtrer sur l'id d'une clef étrangère !
 
-    def resolve_alignments(self, info, **kwargs):
+    def resolve_translations(self, info, **kwargs):
         bitext_id = kwargs.get('bitext_id')
         return Translation.objects.filter(bitext_id=bitext_id).order_by('score')
 

@@ -11,6 +11,9 @@ class Bitext(models.Model):
     def __str__(self):
         return self.title if self.title else "Sans titre"
 
+    class Meta:
+        ordering = ['creation_date']
+
 class Text(models.Model):
     language = models.CharField(max_length=30)
     bitext = models.ForeignKey(Bitext, related_name='texts', on_delete=models.CASCADE)  # enable to call texts: [TextType] as a field of bitext
@@ -52,24 +55,24 @@ class Paragraph(models.Model):
         ordering = ['id_par']
 
 class Sentence(models.Model):
-    text = models.TextField(null=False, blank=False)
+    content = models.TextField(null=False, blank=False)
     paragraph = models.ForeignKey(Paragraph, related_name='sentences', on_delete=models.CASCADE)  # enable to call sentences: [SentenceType] as a field of paragraph
     id_sen = models.IntegerField()
     #id_sen_in_text = models.IntegerField()
 
     def __str__(self):
-        return self.text
+        return self.content
 
     class Meta:
         ordering = ['id_sen']
 
 class Word(models.Model):
-    text = models.CharField(max_length=30)
+    content = models.CharField(max_length=30)
     sentences = models.ManyToManyField(Sentence)
     language = models.CharField(max_length=30)
 
     def __str__(self):
-        return self.text
+        return self.content
 
 class Translation(models.Model):
     bitext = models.ForeignKey(Bitext, related_name='translations', on_delete=models.CASCADE)

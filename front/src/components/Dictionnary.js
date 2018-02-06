@@ -1,96 +1,53 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Form, Message } from 'semantic-ui-react'
-import { Map } from 'immutable'
+import { Dropdown } from 'semantic-ui-react'
+import WordList from './WordList'
 
-class AlignerForm extends Component {
-  constructor() {
-    super();
-    this.state = {
-      data: Map({
-        title: '',
-        author: '',
-        french: '',
-        english: ''
-      }),
-      status: Map({
-        loading: false
-      })
-    }
+class Dictionnary extends Component {
+  state = {
+    wordId: null
   }
 
-  submitBitext = () => {
-    const french = this.state.data.get('french')
-    const english = this.state.data.get('english')
-    this.props.submitBitextMutation({
-      variables: {
-        french,
-        english
-      }
-    })
-    .then(({ data }) => {
-      this.props.set_bitext(data.submitBitext.id)
-    }).catch((error) => {
-      console.log('there was an error sending the query', error)
+  handleInputChange = (event, { name, value }) => {
+    this.setState({
+        [name]: value
     });
   }
 
-  handleSubmit = async () => {
-    this.setState(({status}) => ({
-      status: status.update('loading', () => true)
-    }))
-    await this.submitBitext()
-    this.setState(({status}) => ({
-      status: status.update('loading', () => false)
-    }))
-  }
-
-  handleChange = (e, { field, value }) => {
-    this.setState(({data}) => ({
-      data: data.update(field, () => value)
-    }))
-  }
-
   render() {
-    const data = this.state.data
-    const status = this.state.status
+    const wordsToRender = this.props.wordQuery.allWords
+    var wordOptions =  []
+
+    console.log(wordsToRender)
+
+    if (this.props.wordQuery && this.props.wordQuery.error) {
+      return <div>Error</div>
+    }
+    if (this.props.wordQuery && !this.props.wordQuery.loading) {
+      wordOptions = wordsToRender.map(word => ({key: word.id, value: word.id, text: word.content+" ("+word.language.substring(0, 2)+")"}) )
+    }
 
     return(
       <div>
-        <Message
-            header="Let's align bitexts !"
-            attached='top'
-        />
-        <Form
-          className='fluid segment attached'
-          onSubmit={this.handleSubmit}
-          loading={status.get('loading')}
-        >
-        <Form.Group widths='equal'>
-            <Form.Input label='Title' placeholder='Le Petit Prince' required field='author' value={data.get('name')} onChange={this.handleChange}/>
-            <Form.Input label='Author' placeholder='Antoine de Saint-Exupéry' field="author" value={data.get('name')} onChange={this.handleChange}/>
-          </Form.Group>
-          <Form.Group widths='equal' onSubmit={this.handleSubmit}>
-            <Form.TextArea label='French text' field='french' required value={data.get('french')} placeholder='Il était une fois...' onChange={this.handleChange}/>
-            <Form.TextArea label='English text' field='english' required value={data.get('english')} placeholder='Once upon a time...' onChange={this.handleChange}/>
-          </Form.Group>
-          <Form.Button primary>Send</Form.Button>
-        </Form>
+        <Dropdown placeholder='Select word' fluid search selection options={wordOptions} onChange={this.handleInputChange} loading={this.props.wordQuery && this.props.wordQuery.loading} />
+        { this.state.wordId ? <WordList wordId={this.state.wordId} /> : null }
       </div>
     );
   }
 }
 
-const SUBMIT_BITEXT_MUTATION = gql`
-  mutation SubmitBitextMutation($french: String!, $english: String!) {
-    submitBitext(
-      french: $french,
-      english: $english,
-    ) {
+const WORDS = gql`
+  query words {
+    allWords {
       id
-    }
+      language
+      content
+  	}
   }
 `
 
-export default graphql(SUBMIT_BITEXT_MUTATION, { name: 'submitBitextMutation' })(AlignerForm)
+export default graphql(WORDS, {
+  name: 'wordQuery',
+  options: { pollInterval: 5000 }
+}) (Dictionnary)

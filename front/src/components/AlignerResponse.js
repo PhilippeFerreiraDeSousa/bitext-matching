@@ -28,7 +28,7 @@ class AlignerResponse extends Component {
                     .map(paragraph => (
                       <p key={paragraph.id}>
                         {paragraph.sentences.map(sentence => (
-                          <span key={sentence.id}>{sentence.text} </span>
+                          <span key={sentence.id}>{sentence.content} </span>
                         ))}
                       </p>
                     )
@@ -41,7 +41,7 @@ class AlignerResponse extends Component {
                     .map(paragraph => (
                       <p key={paragraph.id}>
                         {paragraph.sentences.map(sentence => (
-                          <span>{sentence.text} </span>
+                          <span key={sentence.id}>{sentence.content}</span>
                         ))}
                       </p>
                     )
@@ -76,7 +76,7 @@ const ALIGNMENT = gql`
 
 export default graphql(ALIGNMENT, {
   name: 'alignmentQuery',
-  options: ({ bitextId }) => ({
-    variables: { bitextId }
+  options: ({ bitextId: bitextId }) => ({
+    variables: { bitextId: bitextId }
   })
 }) (AlignerResponse)

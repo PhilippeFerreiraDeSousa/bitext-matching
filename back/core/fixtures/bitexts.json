@@ -39,7 +39,7 @@
     "fields": {
       "id_par": 1,
       "text": 1,
-      "alignment": 1
+      "alignment": 2
     }
   },
   {
@@ -48,7 +48,7 @@
     "fields": {
       "id_par": 2,
       "text": 1,
-      "alignment": 2
+      "alignment": 3
     }
   },
   {
@@ -75,7 +75,7 @@
     "fields": {
       "id_par": 2,
       "text": 2,
-      "alignment": 2
+      "alignment": 3
     }
   },
   {
@@ -253,6 +253,14 @@
     "pk": 2,
     "fields": {
       "id_alignment": 1,
+      "bitext": 1
+    }
+  },
+  {
+    "model": "core.alignment",
+    "pk": 3,
+    "fields": {
+      "id_alignment": 2,
       "bitext": 1
     }
   },

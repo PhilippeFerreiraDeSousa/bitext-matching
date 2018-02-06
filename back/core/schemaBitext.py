@@ -38,7 +38,7 @@ class Query(object):
     all_bitexts = graphene.List(BitextType)
     all_words = graphene.List(WordType)
     alignments = graphene.List(AlignmentType, bitext_id=graphene.Int())
-    translations = graphene.List(TranslationType, bitext_id=graphene.Int())
+    translations = graphene.List(TranslationType, word_id=graphene.Int(), bitext_id=graphene.Int())
 
     def resolve_all_bitexts(self, info, **kwargs):
         return Bitext.objects.all()
@@ -79,8 +79,16 @@ class Query(object):
         return Alignment.objects.filter(bitext_id=bitext_id).order_by('id_alignment')   # bitext_id : on peut filtrer sur l'id d'une clef étrangère !
 
     def resolve_translations(self, info, **kwargs):
+        word_id = kwargs.get('word_id')
         bitext_id = kwargs.get('bitext_id')
-        return Translation.objects.filter(bitext_id=bitext_id).order_by('score')
+
+        if word_id is not None:
+            return Translation.objects.filter(word_1_id=word_id).order_by('score') | Translation.objects.filter(word_2_id=word_id).order_by('score')
+
+        if bitext_id is not None:
+            return Translation.objects.filter(bitext_id=bitext_id).order_by('score')
+
+        return None
 
 class CreateBitext(graphene.Mutation):
     id = graphene.Int()

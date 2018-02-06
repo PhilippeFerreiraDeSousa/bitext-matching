@@ -18,6 +18,7 @@ class Aligner extends Component {
   }
 
   render() {
+    console.log(this.state)
     return(
       <div>
         <AlignerForm set_bitext={this.set_bitext}/>

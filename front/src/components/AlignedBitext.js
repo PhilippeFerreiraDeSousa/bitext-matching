@@ -11,7 +11,7 @@ class AlignedBitext extends Component {
 
   handleInputChange = (event, { name, value }) => {
     this.setState({
-        [name]: value
+        bitextId: value
     });
   }
 

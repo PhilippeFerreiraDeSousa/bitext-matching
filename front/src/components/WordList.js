@@ -1,82 +1,61 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Form, Message, Segment, Grid } from 'semantic-ui-react'
+import {  } from 'semantic-ui-react'
 
-class AlignerResponse extends Component {
+class WordList extends Component {
 
   render() {
-    const alignmentsToRender = this.props.alignmentQuery.alignments
+    const translationsToRender = this.props.translationQuery.translations
+    const language = this.props.language
 
-    console.log(alignmentsToRender)
+    console.log(translationsToRender)
 
-    if (this.props.alignmentQuery && this.props.alignmentQuery.loading) {
+    if (this.props.translationQuery && this.props.translationQuery.loading) {
       return <div>Loading</div>
     }
-    if (this.props.alignmentQuery && this.props.alignmentQuery.error) {
+    if (this.props.translationQuery && this.props.translationQuery.error) {
       return <div>Error</div>
     }
     return(
-      <div>
-        <p>C&#39;est partie !</p>
-        <Grid columns={2} divided='vertically'>
-          {alignmentsToRender.map(alignment => (
-            <Grid.Row>
-              <Grid.Column>
-                <Segment key={alignment.id}>
-                  {alignment.paragraphs.filter(paragraph => paragraph.text.language == 'english')
-                    .map(paragraph => (
-                      <p key={paragraph.id}>
-                        {paragraph.sentences.map(sentence => (
-                          <span key={sentence.id}>{sentence.text} </span>
-                        ))}
-                      </p>
-                    )
-                  )}
-                </Segment>
-              </Grid.Column>
-              <Grid.Column>
-                <Segment key={alignment.id}>
-                  {alignment.paragraphs.filter(paragraph => paragraph.text.language == 'french')
-                    .map(paragraph => (
-                      <p key={paragraph.id}>
-                        {paragraph.sentences.map(sentence => (
-                          <span>{sentence.text} </span>
-                        ))}
-                      </p>
-                    )
-                  )}
-                </Segment>
-              </Grid.Column>
-            </Grid.Row>
-          ))}
-        </Grid>
-      </div>
-    );
+      <ul>
+        { translationsToRender.map( translation => (<li key={translation.id}>{language === 'english' ? translation.word2.content : translation.word1.content }</li>) ) }
+      </ul>
+    )
+
   }
 }
 
-const ALIGNMENT = gql`
-  query alignment($bitextId: Int!) {
-    alignments(bitextId: $bitextId) {
+const TRANSLATIONS = gql`
+  query translations($wordId: Int!) {
+    translations(wordId: $wordId) {
       id
-      paragraphs {
-        id
-        text {
-          language
-        }
+      bitext {
+        title
+        author
+      }
+      word1 {
+        content
         sentences {
           id
           content
         }
-    	}
+      }
+      word2 {
+        content
+        sentences {
+          id
+          content
+        }
+      }
+      score
   	}
   }
 `
 
-export default graphql(ALIGNMENT, {
-  name: 'alignmentQuery',
-  options: ({ bitextId }) => ({
-    variables: { bitextId }
+export default graphql(TRANSLATIONS, {
+  name: 'translationQuery',
+  options: ({ wordId }) => ({
+    variables: { wordId: wordId }
   })
-}) (AlignerResponse)
+}) (WordList)

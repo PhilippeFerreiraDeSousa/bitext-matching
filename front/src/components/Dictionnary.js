@@ -9,10 +9,11 @@ class Dictionnary extends Component {
     wordId: null
   }
 
-  handleInputChange = (event, { name, value }) => {
+  handleInputChange = (event, { value }) => {
     this.setState({
-        [name]: value
-    });
+        wordId: value.id,
+        language: value.language
+    })
   }
 
   render() {
@@ -20,18 +21,19 @@ class Dictionnary extends Component {
     var wordOptions =  []
 
     console.log(wordsToRender)
+    console.log(this.state)
 
     if (this.props.wordQuery && this.props.wordQuery.error) {
       return <div>Error</div>
     }
     if (this.props.wordQuery && !this.props.wordQuery.loading) {
-      wordOptions = wordsToRender.map(word => ({key: word.id, value: word.id, text: word.content+" ("+word.language.substring(0, 2)+")"}) )
+      wordOptions = wordsToRender.map(word => ({key: word.id, value: word, text: word.content+" ("+word.language.substring(0, 2)+")"}) )
     }
 
     return(
       <div>
         <Dropdown placeholder='Select word' fluid search selection options={wordOptions} onChange={this.handleInputChange} loading={this.props.wordQuery && this.props.wordQuery.loading} />
-        { this.state.wordId ? <WordList wordId={this.state.wordId} /> : null }
+        { this.state.wordId ? <WordList wordId={this.state.wordId} language={this.state.language} /> : null }
       </div>
     );
   }

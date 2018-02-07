@@ -31,6 +31,7 @@ class AlignedBitext extends Component {
     return(
       <div>
         <Dropdown placeholder='Select bitext' fluid search selection options={bitextOptions} onChange={this.handleInputChange} loading={this.props.bitextQuery && this.props.bitextQuery.loading} />
+        <br />
         { this.state.bitextId ? <AlignerResponse bitextId={this.state.bitextId} /> : null }
       </div>
     );

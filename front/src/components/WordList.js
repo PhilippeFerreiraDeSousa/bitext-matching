@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import {  } from 'semantic-ui-react'
+import { Grid, Segment } from 'semantic-ui-react'
 
 class WordList extends Component {
 
@@ -19,7 +19,29 @@ class WordList extends Component {
     }
     return(
       <ul>
-        { translationsToRender.map( translation => (<li key={translation.id}>{language === 'english' ? translation.word2.content : translation.word1.content }</li>) ) }
+        { translationsToRender.map( translation => (
+          <li key={translation.id}>
+            <p>{language === 'english' ? translation.word2.content : translation.word1.content }</p>
+            <Grid columns={2} divided='vertically'>
+              <Grid.Row>
+                <Grid.Column>
+                  <Segment>
+                    {translation.word1.sentences.map(sentence => (
+                      <span>{sentence.content}<br /></span>
+                    ))}
+                  </Segment>
+                </Grid.Column>
+                <Grid.Column>
+                  <Segment>
+                    {translation.word2.sentences.map(sentence => (
+                      <span>{sentence.content}<br /></span>
+                    ))}
+                  </Segment>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </li>
+        ))}
       </ul>
     )
 

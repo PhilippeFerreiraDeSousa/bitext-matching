@@ -18,7 +18,6 @@ class AlignerResponse extends Component {
     }
     return(
       <div>
-        <p>C&#39;est partie !</p>
         <Grid columns={2} divided='vertically'>
           {alignmentsToRender.map(alignment => (
             <Grid.Row>

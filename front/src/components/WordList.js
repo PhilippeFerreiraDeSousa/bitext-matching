@@ -26,16 +26,12 @@ class WordList extends Component {
               <Grid.Row>
                 <Grid.Column>
                   <Segment>
-                    {translation.word1.sentences.map(sentence => (
-                      <span>{sentence.content}<br /></span>
-                    ))}
+                    {translation.sentence1.content}
                   </Segment>
                 </Grid.Column>
                 <Grid.Column>
                   <Segment>
-                    {translation.word2.sentences.map(sentence => (
-                      <span>{sentence.content}<br /></span>
-                    ))}
+                    {translation.sentence2.content}
                   </Segment>
                 </Grid.Column>
               </Grid.Row>
@@ -58,17 +54,15 @@ const TRANSLATIONS = gql`
       }
       word1 {
         content
-        sentences {
-          id
-          content
-        }
       }
       word2 {
         content
-        sentences {
-          id
-          content
-        }
+      }
+      sentence1 {
+        content
+      }
+      sentence2 {
+        content
       }
       score
   	}

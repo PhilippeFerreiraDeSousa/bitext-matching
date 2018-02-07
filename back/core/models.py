@@ -58,7 +58,6 @@ class Sentence(models.Model):
     content = models.TextField(null=False, blank=False)
     paragraph = models.ForeignKey(Paragraph, related_name='sentences', on_delete=models.CASCADE)  # enable to call sentences: [SentenceType] as a field of paragraph
     id_sen = models.IntegerField()
-    #id_sen_in_text = models.IntegerField()
 
     def __str__(self):
         return self.content
@@ -68,7 +67,6 @@ class Sentence(models.Model):
 
 class Word(models.Model):
     content = models.CharField(max_length=30)
-    sentences = models.ManyToManyField(Sentence)
     language = models.CharField(max_length=30)
 
     def __str__(self):
@@ -78,6 +76,8 @@ class Translation(models.Model):
     bitext = models.ForeignKey(Bitext, related_name='translations', on_delete=models.CASCADE)
     word_1 = models.ForeignKey(Word, related_name='translations_1', on_delete=models.CASCADE)
     word_2 = models.ForeignKey(Word, related_name='translations_2', on_delete=models.CASCADE)
+    sentence_1 = models.ForeignKey(Sentence, related_name='sentences_1', on_delete=models.CASCADE)
+    sentence_2 = models.ForeignKey(Sentence, related_name='sentences_2', on_delete=models.CASCADE)
     score = models.IntegerField()
 
     def __str__(self):

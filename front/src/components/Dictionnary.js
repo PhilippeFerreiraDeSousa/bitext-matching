@@ -51,5 +51,5 @@ const WORDS = gql`
 
 export default graphql(WORDS, {
   name: 'wordQuery',
-  options: { pollInterval: 5000 }
+  //options: { pollInterval: 5000 }
 }) (Dictionnary)

@@ -269,8 +269,7 @@
     "pk": 1,
     "fields": {
       "language": "english",
-      "content": "drawing",
-      "sentences": [11, 16, 17]
+      "content": "drawing"
     }
   },
   {
@@ -278,8 +277,7 @@
     "pk": 2,
     "fields": {
       "language": "french",
-      "content": "dessin",
-      "sentences": [3, 8]
+      "content": "dessin"
     }
   },
   {
@@ -289,6 +287,20 @@
       "bitext": 1,
       "word_1": 1,
       "word_2": 2,
+      "sentence_1": 3,
+      "sentence_2": 11,
+      "score": 50
+    }
+  },
+  {
+    "model": "core.translation",
+    "pk": 2,
+    "fields": {
+      "bitext": 1,
+      "word_1": 1,
+      "word_2": 2,
+      "sentence_1": 8,
+      "sentence_2": 17,
       "score": 50
     }
   }

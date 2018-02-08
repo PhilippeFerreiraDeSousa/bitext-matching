@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Form, Message } from 'semantic-ui-react'
+import { Form, Message, Flag } from 'semantic-ui-react'
 import { Map } from 'immutable'
 import BitextData from './BitextData'
+import flags from '../parameters/flags'
 
 const languageOptions = [
   {
@@ -42,6 +43,11 @@ const languageOptions = [
     text: 'Italian'
   }
 ]
+
+const options = languageOptions.map( option => ({
+  ...option,
+  text: (<span><Flag name={flags[option.value]} /> {option.text}</span>)
+}))
 
 class AlignerForm extends Component {
   constructor() {
@@ -128,8 +134,8 @@ class AlignerForm extends Component {
             <Form.TextArea label='Second text' field='text2' required value={data.get('text2')} placeholder='Once upon a time...' onChange={this.handleChange}/>
           </Form.Group>
           <Form.Group widths='equal'>
-            <Form.Dropdown placeholder='Select language' field='language1' required search selection options={languageOptions} onChange={this.handleChange} />
-            <Form.Dropdown placeholder='Select language' field='language2' required search selection options={languageOptions} onChange={this.handleChange} />
+            <Form.Dropdown placeholder='Select language' field='language1' required search selection options={options} onChange={this.handleChange} />
+            <Form.Dropdown placeholder='Select language' field='language2' required search selection options={options} onChange={this.handleChange} />
           </Form.Group>
           <Form.Button primary>Send</Form.Button>
         </Form>

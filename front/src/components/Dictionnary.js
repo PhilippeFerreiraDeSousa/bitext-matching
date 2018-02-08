@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Dropdown } from 'semantic-ui-react'
+import { Dropdown, Flag } from 'semantic-ui-react'
 import WordList from './WordList'
+import flags from '../parameters/flags'
 
 class Dictionnary extends Component {
   state = {
@@ -11,8 +12,7 @@ class Dictionnary extends Component {
 
   handleInputChange = (event, { value }) => {
     this.setState({
-        wordId: value.id,
-        language: value.language
+        wordId: value.id
     })
   }
 
@@ -27,13 +27,13 @@ class Dictionnary extends Component {
       return <div>Error</div>
     }
     if (this.props.wordQuery && !this.props.wordQuery.loading) {
-      wordOptions = wordsToRender.map(word => ({key: word.id, value: word, text: word.content+" ("+word.language.substring(0, 2)+")"}) )
+      wordOptions = wordsToRender.map(word => ({key: word.id, value: word, text: (<span><Flag name={flags[word.language]} /> {word.content}</span>) }) )
     }
 
     return(
       <div>
         <Dropdown placeholder='Select word' fluid search selection options={wordOptions} onChange={this.handleInputChange} loading={this.props.wordQuery && this.props.wordQuery.loading} />
-        { this.state.wordId ? <WordList wordId={this.state.wordId} language={this.state.language} /> : null }
+        { this.state.wordId ? <WordList wordId={this.state.wordId} /> : null }
       </div>
     );
   }

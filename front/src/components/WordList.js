@@ -1,7 +1,27 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Grid, Segment, List } from 'semantic-ui-react'
+import { Grid, Segment, List, Flag } from 'semantic-ui-react'
+import flags from '../parameters/flags'
+
+var groupByLanguage = function(xs, wordId) {
+  return xs.reduce(function(rv, x) {
+    if (x.word1.id === wordId ) {
+      var translationWord = 'word2'
+      var translatedWord = 'word1'
+      var translationSentence = 'sentence2'
+      var translatedSentence = 'sentence1'
+    } else {
+      var translationWord = 'word1'
+      var translatedWord = 'word2'
+      var translationSentence = 'sentence1'
+      var translatedSentence = 'sentence2'
+    }
+    (rv[x[translationWord]['content']] = rv[x[translationWord]['content']] || [])
+    .push({ id: x.id, bitext: x.bitext, translationLanguage: x[translationWord].language, translatedSentence: x[translatedSentence], translationSentence: x[translationSentence]})
+    return rv
+  }, {})
+}
 
 var groupBy = function(xs, key1, key2) {
   return xs.reduce(function(rv, x) {
@@ -14,7 +34,7 @@ class WordList extends Component {
 
   render() {
     const translationsToRender = this.props.translationQuery.translations
-    const language = this.props.language
+    const wordId = this.props.wordId
 
     console.log(translationsToRender)
 
@@ -24,15 +44,14 @@ class WordList extends Component {
     if (this.props.translationQuery && this.props.translationQuery.error) {
       return <div>Error</div>
     }
-    const wordList = groupBy(translationsToRender, language === 'english' ? 'word2' : 'word1', 'content')
+    const wordList = groupByLanguage(translationsToRender, wordId)
 
     return(
       <List>
-        { Object.keys(wordList).map( word => (
-          <List.Item>
-            <List.Icon name='arrow right' />
+        { Object.keys(wordList).map((word, idx) => (
+          <List.Item key={idx} >
             <List.Content>
-              <List.Header>{word}</List.Header>
+              <List.Header><Flag name={flags[wordList[word][0].translationLanguage]} />{word}</List.Header>
             </List.Content>
             <List.List>
               {wordList[word].map( translation => (
@@ -46,12 +65,12 @@ class WordList extends Component {
                     <Grid.Row>
                       <Grid.Column>
                         <Segment>
-                          {translation.sentence1.content}
+                          {translation.translatedSentence.content}
                         </Segment>
                       </Grid.Column>
                       <Grid.Column>
                         <Segment>
-                          {translation.sentence2.content}
+                          {translation.translationSentence.content}
                         </Segment>
                       </Grid.Column>
                     </Grid.Row>
@@ -76,10 +95,14 @@ const TRANSLATIONS = gql`
         author
       }
       word1 {
+        id
         content
+        language
       }
       word2 {
+        id
         content
+        language
       }
       sentence1 {
         content
@@ -87,7 +110,6 @@ const TRANSLATIONS = gql`
       sentence2 {
         content
       }
-      score
   	}
   }
 `

@@ -17,7 +17,7 @@ LOG = False
 
 FR_WORD_RE = r"\w+'?"
 EN_WORD_RE = r"'?\w+"
-SENTENCE_RE = r'[^ ]+"?[^\.\?!;:"]+[\.\?!;:"]+'
+SENTENCE_RE = r'[^ ]+"?[^\.\?!;:…"]+[\.\?!;:…"]+'
 PARAGRAPH_RE = r"[^\n]*\w[^\n]*"
 
 def paragraphs(text):

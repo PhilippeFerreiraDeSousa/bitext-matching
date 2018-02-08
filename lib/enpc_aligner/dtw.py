@@ -41,7 +41,7 @@ def print_text(text):
 	print('\n\n'.join(['\n'.join([str(sentence) for sentence in paragraph]) for paragraph in text]))
 
 def parse(text, language):
-	WORD_RE = EN_WORD_RE if language == "en" else FR_WORD_RE
+	WORD_RE = FR_WORD_RE if language == "french" else EN_WORD_RE
 	original_text = [sentences(paragraph) for paragraph in paragraphs(text)]
 	clean_text = [[clean(words(sentence, WORD_RE)) for sentence in paragraph] for paragraph in original_text]
 

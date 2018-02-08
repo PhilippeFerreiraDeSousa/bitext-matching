@@ -1,23 +1,20 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Form, Message, Segment, Grid } from 'semantic-ui-react'
+import { Form, Message, Segment, Grid, Tab } from 'semantic-ui-react'
 
 class AlignerResponse extends Component {
 
   render() {
-    const alignmentsToRender = this.props.alignmentQuery.alignments
+    const alignmentsToRender = this.props.alignmentQuery.alignments || []
 
     console.log(alignmentsToRender)
 
-    if (this.props.alignmentQuery && this.props.alignmentQuery.loading) {
-      return <div>Loading</div>
-    }
     if (this.props.alignmentQuery && this.props.alignmentQuery.error) {
       return <div>Error</div>
     }
     return(
-      <div>
+      <Tab.Pane loading={this.props.alignmentQuery.loading}>
         <Grid columns={2} divided='vertically'>
           {alignmentsToRender.map((alignment, idx) => (
             <Grid.Row key={idx}>
@@ -50,7 +47,7 @@ class AlignerResponse extends Component {
             </Grid.Row>
           ))}
         </Grid>
-      </div>
+      </Tab.Pane>
     );
   }
 }

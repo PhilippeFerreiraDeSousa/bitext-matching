@@ -24,18 +24,12 @@ class Vocabulary extends Component {
   }
 
   render() {
-    const translationsToRender = this.props.translationQuery.translations
+    const translationsToRender = this.props.translationQuery.translations || []
+    const wordList = groupBy(translationsToRender, 'word1', 'content')
     const { activeIndex } = this.state
-
-    console.log(translationsToRender)
 
     if (this.props.translationQuery && this.props.translationQuery.error) {
       return <div>Error</div>
-    }
-    var wordList = {}
-
-    if (this.props.translationQuery && !this.props.translationQuery.loading) {
-      wordList = groupBy(translationsToRender, 'word1', 'content')
     }
 
     return(

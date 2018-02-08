@@ -92,25 +92,27 @@ class Query(object):
 
 class CreateBitext(graphene.Mutation):
     id = graphene.Int()
-    french = graphene.String()
-    english = graphene.String()
+    language_1 = graphene.String()
+    language_2 = graphene.String()
     title = graphene.String()
     author = graphene.String()
 
     class Arguments:
-        french = graphene.String()
-        english = graphene.String()
+        text_1 = graphene.String()
+        text_2 = graphene.String()
+        language_1 = graphene.String()
+        language_2 = graphene.String()
         title = graphene.String()
         author = graphene.String()
 
-    def mutate(self, info, french, english, title, author):
+    def mutate(self, info, text_1, text_2, language_1, language_2, title, author):
         bitext = Bitext.objects.create(title=title, author=author)
 
-        en_original_text, en_clean_text = parse(english, "en")
-        en_text = Text.objects.create(language="english", bitext=bitext)
+        en_original_text, en_clean_text = parse(text_1, language_1)
+        en_text = Text.objects.create(language=language_1, bitext=bitext)
 
-        fr_original_text, fr_clean_text = parse(french, "fr")
-        fr_text = Text.objects.create(language="french", bitext=bitext)
+        fr_original_text, fr_clean_text = parse(text_2, language_2)
+        fr_text = Text.objects.create(language=language_2, bitext=bitext)
 
         alignments, matches = align_paragraphs(en_clean_text, fr_clean_text)
         for id_alignment, align in enumerate(alignments):

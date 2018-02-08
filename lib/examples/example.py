@@ -9,13 +9,13 @@ from numpy import zeros, ones, infty
 from enpc_aligner.dtw import *
 
 def try_example(instance):
-    en_original_text, en_clean_text = read_example(instance, "en")
+    en_original_text, en_clean_text = read_example(instance, "english")
     en_word_indices, en_recency_vect, en_word_freq, en_freq_ranking, en_nb_words, en_nb_sen = process(en_clean_text)
-    print("Longueur du texte {} ({}): {} mots.".format(instance, "en", en_nb_words))
+    print("Longueur du texte {} ({}): {} mots.".format(instance, "english", en_nb_words))
     print("Nombres de mots différents : {}.".format(len(en_word_indices)))
-    fr_original_text, fr_clean_text = read_example(instance, "fr")
+    fr_original_text, fr_clean_text = read_example(instance, "french")
     fr_word_indices, fr_recency_vect, fr_word_freq, fr_freq_ranking, fr_nb_words, fr_nb_sen = process(fr_clean_text)
-    print("Longueur du texte {} ({}): {} mots.".format(instance, "fr", fr_nb_words))
+    print("Longueur du texte {} ({}): {} mots.".format(instance, "french", fr_nb_words))
     print("Nombres de mots différents : {}.".format(len(fr_word_indices)))
 
     draw_occurences_chart(en_freq_ranking, fr_freq_ranking, en_nb_words, fr_nb_words)

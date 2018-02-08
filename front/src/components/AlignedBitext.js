@@ -1,25 +1,13 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Dropdown, Tab } from 'semantic-ui-react'
-import AlignerResponse from './AlignerResponse'
-import Vocabulary from './Vocabulary'
+import { Dropdown } from 'semantic-ui-react'
+import BitextData from './BitextData'
 
 class AlignedBitext extends Component {
   state = {
-    bitextId: null,
+    bitextId: null
   }
-
-  panes = [
-    { menuItem: 'Alignment', render: () => (
-      <Tab.Pane loading={this.loadingAlignment}>
-        <AlignerResponse bitextId={this.state.bitextId}/>
-      </Tab.Pane>
-    )},
-    { menuItem: 'Vocabulary', render: () => (
-      <Vocabulary bitextId={this.state.bitextId}/>
-    )}
-  ]
 
   handleInputChange = (event, { value }) => {
     this.setState({
@@ -35,8 +23,6 @@ class AlignedBitext extends Component {
     //  this.handleLoading('loadingAlignment', false)
     //}
 
-    console.log(bitextsToRender)
-
     if (this.props.bitextQuery && this.props.bitextQuery.error) {
       return <div>Error</div>
     }
@@ -48,7 +34,7 @@ class AlignedBitext extends Component {
       <div>
         <Dropdown placeholder='Select bitext' fluid search selection options={bitextOptions} onChange={this.handleInputChange} loading={this.props.bitextQuery && this.props.bitextQuery.loading} />
         <br />
-        { this.state.bitextId ? <Tab panes={this.panes} /> : null }
+        <BitextData bitextId={this.state.bitextId}/>
       </div>
     );
   }

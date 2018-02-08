@@ -19,8 +19,8 @@ class AlignerResponse extends Component {
     return(
       <div>
         <Grid columns={2} divided='vertically'>
-          {alignmentsToRender.map(alignment => (
-            <Grid.Row>
+          {alignmentsToRender.map((alignment, idx) => (
+            <Grid.Row key={idx}>
               <Grid.Column>
                 <Segment key={alignment.id}>
                   {alignment.paragraphs.filter(paragraph => paragraph.text.language == 'english')

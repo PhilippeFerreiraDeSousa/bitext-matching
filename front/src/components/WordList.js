@@ -40,7 +40,7 @@ class WordList extends Component {
                   <List.Icon name='book' />
                   <List.Content>
                     <List.Header>{translation.bitext.title}</List.Header>
-                    <List.Description>{translation.bitext.author}</List.Description>
+                    <List.Description style={{font: 'caption'}}>{translation.bitext.author}</List.Description>
                   </List.Content>
                   <Grid columns={2} divided='vertically'>
                     <Grid.Row>

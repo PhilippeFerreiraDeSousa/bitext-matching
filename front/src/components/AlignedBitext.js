@@ -7,31 +7,33 @@ import Vocabulary from './Vocabulary'
 
 class AlignedBitext extends Component {
   state = {
-    bitextId: null
+    bitextId: null,
   }
 
   panes = [
     { menuItem: 'Alignment', render: () => (
-      <Tab.Pane>
-        <AlignerResponse bitextId={this.state.bitextId} />
+      <Tab.Pane loading={this.loadingAlignment}>
+        <AlignerResponse bitextId={this.state.bitextId}/>
       </Tab.Pane>
     )},
     { menuItem: 'Vocabulary', render: () => (
-      <Tab.Pane>
-        <Vocabulary bitextId={this.state.bitextId} />
-      </Tab.Pane>
+      <Vocabulary bitextId={this.state.bitextId}/>
     )}
   ]
 
-  handleInputChange = (event, { name, value }) => {
+  handleInputChange = (event, { value }) => {
     this.setState({
         bitextId: value
-    });
+    })
   }
 
   render() {
     const bitextsToRender = this.props.bitextQuery.allBitexts
     var bitextOptions =  []
+
+    //if (this.state.loadingAlignment) {
+    //  this.handleLoading('loadingAlignment', false)
+    //}
 
     console.log(bitextsToRender)
 

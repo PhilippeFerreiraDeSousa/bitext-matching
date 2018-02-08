@@ -23,10 +23,14 @@ class AlignerForm extends Component {
   submitBitext = () => {
     const french = this.state.data.get('french')
     const english = this.state.data.get('english')
+    const title = this.state.data.get('title')
+    const author = this.state.data.get('author')
     this.props.submitBitextMutation({
       variables: {
         french,
-        english
+        english,
+        title,
+        author
       }
     })
     .then(({ data }) => {
@@ -83,10 +87,12 @@ class AlignerForm extends Component {
 }
 
 const SUBMIT_BITEXT_MUTATION = gql`
-  mutation SubmitBitextMutation($french: String!, $english: String!) {
+  mutation SubmitBitextMutation($french: String!, $english: String!, $title: String!, $author: String!) {
     submitBitext(
       french: $french,
       english: $english,
+      title: $title,
+      author: $author
     ) {
       id
     }

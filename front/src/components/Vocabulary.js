@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Grid, Segment, List, Icon } from 'semantic-ui-react'
+import { Grid, Segment, Icon, Accordion, Tab } from 'semantic-ui-react'
 
 var groupBy = function(xs, key1, key2) {
   return xs.reduce(function(rv, x) {
@@ -11,50 +11,63 @@ var groupBy = function(xs, key1, key2) {
 }
 
 class Vocabulary extends Component {
+  state = {
+    activeIndex: -1
+  }
+
+  handleClick = (e, titleProps) => {
+    const { index } = titleProps
+    const { activeIndex } = this.state
+    const newIndex = activeIndex === index ? -1 : index
+
+    this.setState({ activeIndex: newIndex })
+  }
 
   render() {
     const translationsToRender = this.props.translationQuery.translations
+    const { activeIndex } = this.state
 
     console.log(translationsToRender)
 
-    if (this.props.translationQuery && this.props.translationQuery.loading) {
-      return <div>Loading</div>
-    }
     if (this.props.translationQuery && this.props.translationQuery.error) {
       return <div>Error</div>
     }
-    const wordList = groupBy(translationsToRender, 'word1', 'content')
+    var wordList = {}
+
+    if (this.props.translationQuery && !this.props.translationQuery.loading) {
+      wordList = groupBy(translationsToRender, 'word1', 'content')
+    }
 
     return(
-      <List>
-        { Object.keys(wordList).map( word => (
-          <List.Item>
-            <List.Icon name='triangle right' />
-            <List.Content>
-              <List.Header>{word} <Icon name='exchange' /> {wordList[word][0].word2.content}</List.Header>
-            </List.Content>
-            <br />
-            <Grid columns={2} stackable={true}>
-              {wordList[word].map( translation => (
-                <Grid.Row key={translation.id}>
-                  <Grid.Column>
-                    <Segment>
-                      {translation.sentence1.content}
-                    </Segment>
-                  </Grid.Column>
-                  <Grid.Column>
-                    <Segment>
-                      {translation.sentence2.content}
-                    </Segment>
-                  </Grid.Column>
-                </Grid.Row>
-              ))}
-            </Grid>
-          </List.Item>
+      <Tab.Pane loading={this.props.translationQuery.loading}>
+        { Object.keys(wordList).map((word, idx) => (
+          <Accordion key={idx}>
+            <Accordion.Title active={activeIndex == idx} index={idx} onClick={this.handleClick}>
+              <Icon name='triangle right' />
+              {word} <Icon name='exchange'/> {wordList[word][0].word2.content}
+            </Accordion.Title>
+            <Accordion.Content active={activeIndex == idx}>
+              <Grid columns={2} stackable={true}>
+                {wordList[word].map( translation => (
+                  <Grid.Row key={translation.id}>
+                    <Grid.Column>
+                      <Segment>
+                        {translation.sentence1.content}
+                      </Segment>
+                    </Grid.Column>
+                    <Grid.Column>
+                      <Segment>
+                        {translation.sentence2.content}
+                      </Segment>
+                    </Grid.Column>
+                  </Grid.Row>
+                ))}
+              </Grid>
+            </Accordion.Content>
+          </Accordion>
         ))}
-      </List>
+      </Tab.Pane>
     )
-
   }
 }
 

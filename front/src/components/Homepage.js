@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Container } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
+import { Container, Button, Icon } from 'semantic-ui-react'
 
 class Homepage extends Component {
   render() {
@@ -8,21 +9,27 @@ class Homepage extends Component {
         <section>
           <h2>What is bitext alignment ?</h2>
           <p>
-            Bitext alignment consists in aligning to texts written in two different
-            languages assumed to be transolations of one another. The goal is to match
+            Bitext alignment consists in aligning two texts written in two different
+            languages assumed to be translations of one another. The goal is to match
             paragraphs and sentences. It is mainly used my translators across the
-            world to produce more accurate traductions taking into account the context
+            world to produce more accurate translations taking into account the context
             and the more commonly used expressions of a language.
           </p>
+          <Link to='/aligner'>
+            <Button primary align='center'>
+              <Icon name='tasks'></Icon>
+              Let&#39;s get started !
+            </Button>
+          </Link>
+          <h2>About the project</h2>
           <p>
-            This site is in conctruction please find more advanced projects here :
+            This is an opensource project started by a group of students at the Ecole des Ponts engineering school.
+            You can read about the theory behind our alignment algorithms <a href='theory.pdf' target='_blank' rel='noopener noreferrer'>here</a>.
           </p>
-          <ul>
-            <li><a href='https://elizia.net/alignator/alignator.cgi'>Elizia&#39;s alignator</a></li>
-            <li><a href='http://miaojun.net/alignoscope/'>Miaojun&#39;s alignoscope</a></li>
-          </ul>
-          <a href='https://github.com/PhilippeFerreiraDeSousa/bitext-matching' target='_blank' rel='noopener noreferrer'
-          className='ui button'><i className='github icon'></i>Visit our dev Repo</a>
+          <Button primary href='https://github.com/PhilippeFerreiraDeSousa/bitext-matching' target='_blank' rel='noopener noreferrer'>
+            <Icon name='github'></Icon>
+            Visit our dev Repo
+          </Button>
         </section>
       </Container>
     );

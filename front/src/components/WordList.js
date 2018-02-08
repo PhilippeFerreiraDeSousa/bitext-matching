@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Grid, Segment, Label, List } from 'semantic-ui-react'
+import { Grid, Segment, List } from 'semantic-ui-react'
 
 var groupBy = function(xs, key1, key2) {
   return xs.reduce(function(rv, x) {
@@ -27,7 +27,7 @@ class WordList extends Component {
     const wordList = groupBy(translationsToRender, language === 'english' ? 'word2' : 'word1', 'content')
 
     return(
-      <List divided relaxed>
+      <List>
         { Object.keys(wordList).map( word => (
           <List.Item>
             <List.Icon name='arrow right' />
@@ -38,7 +38,7 @@ class WordList extends Component {
               {wordList[word].map( translation => (
                 <List.Item key={translation.id}>
                   <List.Icon name='book' />
-                  <List.Content fluid>
+                  <List.Content>
                     <List.Header>{translation.bitext.title}</List.Header>
                     <List.Description>{translation.bitext.author}</List.Description>
                   </List.Content>

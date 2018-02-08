@@ -146,7 +146,17 @@
     "pk": 8,
     "fields": {
       "id_sen": 1,
-      "content": "Mon dessin numéro i. Il était comme ça :",
+      "content": "Mon dessin numéro i.",
+      "paragraph": 3
+    }
+  },
+
+  {
+    "model": "core.sentence",
+    "pk": 19,
+    "fields": {
+      "id_sen": 2,
+      "content": "Il était comme ça :",
       "paragraph": 3
     }
   },

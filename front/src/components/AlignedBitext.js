@@ -3,6 +3,7 @@ import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { Dropdown, Tab } from 'semantic-ui-react'
 import AlignerResponse from './AlignerResponse'
+import Vocabulary from './Vocabulary'
 
 class AlignedBitext extends Component {
   state = {
@@ -11,10 +12,14 @@ class AlignedBitext extends Component {
 
   panes = [
     { menuItem: 'Alignment', render: () => (
-      <Tab.Pane>{ this.state.bitextId ? <AlignerResponse bitextId={this.state.bitextId} /> : null }</Tab.Pane>
+      <Tab.Pane>
+        <AlignerResponse bitextId={this.state.bitextId} />
+      </Tab.Pane>
     )},
     { menuItem: 'Vocabulary', render: () => (
-      <Tab.Pane>Some vocab</Tab.Pane>
+      <Tab.Pane>
+        <Vocabulary bitextId={this.state.bitextId} />
+      </Tab.Pane>
     )}
   ]
 
@@ -41,7 +46,7 @@ class AlignedBitext extends Component {
       <div>
         <Dropdown placeholder='Select bitext' fluid search selection options={bitextOptions} onChange={this.handleInputChange} loading={this.props.bitextQuery && this.props.bitextQuery.loading} />
         <br />
-        <Tab panes={this.panes} />
+        { this.state.bitextId ? <Tab panes={this.panes} /> : null }
       </div>
     );
   }

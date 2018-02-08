@@ -3,6 +3,7 @@ import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { Form, Message } from 'semantic-ui-react'
 import { Map } from 'immutable'
+import BitextData from './BitextData'
 
 const languageOptions = [
   {
@@ -47,6 +48,7 @@ class AlignerForm extends Component {
     super();
     this.state = {
       data: Map({
+        bitextId: null,
         text1: '',
         text2: '',
         language1: '',
@@ -78,7 +80,9 @@ class AlignerForm extends Component {
       }
     })
     .then(({ data }) => {
-      this.props.set_bitext(data.submitBitext.id)
+      this.setState({
+        data: data.update('bitextId', () => data.submitBitext.id)
+      })
     }).catch((error) => {
       console.log('there was an error sending the query', error)
     });
@@ -129,6 +133,8 @@ class AlignerForm extends Component {
           </Form.Group>
           <Form.Button primary>Send</Form.Button>
         </Form>
+        <br />
+        { data.get('bitextId') ? <BitextData bitextId={data.get('bitextId')} language1={data.get('language1')} language2={data.get('language2')} /> : null }
       </div>
     );
   }

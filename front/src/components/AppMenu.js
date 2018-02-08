@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Container, Menu } from 'semantic-ui-react'
-import Aligner from './Aligner'
+import AlignerForm from './AlignerForm'
 import AlignedBitext from './AlignedBitext'
 import Dictionnary from './Dictionnary'
 
@@ -42,7 +42,7 @@ class AppMenu extends Component {
           </Menu.Item>
         </Menu>
         {   this.state.activeItem === 'aligner' ? (
-          <Aligner />
+          <AlignerForm />
         ) : this.state.activeItem === 'aligned' ? (
           <AlignedBitext />
         ) : this.state.activeItem === 'dictionnary' ? (

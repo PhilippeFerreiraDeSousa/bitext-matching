@@ -11,7 +11,12 @@ class AlignerResponse extends Component {
     console.log(alignmentsToRender)
 
     if (this.props.alignmentQuery && this.props.alignmentQuery.error) {
-      return <div>Error</div>
+      return (
+        <Message negative>
+          <Message.Header>We&#39;re sorry an error has occured</Message.Header>
+          <p>Problem fetching data on the internet</p>
+        </Message>
+      )
     }
     return(
       <Tab.Pane loading={this.props.alignmentQuery.loading}>

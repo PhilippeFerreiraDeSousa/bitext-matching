@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Dropdown, Flag } from 'semantic-ui-react'
+import { Dropdown, Flag, Message } from 'semantic-ui-react'
 import WordList from './WordList'
 import flags from '../parameters/flags'
 
@@ -24,7 +24,12 @@ class Dictionnary extends Component {
     console.log(this.state)
 
     if (this.props.wordQuery && this.props.wordQuery.error) {
-      return <div>Error</div>
+      return (
+        <Message negative>
+          <Message.Header>We&#39;re sorry an error has occured</Message.Header>
+          <p>Problem fetching data on the internet</p>
+        </Message>
+      )
     }
     if (this.props.wordQuery && !this.props.wordQuery.loading) {
       wordOptions = wordsToRender.map(word => ({key: word.id, value: word, text: (<span><Flag name={flags[word.language]} /> {word.content}</span>) }) )

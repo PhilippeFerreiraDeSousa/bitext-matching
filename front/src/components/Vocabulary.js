@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Grid, Segment, Icon, Accordion, Tab } from 'semantic-ui-react'
+import { Grid, Segment, Icon, Accordion, Tab, Message } from 'semantic-ui-react'
 
 var groupBy = function(xs, key1, key2) {
   return xs.reduce(function(rv, x) {
@@ -29,7 +29,12 @@ class Vocabulary extends Component {
     const { activeIndex } = this.state
 
     if (this.props.translationQuery && this.props.translationQuery.error) {
-      return <div>Error</div>
+      return (
+        <Message negative>
+          <Message.Header>We&#39;re sorry an error has occured</Message.Header>
+          <p>Problem fetching data on the internet</p>
+        </Message>
+      )
     }
 
     return(

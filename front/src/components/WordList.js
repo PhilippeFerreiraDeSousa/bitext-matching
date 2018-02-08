@@ -1,7 +1,14 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Grid, Segment } from 'semantic-ui-react'
+import { Grid, Segment, Label, List } from 'semantic-ui-react'
+
+var groupBy = function(xs, key1, key2) {
+  return xs.reduce(function(rv, x) {
+    (rv[x[key1][key2]] = rv[x[key1][key2]] || []).push(x)
+    return rv
+  }, {})
+}
 
 class WordList extends Component {
 
@@ -17,28 +24,44 @@ class WordList extends Component {
     if (this.props.translationQuery && this.props.translationQuery.error) {
       return <div>Error</div>
     }
+    const wordList = groupBy(translationsToRender, language === 'english' ? 'word2' : 'word1', 'content')
+
     return(
-      <ul>
-        { translationsToRender.map( translation => (
-          <li key={translation.id}>
-            <p>{language === 'english' ? translation.word2.content : translation.word1.content }</p>
-            <Grid columns={2} divided='vertically'>
-              <Grid.Row>
-                <Grid.Column>
-                  <Segment>
-                    {translation.sentence1.content}
-                  </Segment>
-                </Grid.Column>
-                <Grid.Column>
-                  <Segment>
-                    {translation.sentence2.content}
-                  </Segment>
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </li>
+      <List divided relaxed>
+        { Object.keys(wordList).map( word => (
+          <List.Item>
+            <List.Icon name='arrow right' />
+            <List.Content>
+              <List.Header>{word}</List.Header>
+            </List.Content>
+            <List.List>
+              {wordList[word].map( translation => (
+                <List.Item key={translation.id}>
+                  <List.Icon name='book' />
+                  <List.Content fluid>
+                    <List.Header>{translation.bitext.title}</List.Header>
+                    <List.Description>{translation.bitext.author}</List.Description>
+                  </List.Content>
+                  <Grid columns={2} divided='vertically'>
+                    <Grid.Row>
+                      <Grid.Column>
+                        <Segment>
+                          {translation.sentence1.content}
+                        </Segment>
+                      </Grid.Column>
+                      <Grid.Column>
+                        <Segment>
+                          {translation.sentence2.content}
+                        </Segment>
+                      </Grid.Column>
+                    </Grid.Row>
+                  </Grid>
+                </List.Item>
+              ))}
+            </List.List>
+          </List.Item>
         ))}
-      </ul>
+      </List>
     )
 
   }

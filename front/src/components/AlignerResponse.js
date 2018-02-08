@@ -40,7 +40,7 @@ class AlignerResponse extends Component {
                     .map(paragraph => (
                       <p key={paragraph.id}>
                         {paragraph.sentences.map(sentence => (
-                          <span key={sentence.id}>{sentence.content}</span>
+                          <span key={sentence.id}>{sentence.content} </span>
                         ))}
                       </p>
                     )

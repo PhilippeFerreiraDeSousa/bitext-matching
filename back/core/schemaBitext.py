@@ -116,7 +116,7 @@ class CreateBitext(graphene.Mutation):
         original_text_2, clean_text_2 = parse(text_2, language_2)
         text2 = Text.objects.create(language=language_2, bitext=bitext)
 
-        alignments, matches = align_paragraphs(clean_text_1, clean_text_1)
+        alignments, matches = align_paragraphs(clean_text_1, clean_text_2)
         for id_alignment, align in enumerate(alignments):
             alignment = Alignment.objects.create(bitext=bitext, id_alignment=id_alignment)
             for id_par_1 in align[0]:

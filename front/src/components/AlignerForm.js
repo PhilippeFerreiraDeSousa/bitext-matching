@@ -126,8 +126,8 @@ class AlignerForm extends Component {
           loading={status.get('loading')}
         >
           <Form.Group widths='equal'>
-            <Form.Input label='Title' placeholder='Le Petit Prince' required field='author' value={data.get('name')} onChange={this.handleChange}/>
-            <Form.Input label='Author' placeholder='Antoine de Saint-Exupéry' field="author" value={data.get('name')} onChange={this.handleChange}/>
+            <Form.Input label='Title' placeholder='Le Petit Prince' required field='title' value={data.get('title')} onChange={this.handleChange}/>
+            <Form.Input label='Author' placeholder='Antoine de Saint-Exupéry' field="author" value={data.get('author')} onChange={this.handleChange}/>
           </Form.Group>
           <Form.Group widths='equal' onSubmit={this.handleSubmit}>
             <Form.TextArea label='First text' field='text1' required value={data.get('text1')} placeholder='Il était une fois...' onChange={this.handleChange}/>

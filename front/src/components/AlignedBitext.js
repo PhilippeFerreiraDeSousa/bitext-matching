@@ -53,5 +53,5 @@ const BITEXTS = gql`
 
 export default graphql(BITEXTS, {
   name: 'bitextQuery',
-  options: { pollInterval: 5000 }
+  //options: { pollInterval: 5000 }
 }) (AlignedBitext)

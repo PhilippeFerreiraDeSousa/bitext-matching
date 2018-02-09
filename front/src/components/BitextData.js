@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
 import { Tab } from 'semantic-ui-react'
 import AlignerResponse from './AlignerResponse'
 import Vocabulary from './Vocabulary'

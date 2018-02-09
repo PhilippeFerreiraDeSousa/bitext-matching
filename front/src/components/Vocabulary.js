@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Grid, Segment, Icon, Accordion, Tab, Message } from 'semantic-ui-react'
+import { Grid, Segment, Icon, Accordion, Tab } from 'semantic-ui-react'
+import ErrorMessage from './ErrorMessage'
 
 var groupBy = function(xs, key1, key2) {
   return xs.reduce(function(rv, x) {
@@ -28,24 +29,23 @@ class Vocabulary extends Component {
     const wordList = groupBy(translationsToRender, 'word1', 'content')
     const { activeIndex } = this.state
 
+    if (this.props.translationQuery && this.props.translationQuery.loading) {
+      return <div></div>
+    }
+
     if (this.props.translationQuery && this.props.translationQuery.error) {
-      return (
-        <Message negative>
-          <Message.Header>We&#39;re sorry an error has occured</Message.Header>
-          <p>Problem fetching data on the internet</p>
-        </Message>
-      )
+      return <ErrorMessage />
     }
 
     return(
       <Tab.Pane loading={this.props.translationQuery.loading}>
         { Object.keys(wordList).map((word, idx) => (
           <Accordion key={idx}>
-            <Accordion.Title active={activeIndex == idx} index={idx} onClick={this.handleClick}>
+            <Accordion.Title active={activeIndex === idx} index={idx} onClick={this.handleClick}>
               <Icon name='triangle right' />
               {word} <Icon name='exchange'/> {wordList[word][0].word2.content}
             </Accordion.Title>
-            <Accordion.Content active={activeIndex == idx}>
+            <Accordion.Content active={activeIndex === idx}>
               <Grid columns={2} stackable={true}>
                 {wordList[word].map( translation => (
                   <Grid.Row key={translation.id}>
@@ -86,7 +86,6 @@ const TRANSLATIONS = gql`
       sentence2 {
         content
       }
-      score
   	}
   }
 `

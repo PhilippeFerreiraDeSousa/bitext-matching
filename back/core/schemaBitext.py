@@ -34,7 +34,7 @@ class TranslationType(DjangoObjectType):
         model = Translation
 
 class Query(object):
-    bitext = graphene.Field(BitextType, id=graphene.Int(), name=graphene.String())
+    bitext = graphene.Field(BitextType, id=graphene.Int(), title=graphene.String())
     all_bitexts = graphene.List(BitextType)
     all_words = graphene.List(WordType)
     alignments = graphene.List(AlignmentType, bitext_id=graphene.Int())

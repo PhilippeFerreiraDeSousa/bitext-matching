@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Grid, Segment, List, Flag, Loader, Message } from 'semantic-ui-react'
+import { Grid, Segment, List, Flag, Loader } from 'semantic-ui-react'
 import flags from '../parameters/flags'
+import ErrorMessage from './ErrorMessage'
 
 var groupByLanguage = function(xs, wordId) {
   return xs.reduce(function(rv, x) {
@@ -23,13 +24,6 @@ var groupByLanguage = function(xs, wordId) {
   }, {})
 }
 
-//var groupBy = function(xs, key1, key2) {
-//  return xs.reduce(function(rv, x) {
-//    (rv[x[key1][key2]] = rv[x[key1][key2]] || []).push(x)
-//    return rv
-//  }, {})
-//}
-
 class WordList extends Component {
 
   render() {
@@ -42,12 +36,7 @@ class WordList extends Component {
       return <Loader active inline='centered' />
     }
     if (this.props.translationQuery && this.props.translationQuery.error) {
-      return (
-        <Message negative>
-          <Message.Header>We&#39;re sorry an error has occured</Message.Header>
-          <p>Problem fetching data on the internet</p>
-        </Message>
-      )
+      return <ErrorMessage />
     }
     const wordList = groupByLanguage(translationsToRender, wordId)
 

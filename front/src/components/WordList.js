@@ -33,7 +33,12 @@ class WordList extends Component {
     console.log(translationsToRender)
 
     if (this.props.translationQuery && this.props.translationQuery.loading) {
-      return <Loader active inline='centered' />
+      return (
+        <div>
+          <br />
+          <Loader active inline='centered' />
+        </div>
+      )
     }
     if (this.props.translationQuery && this.props.translationQuery.error) {
       return <ErrorMessage />

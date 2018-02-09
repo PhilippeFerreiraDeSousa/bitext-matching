@@ -92,6 +92,8 @@ class Query(object):
 
 class CreateBitext(graphene.Mutation):
     id = graphene.Int()
+    text_1 = graphene.String()
+    text_2 = graphene.String()
     language_1 = graphene.String()
     language_2 = graphene.String()
     title = graphene.String()
@@ -108,38 +110,38 @@ class CreateBitext(graphene.Mutation):
     def mutate(self, info, text_1, text_2, language_1, language_2, title, author):
         bitext = Bitext.objects.create(title=title, author=author)
 
-        en_original_text, en_clean_text = parse(text_1, language_1)
-        en_text = Text.objects.create(language=language_1, bitext=bitext)
+        original_text_1, clean_text_1 = parse(text_1, language_1)
+        text1 = Text.objects.create(language=language_1, bitext=bitext)
 
-        fr_original_text, fr_clean_text = parse(text_2, language_2)
-        fr_text = Text.objects.create(language=language_2, bitext=bitext)
+        original_text_2, clean_text_2 = parse(text_2, language_2)
+        text2 = Text.objects.create(language=language_2, bitext=bitext)
 
-        alignments, matches = align_paragraphs(en_clean_text, fr_clean_text)
+        alignments, matches = align_paragraphs(clean_text_1, clean_text_1)
         for id_alignment, align in enumerate(alignments):
             alignment = Alignment.objects.create(bitext=bitext, id_alignment=id_alignment)
-            for en_id_par in align[0]:
-                print(en_id_par)
-                paragraph = Paragraph.objects.create(id_par=en_id_par, text=en_text, alignment=alignment)
-                for id_sen, sen in enumerate(en_original_text[en_id_par]):
-                    Sentence.objects.create(id_sen=id_sen, text=sen, paragraph=paragraph)
-            for fr_id_par in align[1]:
-                print(fr_id_par)
-                paragraph = Paragraph.objects.create(id_par=fr_id_par, text=fr_text, alignment=alignment)
-                for id_sen, sen in enumerate(fr_original_text[fr_id_par]):
-                    Sentence.objects.create(id_sen=id_sen, text=sen, paragraph=paragraph)
+            for id_par_1 in align[0]:
+                print(id_par_1)
+                paragraph = Paragraph.objects.create(id_par=id_par_1, text=text1, alignment=alignment)
+                for id_sen, sen in enumerate(original_text_1[id_par_1]):
+                    Sentence.objects.create(id_sen=id_sen, content=sen, paragraph=paragraph)
+            for id_par_2 in align[1]:
+                print(id_par_2)
+                paragraph = Paragraph.objects.create(id_par=id_par_2, text=text2, alignment=alignment)
+                for id_sen, sen in enumerate(original_text_2[id_par_2]):
+                    Sentence.objects.create(id_sen=id_sen, content=sen, paragraph=paragraph)
 
         return CreateBitext(
             id=bitext.id
         )
         #for match in matches:
-        #    word_1 = Word.objects.get(text=match[0][0])
+        #    word_1 = Word.objects.get(content=match[0][0])
         #    if not word_1:
-        #        word_1 = Word.objects.create(text=match[0][0], language="english")
+        #        word_1 = Word.objects.create(content=match[0][0], language="english")
         #    word_1.sentences.add()
 
-        #    word_2 = Word.objects.get(text=match[1][0])
+        #    word_2 = Word.objects.get(content=match[1][0])
         #    if not word_2:
-        #        word_2 = Word.objects.create(text=match[1][0], language="french")
+        #        word_2 = Word.objects.create(content=match[1][0], language="french")
         #    word_2.sentences.add()
         #    Translation.objects.create(bitext=bitext, word_1=word_1, word_2=word_2, score=match[2])
 

@@ -3,16 +3,16 @@ import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { Dropdown } from 'semantic-ui-react'
 import BitextData from './BitextData'
-import ErrorMessage from './ErrorMessage'
+import { FetchingErrorMessage } from './ErrorMessage'
 
 class AlignedBitext extends Component {
   state = {
-    bitextId: null
+    id: null
   }
 
   handleInputChange = (event, { value }) => {
     this.setState({
-        bitextId: value
+        id: value
     })
   }
 
@@ -25,7 +25,7 @@ class AlignedBitext extends Component {
     //}
 
     if (this.props.bitextQuery && this.props.bitextQuery.error) {
-      return <ErrorMessage />
+      return <FetchingErrorMessage />
     }
     if (this.props.bitextQuery && !this.props.bitextQuery.loading) {
       bitextOptions = bitextsToRender.map(bitext => ({key: bitext.id, value: bitext.id, text: bitext.title+(bitext.author ? ' - '+bitext.author : '')}) )
@@ -35,7 +35,7 @@ class AlignedBitext extends Component {
       <div>
         <Dropdown placeholder='Select bitext' fluid search selection options={bitextOptions} onChange={this.handleInputChange} loading={this.props.bitextQuery && this.props.bitextQuery.loading} />
         <br />
-        <BitextData bitextId={this.state.bitextId}/>
+        <BitextData bitext={this.state} progressBar={false}/>
       </div>
     );
   }

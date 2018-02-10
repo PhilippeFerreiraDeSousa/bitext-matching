@@ -6,17 +6,17 @@ import Vocabulary from './Vocabulary'
 class AlignedBitext extends Component {
   panes = [
     { menuItem: 'Alignment', render: () => (
-      <AlignerResponse bitextId={this.props.bitextId}/>
+      <AlignerResponse bitextId={this.props.bitext.id}/>
     )},
     { menuItem: 'Vocabulary', render: () => (
-      <Vocabulary bitextId={this.props.bitextId}/>
+      <Vocabulary bitextId={this.props.bitext.id}/>
     )}
   ]
 
   render() {
     return(
       <div>
-        { this.props.bitextId ? <Tab panes={this.panes} /> : null }
+        { this.props.bitext.id ? <Tab panes={this.panes} /> : null }
       </div>
     );
   }

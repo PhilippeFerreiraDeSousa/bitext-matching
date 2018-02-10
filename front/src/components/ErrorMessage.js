@@ -1,11 +1,18 @@
 import React from 'react'
 import { Message } from 'semantic-ui-react'
 
-const ErrorMessage = () => (
+const FetchingErrorMessage = () => (
   <Message negative>
     <Message.Header>We&#39;re sorry an error has occured</Message.Header>
     <p>Problem fetching data...</p>
   </Message>
 )
 
-export default ErrorMessage
+const SendingErrorMessage = () => (
+  <Message error >
+    <Message.Header>We&#39;re sorry an error has occured</Message.Header>
+    <p>Problem sending data</p>
+  </Message>
+)
+
+export { FetchingErrorMessage, SendingErrorMessage }

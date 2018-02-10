@@ -3,7 +3,7 @@ import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { Grid, Segment, List, Flag, Loader } from 'semantic-ui-react'
 import { flags } from '../parameters/flags'
-import ErrorMessage from './ErrorMessage'
+import { FetchingErrorMessage } from './ErrorMessage'
 
 var groupByLanguage = function(xs, wordId) {
   return xs.reduce(function(rv, x) {
@@ -30,8 +30,6 @@ class WordList extends Component {
     const translationsToRender = this.props.translationQuery.translations
     const wordId = this.props.wordId
 
-    console.log(translationsToRender)
-
     if (this.props.translationQuery && this.props.translationQuery.loading) {
       return (
         <div>
@@ -41,7 +39,7 @@ class WordList extends Component {
       )
     }
     if (this.props.translationQuery && this.props.translationQuery.error) {
-      return <ErrorMessage />
+      return <FetchingErrorMessage />
     }
     const wordList = groupByLanguage(translationsToRender, wordId)
 

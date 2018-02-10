@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { Grid, Segment, Icon, Accordion, Tab } from 'semantic-ui-react'
-import ErrorMessage from './ErrorMessage'
+import { FetchingErrorMessage } from './ErrorMessage'
 
 var groupBy = function(xs, key1, key2) {
   return xs.reduce(function(rv, x) {
@@ -34,7 +34,7 @@ class Vocabulary extends Component {
     }
 
     if (this.props.translationQuery && this.props.translationQuery.error) {
-      return <ErrorMessage />
+      return <FetchingErrorMessage />
     }
 
     return(

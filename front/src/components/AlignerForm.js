@@ -1,17 +1,18 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Form, Message, Flag } from 'semantic-ui-react'
+import { Form, Message } from 'semantic-ui-react'
 import { Map } from 'immutable'
 import BitextData from './BitextData'
 import { languageOptions } from '../parameters/flags'
+import { SendingErrorMessage } from './ErrorMessage'
 
 class AlignerForm extends Component {
   constructor() {
     super();
     this.state = {
       info: Map({
-        bitextId: null,
+        bitext: null,
         text1: '',
         text2: '',
         language1: '',
@@ -20,7 +21,8 @@ class AlignerForm extends Component {
         author: ''
       }),
       status: Map({
-        loading: false
+        loading: false,
+        error: false
       })
     }
   }
@@ -43,11 +45,14 @@ class AlignerForm extends Component {
       }
     })
     .then(({ data }) => {
-      this.setState({
-        info: this.state.info.update('bitextId', () => data.submitBitext.id)
-      })
+      this.setState(({info, status}) => ({
+        info: info.update('bitext', () => data.submitBitext),
+        status: status.update('error', () => false)
+      }))
     }).catch((error) => {
-      console.log('there was an error sending the query', error)
+      this.setState(({status}) => ({
+        status: status.update('error', () => true)
+      }))
     })
   }
 
@@ -81,6 +86,7 @@ class AlignerForm extends Component {
           className='fluid segment attached'
           onSubmit={this.handleSubmit}
           loading={status.get('loading')}
+          error={status.get('error')}
         >
           <Form.Group widths='equal'>
             <Form.Input label='Title' placeholder='Le Petit Prince' required field='title' value={info.get('title')} onChange={this.handleChange}/>
@@ -95,9 +101,10 @@ class AlignerForm extends Component {
             <Form.Dropdown placeholder='Select language' field='language2' required search selection options={languageOptions} onChange={this.handleChange} />
           </Form.Group>
           <Form.Button primary>Send</Form.Button>
+          <SendingErrorMessage />
         </Form>
         <br />
-        { info.get('bitextId') ? <BitextData bitextId={info.get('bitextId')} /> : null }
+        { info.get('bitext') ? <BitextData bitext={info.get('bitext')} progressBar={true} /> : null }
       </div>
     );
   }
@@ -113,7 +120,9 @@ const SUBMIT_BITEXT_MUTATION = gql`
       title: $title,
       author: $author
     ) {
-      id
+      id,
+      alignmentsNumber
+      translationsNumber
     }
   }
 `

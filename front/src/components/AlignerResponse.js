@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { Segment, Grid, Tab } from 'semantic-ui-react'
-import ErrorMessage from './ErrorMessage'
+import { FetchingErrorMessage } from './ErrorMessage'
 
 class AlignerResponse extends Component {
 
@@ -10,7 +10,7 @@ class AlignerResponse extends Component {
     const alignmentsToRender = this.props.alignmentQuery.alignments || []
 
     if (this.props.alignmentQuery && this.props.alignmentQuery.error) {
-      return <ErrorMessage />
+      return <FetchingErrorMessage />
     }
 
     if (this.props.alignmentQuery && this.props.alignmentQuery.loading) {

@@ -92,6 +92,8 @@ class Query(object):
 
 class CreateBitext(graphene.Mutation):
     id = graphene.Int()
+    alignmentsNumber = graphene.Int()
+    translationsNumber = graphene.Int()
     text_1 = graphene.String()
     text_2 = graphene.String()
     language_1 = graphene.String()
@@ -160,7 +162,9 @@ class CreateBitext(graphene.Mutation):
             Translation.objects.create(bitext=bitext, word_1=Words_1[idx], word_2=Words_2[idx], sentence1=Sentences_1[idx], sentence2=Sentences_2[idx], score=matches[idx][2])
 
         return CreateBitext(
-            id=bitext.id
+            id=bitext.id,
+            alignmentsNumber=len(alignments),
+            translationsNumber=len(matches)
         )
 
 class Mutation(graphene.ObjectType):

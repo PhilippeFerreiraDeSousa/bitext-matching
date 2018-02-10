@@ -117,33 +117,51 @@ class CreateBitext(graphene.Mutation):
         text2 = Text.objects.create(language=language_2, bitext=bitext)
 
         alignments, matches = align_paragraphs(clean_text_1, clean_text_2)
+        match_cursor_1 = 0
+        match_cursor_2 = 0
+        Words_1 = []
+        Sentences_1 = []
+        Words_2 = []
+        Sentences_2 = []
+
         for id_alignment, align in enumerate(alignments):
             alignment = Alignment.objects.create(bitext=bitext, id_alignment=id_alignment)
             for id_par_1 in align[0]:
                 print(id_par_1)
                 paragraph = Paragraph.objects.create(id_par=id_par_1, text=text1, alignment=alignment)
                 for id_sen, sen in enumerate(original_text_1[id_par_1]):
-                    Sentence.objects.create(id_sen=id_sen, content=sen, paragraph=paragraph)
+                    sentence_1 = Sentence.objects.create(id_sen=id_sen, content=sen, paragraph=paragraph)
+                    if id_par == matches[match_cursor_1][0][0][0] and id_sen == matches[match_cursor_1][0][0][1]:
+                        word_1 = Word.objects.get(content=clean_text_1[id_par][id_sen][matches[match_cursor_1][0][0][1]], language=language_1)
+                        if not word_1:
+                            word_1 = Word.objects.create(content=match[0][0], language=language_1)
+                        print(word_1.content)
+                        print(sentence_1.content)
+                        Words_1.append(word_1)
+                        Sentences_1.append(sentence_1)
+                        match_cursor_1 += 1
+
             for id_par_2 in align[1]:
                 print(id_par_2)
                 paragraph = Paragraph.objects.create(id_par=id_par_2, text=text2, alignment=alignment)
                 for id_sen, sen in enumerate(original_text_2[id_par_2]):
-                    Sentence.objects.create(id_sen=id_sen, content=sen, paragraph=paragraph)
+                    sentence_2 = Sentence.objects.create(id_sen=id_sen, content=sen, paragraph=paragraph)
+                    if id_par == matches[match_cursor_2][1][0][0] and id_sen == matches[match_cursor_2][1][0][1]:
+                        word_2 = Word.objects.get(content=clean_text_2[id_par][id_sen][matches[match_cursor_2][1][0][1]], language=language_2)
+                        if not word_2:
+                            word_1 = Word.objects.create(content=clean_text_2[id_par][id_sen][matches[match_cursor][1][0][1]], language=language_2)
+                        print(word_2.content)
+                        print(sentence_2.content)
+                        Words_2.append(word_2)
+                        Sentences_2.append(sentence_2)
+                        match_cursor_2 += 1
+
+        for idx in len(matches):
+            Translation.objects.create(bitext=bitext, word_1=Words_1[idx], word_2=Words_2[idx], sentence1=Sentences_1[idx], sentence2=Sentences_2[idx], score=matches[idx][2])
 
         return CreateBitext(
             id=bitext.id
         )
-        #for match in matches:
-        #    word_1 = Word.objects.get(content=match[0][0])
-        #    if not word_1:
-        #        word_1 = Word.objects.create(content=match[0][0], language="english")
-        #    word_1.sentences.add()
-
-        #    word_2 = Word.objects.get(content=match[1][0])
-        #    if not word_2:
-        #        word_2 = Word.objects.create(content=match[1][0], language="french")
-        #    word_2.sentences.add()
-        #    Translation.objects.create(bitext=bitext, word_1=word_1, word_2=word_2, score=match[2])
 
 class Mutation(graphene.ObjectType):
     submit_bitext = CreateBitext.Field()

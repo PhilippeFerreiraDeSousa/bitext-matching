@@ -4,56 +4,13 @@ import gql from 'graphql-tag'
 import { Form, Message, Flag } from 'semantic-ui-react'
 import { Map } from 'immutable'
 import BitextData from './BitextData'
-import flags from '../parameters/flags'
-
-const languageOptions = [
-  {
-    key: 0,
-    value: 'english',
-    text: 'English'
-  },
-  {
-    key: 1,
-    value: 'french',
-    text: 'Français'
-  },
-  {
-    key: 2,
-    value: 'russian',
-    text: 'Russian'
-  },
-  {
-    key: 3,
-    value: 'spanish',
-    text: 'Spanish'
-  },
-  {
-    key: 4,
-    value: 'german',
-    text: 'German'
-  },
-  {
-    key: 5,
-    value: 'portuguese',
-    text: 'Portuguese'
-  },
-  {
-    key: 6,
-    value: 'italian',
-    text: 'Italian'
-  }
-]
-
-const options = languageOptions.map( option => ({
-  ...option,
-  text: (<span><Flag name={flags[option.value]} /> {option.text}</span>)
-}))
+import { languageOptions } from '../parameters/flags'
 
 class AlignerForm extends Component {
   constructor() {
     super();
     this.state = {
-      data: Map({
+      info: Map({
         bitextId: null,
         text1: '',
         text2: '',
@@ -69,12 +26,12 @@ class AlignerForm extends Component {
   }
 
   submitBitext = () => {
-    const text1 = this.state.data.get('text1')
-    const text2 = this.state.data.get('text2')
-    const language1 = this.state.data.get('language1')
-    const language2 = this.state.data.get('language2')
-    const title = this.state.data.get('title')
-    const author = this.state.data.get('author')
+    const text1 = this.state.info.get('text1')
+    const text2 = this.state.info.get('text2')
+    const language1 = this.state.info.get('language1')
+    const language2 = this.state.info.get('language2')
+    const title = this.state.info.get('title')
+    const author = this.state.info.get('author')
     this.props.submitBitextMutation({
       variables: {
         text1,
@@ -87,11 +44,11 @@ class AlignerForm extends Component {
     })
     .then(({ data }) => {
       this.setState({
-        data: data.update('bitextId', () => data.submitBitext.id)
+        info: this.state.info.update('bitextId', () => data.submitBitext.id)
       })
     }).catch((error) => {
       console.log('there was an error sending the query', error)
-    });
+    })
   }
 
   handleSubmit = async () => {
@@ -105,13 +62,13 @@ class AlignerForm extends Component {
   }
 
   handleChange = (e, { field, value }) => {
-    this.setState(({data}) => ({
-      data: data.update(field, () => value)
+    this.setState(({info}) => ({
+      info: info.update(field, () => value)
     }))
   }
 
   render() {
-    const data = this.state.data
+    const info = this.state.info
     const status = this.state.status
 
     return(
@@ -126,21 +83,21 @@ class AlignerForm extends Component {
           loading={status.get('loading')}
         >
           <Form.Group widths='equal'>
-            <Form.Input label='Title' placeholder='Le Petit Prince' required field='title' value={data.get('title')} onChange={this.handleChange}/>
-            <Form.Input label='Author' placeholder='Antoine de Saint-Exupéry' field="author" value={data.get('author')} onChange={this.handleChange}/>
+            <Form.Input label='Title' placeholder='Le Petit Prince' required field='title' value={info.get('title')} onChange={this.handleChange}/>
+            <Form.Input label='Author' placeholder='Antoine de Saint-Exupéry' field="author" value={info.get('author')} onChange={this.handleChange}/>
           </Form.Group>
           <Form.Group widths='equal' onSubmit={this.handleSubmit}>
-            <Form.TextArea label='First text' field='text1' required value={data.get('text1')} placeholder='Il était une fois...' onChange={this.handleChange}/>
-            <Form.TextArea label='Second text' field='text2' required value={data.get('text2')} placeholder='Once upon a time...' onChange={this.handleChange}/>
+            <Form.TextArea label='First text' field='text1' required value={info.get('text1')} placeholder='Il était une fois...' onChange={this.handleChange}/>
+            <Form.TextArea label='Second text' field='text2' required value={info.get('text2')} placeholder='Once upon a time...' onChange={this.handleChange}/>
           </Form.Group>
           <Form.Group widths='equal'>
-            <Form.Dropdown placeholder='Select language' field='language1' required search selection options={options} onChange={this.handleChange} />
-            <Form.Dropdown placeholder='Select language' field='language2' required search selection options={options} onChange={this.handleChange} />
+            <Form.Dropdown placeholder='Select language' field='language1' required search selection options={languageOptions} onChange={this.handleChange} />
+            <Form.Dropdown placeholder='Select language' field='language2' required search selection options={languageOptions} onChange={this.handleChange} />
           </Form.Group>
           <Form.Button primary>Send</Form.Button>
         </Form>
         <br />
-        { data.get('bitextId') ? <BitextData bitextId={data.get('bitextId')} language1={data.get('language1')} language2={data.get('language2')} /> : null }
+        { info.get('bitextId') ? <BitextData bitextId={info.get('bitextId')} /> : null }
       </div>
     );
   }

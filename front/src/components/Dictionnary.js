@@ -3,7 +3,7 @@ import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { Dropdown, Flag } from 'semantic-ui-react'
 import WordList from './WordList'
-import flags from '../parameters/flags'
+import { flags } from '../parameters/flags'
 import ErrorMessage from './ErrorMessage'
 
 class Dictionnary extends Component {
@@ -28,7 +28,7 @@ class Dictionnary extends Component {
       return <ErrorMessage />
     }
     if (this.props.wordQuery && !this.props.wordQuery.loading) {
-      wordOptions = wordsToRender.map(word => ({key: word.id, value: word, text: (<span><Flag name={flags[word.language]} /> {word.content}</span>) }) )
+      wordOptions = wordsToRender.map(word => ({key: word.id, value: word, flag: flags[word.language], text: word.content }))
     }
 
     return(

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { Grid, Segment, List, Flag, Loader } from 'semantic-ui-react'
-import flags from '../parameters/flags'
+import { flags } from '../parameters/flags'
 import ErrorMessage from './ErrorMessage'
 
 var groupByLanguage = function(xs, wordId) {

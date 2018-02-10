@@ -35,7 +35,7 @@ class AlignedBitext extends Component {
       <div>
         <Dropdown placeholder='Select bitext' fluid search selection options={bitextOptions} onChange={this.handleInputChange} loading={this.props.bitextQuery && this.props.bitextQuery.loading} />
         <br />
-        <BitextData bitext={this.state} progressBar={false}/>
+        <BitextData bitextId={this.state.id}/>
       </div>
     );
   }

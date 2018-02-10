@@ -33,12 +33,17 @@ class TranslationType(DjangoObjectType):
     class Meta:
         model = Translation
 
+class BitextAlignmentInfoType(graphene.ObjectType):
+    alignments_number = graphene.Int()
+    progress_number = graphene.Int()
+
 class Query(object):
     bitext = graphene.Field(BitextType, id=graphene.Int(), title=graphene.String())
     all_bitexts = graphene.List(BitextType)
     all_words = graphene.List(WordType)
     alignments = graphene.List(AlignmentType, bitext_id=graphene.Int())
     translations = graphene.List(TranslationType, word_id=graphene.Int(), bitext_id=graphene.Int())
+    alignment_info = graphene.Field(BitextAlignmentInfoType, id=graphene.Int())
 
     def resolve_all_bitexts(self, info, **kwargs):
         return Bitext.objects.all()
@@ -54,6 +59,16 @@ class Query(object):
 
     def resolve_sentences(self, info, **kwargs):
         return Sentence.objects.select_related('paragraph').all().order_by('id_sen')
+
+    def resolve_alignment_info(self, info, **kwargs):
+        bitext_id = kwargs.get('id')
+        print("Bitext id :", bitext_id)
+        alignments_number = Bitext.objects.get(id=bitext_id).alignments_number
+        print("Alignments Number :", alignments_number)
+        progress_number = Alignment.objects.filter(bitext__id=bitext_id).count()
+        print("Progress number :", progress_number)
+
+        return BitextAlignmentInfoType(alignments_number=alignments_number, progress_number=progress_number)
 
 # select_related(*fields)
 # renvoie un QuerySet qui « suit » les relations de clé étrangère, sélectionnant
@@ -76,41 +91,53 @@ class Query(object):
 
     def resolve_alignments(self, info, **kwargs):
         bitext_id = kwargs.get('bitext_id')
-        return Alignment.objects.filter(bitext_id=bitext_id).order_by('id_alignment')   # bitext_id : on peut filtrer sur l'id d'une clef étrangère !
+        return Alignment.objects.filter(bitext__id=bitext_id)
+    # Blog.objects.filter(entry__headline__contains='Lennon') sélectionne tous les objets Blog ayant au moins une Entry ayant un headline contenant 'Lennon'
 
     def resolve_translations(self, info, **kwargs):
         word_id = kwargs.get('word_id')
         bitext_id = kwargs.get('bitext_id')
 
         if word_id is not None:
-            return Translation.objects.filter(word_1_id=word_id).order_by('score') | Translation.objects.filter(word_2_id=word_id).order_by('score')
+            return (Translation.objects.filter(word_1_id=word_id) | Translation.objects.filter(word_2_id=word_id)).order_by('score')
 
         if bitext_id is not None:
-            return Translation.objects.filter(bitext_id=bitext_id).order_by('score')
+            return Translation.objects.filter(bitext__id=bitext_id)
 
         return None
 
-class CreateBitext(graphene.Mutation):
+class SubmitBitext(graphene.Mutation):
     id = graphene.Int()
-    alignmentsNumber = graphene.Int()
-    translationsNumber = graphene.Int()
-    text_1 = graphene.String()
-    text_2 = graphene.String()
-    language_1 = graphene.String()
-    language_2 = graphene.String()
     title = graphene.String()
     author = graphene.String()
 
     class Arguments:
+        title = graphene.String()
+        author = graphene.String()
+
+    def mutate(self, info, title, author):
+        bitext = Bitext.objects.create(title=title, author=author)
+
+        return SubmitBitext(
+            id=bitext.id
+        )
+
+class AlignBitext(graphene.Mutation):
+    id = graphene.Int()
+    text_1 = graphene.String()
+    text_2 = graphene.String()
+    language_1 = graphene.String()
+    language_2 = graphene.String()
+
+    class Arguments:
+        id = graphene.Int()
         text_1 = graphene.String()
         text_2 = graphene.String()
         language_1 = graphene.String()
         language_2 = graphene.String()
-        title = graphene.String()
-        author = graphene.String()
 
-    def mutate(self, info, text_1, text_2, language_1, language_2, title, author):
-        bitext = Bitext.objects.create(title=title, author=author)
+    def mutate(self, info, id, text_1, text_2, language_1, language_2):
+        bitext = Bitext.objects.get(id=id)
 
         original_text_1, clean_text_1 = parse(text_1, language_1)
         text1 = Text.objects.create(language=language_1, bitext=bitext)
@@ -119,6 +146,9 @@ class CreateBitext(graphene.Mutation):
         text2 = Text.objects.create(language=language_2, bitext=bitext)
 
         alignments, matches = align_paragraphs(clean_text_1, clean_text_2)
+        bitext.alignments_number = len(alignments)
+        bitext.save()
+
         match_cursor_1 = 0
         match_cursor_2 = 0
         Words_1 = []
@@ -128,19 +158,24 @@ class CreateBitext(graphene.Mutation):
 
         for id_alignment, align in enumerate(alignments):
             alignment = Alignment.objects.create(bitext=bitext, id_alignment=id_alignment)
+            print(alignment)
             for id_par_1 in align[0]:
                 print(id_par_1)
                 paragraph = Paragraph.objects.create(id_par=id_par_1, text=text1, alignment=alignment)
                 for id_sen, sen in enumerate(original_text_1[id_par_1]):
                     sentence_1 = Sentence.objects.create(id_sen=id_sen, content=sen, paragraph=paragraph)
-                    if id_par == matches[match_cursor_1][0][0][0] and id_sen == matches[match_cursor_1][0][0][1]:
-                        word_1 = Word.objects.get(content=clean_text_1[id_par][id_sen][matches[match_cursor_1][0][0][1]], language=language_1)
-                        if not word_1:
-                            word_1 = Word.objects.create(content=match[0][0], language=language_1)
+                    while id_par_1 == matches[match_cursor_1][0][0][0] and id_sen == matches[match_cursor_1][0][0][1]:
+                        Q_word_1 = Word.objects.filter(content=clean_text_1[id_par_1][id_sen][matches[match_cursor_1][0][0][1]], language=language_1)
+                        if bool(Q_word_1):
+                            word_1 = list(Q_word_1)[0]
+                        else:
+                            word_1 = Word.objects.create(content=clean_text_1[id_par_1][id_sen][matches[match_cursor_1][0][0][1]], language=language_1)
                         print(word_1.content)
                         print(sentence_1.content)
                         Words_1.append(word_1)
                         Sentences_1.append(sentence_1)
+                        if match_cursor_1 < match_cursor_2:
+                            Translation.objects.create(bitext=bitext, word_1=Words_1[match_cursor_1], word_2=Words_2[match_cursor_1], sentence_1=Sentences_1[match_cursor_1], sentence_2=Sentences_2[match_cursor_1], score=matches[match_cursor_1][2])
                         match_cursor_1 += 1
 
             for id_par_2 in align[1]:
@@ -148,24 +183,22 @@ class CreateBitext(graphene.Mutation):
                 paragraph = Paragraph.objects.create(id_par=id_par_2, text=text2, alignment=alignment)
                 for id_sen, sen in enumerate(original_text_2[id_par_2]):
                     sentence_2 = Sentence.objects.create(id_sen=id_sen, content=sen, paragraph=paragraph)
-                    if id_par == matches[match_cursor_2][1][0][0] and id_sen == matches[match_cursor_2][1][0][1]:
-                        word_2 = Word.objects.get(content=clean_text_2[id_par][id_sen][matches[match_cursor_2][1][0][1]], language=language_2)
-                        if not word_2:
-                            word_1 = Word.objects.create(content=clean_text_2[id_par][id_sen][matches[match_cursor][1][0][1]], language=language_2)
+                    while id_par_2 == matches[match_cursor_2][1][0][0] and id_sen == matches[match_cursor_2][1][0][1]:
+                        Q_word_2 = Word.objects.filter(content=clean_text_2[id_par_2][id_sen][matches[match_cursor_2][1][0][1]], language=language_2)
+                        if bool(Q_word_2):
+                            word_2 = list(Q_word_2)[0]
+                        else:
+                            word_2 = Word.objects.create(content=clean_text_2[id_par_2][id_sen][matches[match_cursor_2][1][0][1]], language=language_2)
                         print(word_2.content)
                         print(sentence_2.content)
                         Words_2.append(word_2)
                         Sentences_2.append(sentence_2)
+                        if match_cursor_2 < match_cursor_1:
+                            Translation.objects.create(bitext=bitext, word_1=Words_1[match_cursor_2], word_2=Words_2[match_cursor_2], sentence_1=Sentences_1[match_cursor_2], sentence_2=Sentences_2[match_cursor_2], score=matches[match_cursor_2][2])
                         match_cursor_2 += 1
 
-        for idx in len(matches):
-            Translation.objects.create(bitext=bitext, word_1=Words_1[idx], word_2=Words_2[idx], sentence1=Sentences_1[idx], sentence2=Sentences_2[idx], score=matches[idx][2])
-
-        return CreateBitext(
-            id=bitext.id,
-            alignmentsNumber=len(alignments),
-            translationsNumber=len(matches)
-        )
+        return AlignBitext(id=id)
 
 class Mutation(graphene.ObjectType):
-    submit_bitext = CreateBitext.Field()
+    submit_bitext = SubmitBitext.Field()
+    align_bitext = AlignBitext.Field()

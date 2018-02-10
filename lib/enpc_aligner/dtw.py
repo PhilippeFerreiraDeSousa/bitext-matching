@@ -15,8 +15,8 @@ BEGINNING_THRESHOLD = infty
 BOOTSTRAP_FREQ = 0.005
 LOG = False
 
-FR_WORD_RE = r"\w+'?"
-EN_WORD_RE = r"'?\w+"
+FR_WORD_RE = r"[\w-]+'?"
+EN_WORD_RE = r"'?[\w-]+"
 SENTENCE_RE = r'[^ ]+"?[^\.\?!;:…"]+[\.\?!;:…"]+'
 PARAGRAPH_RE = r"[^\n]*\w[^\n]*"
 

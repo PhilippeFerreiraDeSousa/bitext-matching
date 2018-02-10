@@ -4,8 +4,9 @@ from django.db import models
 
 
 class Bitext(models.Model):
-    title = models.CharField(max_length=100, null=True)
+    title = models.CharField(max_length=100)
     author = models.CharField(max_length=100, null=True)
+    alignments_number = models.IntegerField(null=True)
     creation_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -82,3 +83,6 @@ class Translation(models.Model):
 
     def __str__(self):
         return "{} - {} | {} ({})".format(self.bitext.title, self.word_1, self.word_2, self.score)
+
+    class Meta:
+        ordering = ['score']

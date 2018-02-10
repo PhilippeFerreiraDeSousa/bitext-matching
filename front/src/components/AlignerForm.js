@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { graphql } from 'react-apollo'
+import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 import { Form, Message } from 'semantic-ui-react'
 import { Map } from 'immutable'
-import BitextData from './BitextData'
+import ResponseProgress from './ResponseProgress'
 import { languageOptions } from '../parameters/flags'
 import { SendingErrorMessage } from './ErrorMessage'
 
@@ -12,7 +12,7 @@ class AlignerForm extends Component {
     super();
     this.state = {
       info: Map({
-        bitext: null,
+        bitextId: null,
         text1: '',
         text2: '',
         language1: '',
@@ -27,28 +27,46 @@ class AlignerForm extends Component {
     }
   }
 
-  submitBitext = () => {
+  alignBitext = (id) => {
     const text1 = this.state.info.get('text1')
     const text2 = this.state.info.get('text2')
     const language1 = this.state.info.get('language1')
     const language2 = this.state.info.get('language2')
+    this.props.alignBitextMutation({
+      variables: {
+        id,
+        text1,
+        text2,
+        language1,
+        language2
+      }
+    })
+    .then(({ data }) => {
+      this.setState(({info, status}) => ({
+        status: status.update('error', () => false)
+      }))
+    }).catch((error) => {
+      this.setState(({status}) => ({
+        status: status.update('error', () => true)
+      }))
+    })
+  }
+
+  submitBitext = () => {
     const title = this.state.info.get('title')
     const author = this.state.info.get('author')
     this.props.submitBitextMutation({
       variables: {
-        text1,
-        text2,
-        language1,
-        language2,
         title,
         author
       }
     })
     .then(({ data }) => {
       this.setState(({info, status}) => ({
-        info: info.update('bitext', () => data.submitBitext),
+        info: info.update('bitextId', () => data.submitBitext.id),
         status: status.update('error', () => false)
       }))
+      this.alignBitext(data.submitBitext.id)
     }).catch((error) => {
       this.setState(({status}) => ({
         status: status.update('error', () => true)
@@ -104,27 +122,41 @@ class AlignerForm extends Component {
           <SendingErrorMessage />
         </Form>
         <br />
-        { info.get('bitext') ? <BitextData bitext={info.get('bitext')} progressBar={true} /> : null }
+        { info.get('bitextId') ? <ResponseProgress bitextId={info.get('bitextId')} /> : null }
       </div>
     );
   }
 }
 
 const SUBMIT_BITEXT_MUTATION = gql`
-  mutation SubmitBitextMutation($text1: String!, $text2: String!, $language1: String!, $language2: String!, $title: String!, $author: String!) {
+  mutation SubmitBitextMutation($title: String!, $author: String!) {
     submitBitext(
-      text1: $text1,
-      text2: $text2,
-      language1: $language1,
-      language2: $language2,
       title: $title,
       author: $author
     ) {
-      id,
-      alignmentsNumber
-      translationsNumber
+      id
     }
-  }
+  }`
+
+  const ALIGN_BITEXT_MUTATION = gql`
+    mutation alignBitextMutation($id: Int!, $text1: String!, $text2: String!, $language1: String!, $language2: String!) {
+      alignBitext(
+        id: $id
+        text1: $text1,
+        text2: $text2,
+        language1: $language1,
+        language2: $language2,
+      ) {
+        id
+      }
+    }
 `
 
-export default graphql(SUBMIT_BITEXT_MUTATION, { name: 'submitBitextMutation' })(AlignerForm)
+export default compose(
+  graphql(SUBMIT_BITEXT_MUTATION, {
+    name: 'submitBitextMutation'
+  }),
+  graphql(ALIGN_BITEXT_MUTATION, {
+    name: 'alignBitextMutation'
+  })
+)(AlignerForm)

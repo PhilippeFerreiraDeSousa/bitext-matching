@@ -2,10 +2,7 @@ django==1.11.7
 graphene
 graphene-django
 django-filter
-pytest
-pytest-django
-pytest-cov
-mixer
 django-cors-headers
+uwsgi	# pas mod_wsgi si pas dans docker
 ENPC-Aligner
 mysqlclient

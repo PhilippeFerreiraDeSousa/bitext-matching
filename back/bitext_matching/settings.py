@@ -26,10 +26,8 @@ SECRET_KEY = '+#ms#s4&dc%ih%s++5mpes2qo0i-n9icc+)+a$_46_x99ix!p1'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'delorean.fdesousa.fr',
     'localhost'
 ]
-
 
 # Application definition
 
@@ -45,12 +43,7 @@ INSTALLED_APPS = [
     'core',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = False
-
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:3000'
-    'http://alignment.fdesousa.fr'  # Allow only the React frontend to send graphQL queries
-)
+CORS_ORIGIN_ALLOW_ALL = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -136,7 +129,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = '/code/static/'
+STATIC_ROOT = "/home/delcatel/bitext-matching/back/static/"
 
 GRAPHENE = {
     'SCHEMA': 'bitext_matching.schema.schema',

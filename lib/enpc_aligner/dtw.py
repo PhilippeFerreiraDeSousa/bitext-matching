@@ -378,9 +378,11 @@ def align_paragraphs(en_clean_text, fr_clean_text):
 
 	clustered_aligned_par = [([aligned_paragraphs[0][0]], [aligned_paragraphs[0][1]])]
 	for idx in range(1, len(aligned_paragraphs)):
-		if aligned_paragraphs[idx][1] != aligned_paragraphs[idx-1][1]:
-			clustered_aligned_par.append(([aligned_paragraphs[idx][0]], [id for id in range(aligned_paragraphs[idx-1][1]+1, aligned_paragraphs[idx][1]+1)]))
-		elif aligned_paragraphs[idx][0] != aligned_paragraphs[idx-1][0]:
+		if aligned_paragraphs[idx][0] == aligned_paragraphs[idx-1][0] and aligned_paragraphs[idx][1] != aligned_paragraphs[idx-1][1]:
+			clustered_aligned_par[-1][1].extend([id for id in range(aligned_paragraphs[idx-1][1]+1, aligned_paragraphs[idx][1]+1)])
+		elif aligned_paragraphs[idx][0] != aligned_paragraphs[idx-1][0] and aligned_paragraphs[idx][1] == aligned_paragraphs[idx-1][1]:
 			clustered_aligned_par[-1][0].append(aligned_paragraphs[idx][0])
+		elif aligned_paragraphs[idx][0] != aligned_paragraphs[idx-1][0] and aligned_paragraphs[idx][1] != aligned_paragraphs[idx-1][1]:
+			clustered_aligned_par.append(([aligned_paragraphs[idx][0]], [id for id in range(aligned_paragraphs[idx-1][1]+1, aligned_paragraphs[idx][1]+1)]))
 
 	return clustered_aligned_par, match_list

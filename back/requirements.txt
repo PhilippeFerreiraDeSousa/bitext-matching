@@ -9,3 +9,4 @@ mixer
 django-cors-headers
 ENPC-Aligner
 mysqlclient
+graphene-django-subscriptions

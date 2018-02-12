@@ -3,6 +3,7 @@ from graphene_django import DjangoObjectType
 from .paginateHelper import get_paginator
 
 from core.models import Bitext, Text, Paragraph, Sentence, Alignment, Translation, Word
+from .subscriptions import AlignementInfoSubscription
 from enpc_aligner.dtw import *
 
 
@@ -207,3 +208,6 @@ class AlignBitext(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     submit_bitext = SubmitBitext.Field()
     align_bitext = AlignBitext.Field()
+
+class Subscriptions(graphene.ObjectType):
+    alignment_info = AlignementInfoSubscription.Field()

@@ -10,11 +10,31 @@ import { ApolloClient } from 'apollo-client'
 import { BatchHttpLink } from "apollo-link-batch-http";
 import { InMemoryCache } from 'apollo-cache-inmemory'
 
+import { ApolloLink, split } from 'apollo-client-preset'
+import { WebSocketLink } from 'apollo-link-ws'
+import { getMainDefinition } from 'apollo-utilities'
+
 import { BrowserRouter } from 'react-router-dom'
 
-const httpLink = new BatchHttpLink({ uri: "http://localhost:8000/gql/" });
+const wsLink = new WebSocketLink({
+  uri: `ws://localhost:8000/gql/`,
+  options: {
+    reconnect: true
+  }
+})
+
+const link = split(
+  ({ query }) => {
+    const { kind, operation } = getMainDefinition(query)
+    return kind === 'OperationDefinition' && operation === 'subscription'
+  },
+  wsLink,
+  httpLink,
+)
+
+const httpLink = new BatchHttpLink({ uri: 'http://localhost:8000/gql/' });
 const client = new ApolloClient({
-  link: httpLink,
+  link: link,
   cache: new InMemoryCache()
 })
 

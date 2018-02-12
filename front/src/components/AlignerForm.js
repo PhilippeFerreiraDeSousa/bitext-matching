@@ -3,7 +3,6 @@ import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 import { Form, Message } from 'semantic-ui-react'
 import { Map } from 'immutable'
-import ResponseProgress from './ResponseProgress'
 import { languageOptions } from '../parameters/flags'
 import { SendingErrorMessage } from './ErrorMessage'
 
@@ -43,11 +42,17 @@ class AlignerForm extends Component {
     })
     .then(({ data }) => {
       this.setState(({info, status}) => ({
-        status: status.update('error', () => false)
+        status: Map({
+          loading: false,
+          error: false
+        })
       }))
     }).catch((error) => {
       this.setState(({status}) => ({
-        status: status.update('error', () => true)
+        status: Map({
+          loading: false,
+          error: true
+        })
       }))
     })
   }
@@ -63,13 +68,16 @@ class AlignerForm extends Component {
     })
     .then(({ data }) => {
       this.setState(({info, status}) => ({
-        info: info.update('bitextId', () => data.submitBitext.id),
         status: status.update('error', () => false)
       }))
+      this.props.setBitextId(data.submitBitext.id)
       this.alignBitext(data.submitBitext.id)
     }).catch((error) => {
       this.setState(({status}) => ({
-        status: status.update('error', () => true)
+        status: Map({
+          loading: false,
+          error: true
+        })
       }))
     })
   }
@@ -79,9 +87,6 @@ class AlignerForm extends Component {
       status: status.update('loading', () => true)
     }))
     await this.submitBitext()
-    this.setState(({status}) => ({
-      status: status.update('loading', () => false)
-    }))
   }
 
   handleChange = (e, { field, value }) => {
@@ -91,8 +96,7 @@ class AlignerForm extends Component {
   }
 
   render() {
-    const info = this.state.info
-    const status = this.state.status
+    const { info, status } = this.state
 
     return(
       <div>
@@ -121,10 +125,8 @@ class AlignerForm extends Component {
           <Form.Button primary>Send</Form.Button>
           <SendingErrorMessage />
         </Form>
-        <br />
-        { info.get('bitextId') ? <ResponseProgress bitextId={info.get('bitextId')} /> : null }
       </div>
-    );
+    )
   }
 }
 

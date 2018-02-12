@@ -16,10 +16,12 @@ class ResponseProgress extends Component {
     if (this.props.alignmentsNumberQuery && this.props.alignmentsNumberQuery.loading) {
       return <div></div>
     }
+    console.log(alignmentInfo.progressNumber)
+    console.log(alignmentInfo.alignmentsNumber)
 
     return(
       <div>
-        <Progress percent={Math.round(alignmentInfo.progressNumber/alignmentInfo.alignmentsNumber)} progress autoSuccess>
+        <Progress percent={Math.round(100*alignmentInfo.progressNumber/alignmentInfo.alignmentsNumber) || 0} progress autoSuccess>
           Alignment in progress
         </Progress>
         <BitextData bitextId={this.props.bitextId}/>

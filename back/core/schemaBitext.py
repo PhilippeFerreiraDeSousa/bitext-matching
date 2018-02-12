@@ -1,5 +1,6 @@
 import graphene
 from graphene_django import DjangoObjectType
+from .paginateHelper import get_paginator
 
 from core.models import Bitext, Text, Paragraph, Sentence, Alignment, Translation, Word
 from enpc_aligner.dtw import *
@@ -37,11 +38,18 @@ class BitextAlignmentInfoType(graphene.ObjectType):
     alignments_number = graphene.Int()
     progress_number = graphene.Int()
 
+class AlignmentPaginatedType(graphene.ObjectType):
+    page = graphene.Int()
+    pages = graphene.Int()
+    has_next = graphene.Boolean()
+    has_prev = graphene.Boolean()
+    objects = graphene.List(AlignmentType)
+
 class Query(object):
     bitext = graphene.Field(BitextType, id=graphene.Int(), title=graphene.String())
     all_bitexts = graphene.List(BitextType)
     all_words = graphene.List(WordType)
-    alignments = graphene.List(AlignmentType, bitext_id=graphene.Int())
+    alignments = graphene.Field(AlignmentPaginatedType, bitext_id=graphene.Int(), page=graphene.Int())
     translations = graphene.List(TranslationType, word_id=graphene.Int(), bitext_id=graphene.Int())
     alignment_info = graphene.Field(BitextAlignmentInfoType, id=graphene.Int())
 
@@ -89,9 +97,11 @@ class Query(object):
 
         return None
 
-    def resolve_alignments(self, info, **kwargs):
-        bitext_id = kwargs.get('bitext_id')
-        return Alignment.objects.filter(bitext__id=bitext_id)
+    def resolve_alignments(self, info, bitext_id=None, page=1, **kwargs):
+        alignments = Alignment.objects.filter(bitext__id=bitext_id)
+        page_size = 20
+
+        return get_paginator(alignments, page_size, page, AlignmentPaginatedType)
     # Blog.objects.filter(entry__headline__contains='Lennon') sélectionne tous les objets Blog ayant au moins une Entry ayant un headline contenant 'Lennon'
 
     def resolve_translations(self, info, **kwargs):
@@ -108,8 +118,6 @@ class Query(object):
 
 class SubmitBitext(graphene.Mutation):
     id = graphene.Int()
-    title = graphene.String()
-    author = graphene.String()
 
     class Arguments:
         title = graphene.String()
@@ -124,10 +132,6 @@ class SubmitBitext(graphene.Mutation):
 
 class AlignBitext(graphene.Mutation):
     id = graphene.Int()
-    text_1 = graphene.String()
-    text_2 = graphene.String()
-    language_1 = graphene.String()
-    language_2 = graphene.String()
 
     class Arguments:
         id = graphene.Int()

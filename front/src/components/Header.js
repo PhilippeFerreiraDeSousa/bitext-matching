@@ -6,8 +6,8 @@ class Header extends Component {
   render() {
     return(
       <header className='App-header'>
-        <Link to='/'><img src='../img/logo.png' className='App-logo' alt='logo' /></Link>
-        <Link to='/aligner'><h1 className='App-title'>ENPC bitext aligner</h1></Link>
+        <Link to='/home'><img src='../img/logo.png' className='App-logo' alt='logo' /></Link>
+        <Link to='/form'><h1 className='App-title'>ENPC bitext aligner</h1></Link>
       </header>
     );
   }

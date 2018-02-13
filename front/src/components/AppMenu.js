@@ -3,51 +3,44 @@ import { Container, Menu } from 'semantic-ui-react'
 import Aligner from './Aligner'
 import AlignedBitext from './AlignedBitext'
 import Dictionnary from './Dictionnary'
+import { Switch, Route, Link } from 'react-router-dom'
 
 class AppMenu extends Component {
-  state = { activeItem: 'aligner' }
-
-  handleItemClick = (e, { name }) => {
-    this.setState({ activeItem: name })
-  }
-
   render() {
-    const { activeItem } = this.state
+    const activeItem = this.props.location.pathname.slice(1)
 
     return (
       <Container className='App-body'>
         <Menu>
           <Menu.Item
-            name='aligner'
-            active={activeItem === 'aligner'}
-            onClick={this.handleItemClick}
+            active={activeItem === 'form'}
+            as={Link}
+            to='/form'
           >
             <i className='tasks icon'></i>Aligner
           </Menu.Item>
 
           <Menu.Item
-            name='aligned'
-            active={activeItem === 'aligned'}
-            onClick={this.handleItemClick}
+            active={activeItem === 'archive'}
+            as={Link}
+            to='/archive'
           >
             <i className='unhide icon'></i>Aligned bitexts
           </Menu.Item>
 
           <Menu.Item
-            name='dictionnary'
             active={activeItem === 'dictionnary'}
-            onClick={this.handleItemClick}
+            as={Link}
+            to='/dictionnary'
           >
             <i className='translate icon'></i>Translate
           </Menu.Item>
         </Menu>
-        {   this.state.activeItem === 'aligner' ? (
-          <Aligner />
-        ) : this.state.activeItem === 'aligned' ? (
-          <AlignedBitext />
-        ) : this.state.activeItem === 'dictionnary' ? (
-          <Dictionnary />
-        ) : null }
+        <Switch>
+          <Route exact path="/form" component={Aligner} />
+          <Route exact path="/archive" component={AlignedBitext} />
+          <Route exact path="/dictionnary" component={Dictionnary} />
+        </Switch>
       </Container>
     )
   }

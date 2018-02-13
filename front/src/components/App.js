@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Redirect } from 'react-router-dom'
 import Header from './Header'
 import Homepage from './Homepage'
 import AppMenu from './AppMenu'
@@ -12,8 +12,9 @@ class App extends Component {
       <div className='App'>
         <Header />
         <Switch>
-          <Route exact path='/' component={Homepage}/>
-          <Route exact path='/aligner' component={AppMenu}/>
+          <Redirect exact from='/' to='/home'/>
+          <Route exact path='/home' component={Homepage}/>
+          <Route path='/' component={AppMenu}/>
           <Route path="*" component={NotFound} />
         </Switch>
       </div>

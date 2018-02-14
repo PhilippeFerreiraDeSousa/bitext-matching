@@ -107,7 +107,7 @@ class AlignerForm extends Component {
         <Form
           className='fluid segment attached'
           onSubmit={this.handleSubmit}
-          loading={status.get('loading')}
+          disabled={status.get('loading')}
           error={status.get('error')}
         >
           <Form.Group widths='equal'>

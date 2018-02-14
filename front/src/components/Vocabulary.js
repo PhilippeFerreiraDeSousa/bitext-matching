@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Grid, Segment, Icon, Accordion, Tab } from 'semantic-ui-react'
+import { Grid, Segment, Icon, Accordion, Tab, Loader } from 'semantic-ui-react'
 import { FetchingErrorMessage } from './ErrorMessage'
 
 var groupBy = function(xs, key1, key2) {
@@ -30,7 +30,12 @@ class Vocabulary extends Component {
     const { activeIndex } = this.state
 
     if (this.props.translationQuery && this.props.translationQuery.loading) {
-      return <div></div>
+      return (
+        <div>
+          <br />
+          <Loader active inline='centered' />
+        </div>
+      )
     }
 
     if (this.props.translationQuery && this.props.translationQuery.error) {
@@ -93,6 +98,7 @@ const TRANSLATIONS = gql`
 export default graphql(TRANSLATIONS, {
   name: 'translationQuery',
   options: ({ bitextId }) => ({
-    variables: { bitextId: bitextId }
+    variables: { bitextId: bitextId },
+    pollInterval: 10000
   })
 }) (Vocabulary)

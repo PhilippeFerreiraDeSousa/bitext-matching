@@ -150,7 +150,11 @@ class AlignBitext(graphene.Mutation):
         text2 = Text.objects.create(language=language_2, bitext=bitext)
 
         alignments, matches = align_paragraphs(clean_text_1, clean_text_2)
+        matches_1 = matches # sorted on word index in text 1
+        matches_2 = sorted(matches, key=lambda x: x[1][3]) # sort on word index in text 2
         bitext.alignments_number = len(alignments)
+        for match in matches:
+            print(clean_text_1[match[0][0][0]][match[0][0][1]][match[0][0][2]], match[0][0], "|", clean_text_2[match[1][0][0]][match[1][0][1]][match[1][0][2]], match[1][0])
         print(alignments)
         bitext.save()
 
@@ -163,19 +167,19 @@ class AlignBitext(graphene.Mutation):
 
         for id_alignment, align in enumerate(alignments):
             alignment = Alignment.objects.create(bitext=bitext, id_alignment=id_alignment)
-            print(alignment)
+            print("en_alignment :", alignment)
             for id_par_1 in align[0]:
-                print(id_par_1)
+                print("en_par :", id_par_1)
                 paragraph = Paragraph.objects.create(id_par=id_par_1, text=text1, alignment=alignment)
                 for id_sen, sen in enumerate(original_text_1[id_par_1]):
                     sentence_1 = Sentence.objects.create(id_sen=id_sen, content=sen, paragraph=paragraph)
-                    while match_cursor_1 < len(matches) and id_par_1 == matches[match_cursor_1][0][0][0] and id_sen == matches[match_cursor_1][0][0][1]:
-                        Q_word_1 = Word.objects.filter(content=clean_text_1[id_par_1][id_sen][matches[match_cursor_1][0][0][2]], language=language_1)
-                        if bool(Q_word_1):
+                    while match_cursor_1 < len(matches_1) and id_par_1 == matches_1[match_cursor_1][0][0][0] and id_sen == matches_1[match_cursor_1][0][0][1]:
+                        Q_word_1 = Word.objects.filter(content=clean_text_1[id_par_1][id_sen][matches_1[match_cursor_1][0][0][2]], language=language_1)
+                        if Q_word_1:
                             word_1 = list(Q_word_1)[0]
                         else:
-                            word_1 = Word.objects.create(content=clean_text_1[id_par_1][id_sen][matches[match_cursor_1][0][0][2]], language=language_1)
-                        print(word_1.content)
+                            word_1 = Word.objects.create(content=clean_text_1[id_par_1][id_sen][matches_1[match_cursor_1][0][0][2]], language=language_1)
+                        print("en_word", match_cursor_1, ":", word_1.content)
                         print(sentence_1.content)
                         Words_1.append(word_1)
                         Sentences_1.append(sentence_1)
@@ -184,21 +188,22 @@ class AlignBitext(graphene.Mutation):
                         match_cursor_1 += 1
 
             for id_par_2 in align[1]:
-                print(id_par_2)
+                print("fr_par :", id_par_2)
                 paragraph = Paragraph.objects.create(id_par=id_par_2, text=text2, alignment=alignment)
                 for id_sen, sen in enumerate(original_text_2[id_par_2]):
                     sentence_2 = Sentence.objects.create(id_sen=id_sen, content=sen, paragraph=paragraph)
-                    while match_cursor_2 < len(matches) and id_par_2 == matches[match_cursor_2][1][0][0] and id_sen == matches[match_cursor_2][1][0][1]:
-                        Q_word_2 = Word.objects.filter(content=clean_text_2[id_par_2][id_sen][matches[match_cursor_2][1][0][2]], language=language_2)
-                        if bool(Q_word_2):
+                    while match_cursor_2 < len(matches_2) and id_par_2 == matches_2[match_cursor_2][1][0][0] and id_sen == matches_2[match_cursor_2][1][0][1]:
+                        Q_word_2 = Word.objects.filter(content=clean_text_2[id_par_2][id_sen][matches_2[match_cursor_2][1][0][2]], language=language_2)
+                        if Q_word_2:
                             word_2 = list(Q_word_2)[0]
                         else:
-                            word_2 = Word.objects.create(content=clean_text_2[id_par_2][id_sen][matches[match_cursor_2][1][0][2]], language=language_2)
-                        print(word_2.content)
+                            word_2 = Word.objects.create(content=clean_text_2[id_par_2][id_sen][matches_2[match_cursor_2][1][0][2]], language=language_2)
+                        print("fr_word", match_cursor_2, ":", word_2.content)
                         print(sentence_2.content)
                         Words_2.append(word_2)
                         Sentences_2.append(sentence_2)
                         if match_cursor_2 < match_cursor_1:
+                            print("Translation", match_cursor_2, ":", Words_1[match_cursor_2], "|", Words_2[match_cursor_2])
                             Translation.objects.create(bitext=bitext, word_1=Words_1[match_cursor_2], word_2=Words_2[match_cursor_2], sentence_1=Sentences_1[match_cursor_2], sentence_2=Sentences_2[match_cursor_2], score=matches[match_cursor_2][2])
                         match_cursor_2 += 1
 

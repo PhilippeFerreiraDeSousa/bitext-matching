@@ -160,7 +160,7 @@ def dtw(word1, word2, rec1, rec2, freq, threshold, graph=False, log=False, matri
 			ylabel("Longueur relative de portion")
 			legend()
 			show()
-		return value, backtracking[:-1]
+		return value, backtracking[1:-1]
 	else:
 		return value, None
 
@@ -252,7 +252,7 @@ def estimate_threshold(en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_rec
 	print("THRESHOLD :", threshold)
 	return threshold, match_list, idx_freq_min, idx_freq_max, bound_inf, bound_sup
 
-def matching_layer(threshold, match_list, en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, bound_inf, bound_sup):
+def matching_layer(threshold, match_list, en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, bound_inf, bound_sup, en_clean_text, fr_clean_text):
 	en_nb_different_words = len(en_freq_ranking)
 	fr_nb_different_words = len(fr_freq_ranking)
 
@@ -270,7 +270,7 @@ def matching_layer(threshold, match_list, en_freq_ranking, fr_freq_ranking, en_r
 				for match in path:
 					match_list.append((en_word_indices[en_word][match[0]], fr_word_indices[fr_word][match[1]], value, freq))
 
-	match_list.sort(key=lambda x: x[0][3])
+	match_list.sort(key=lambda x: x[0][3])	# sort on word index in text
 
 def filtration_layer(match_list, en_clean_text, fr_clean_text, log=False):
 	if log:
@@ -362,7 +362,7 @@ def align_paragraphs(en_clean_text, fr_clean_text):
 	fr_word_indices, fr_recency_vect, fr_word_freq, fr_freq_ranking, fr_nb_words, fr_nb_sen = process(fr_clean_text)
 
 	threshold, match_list, idx_freq_min, idx_freq_max, bound_inf, bound_sup = estimate_threshold(en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, en_nb_words, BOOTSTRAP_FREQ)
-	matching_layer(threshold, match_list, en_freq_ranking[idx_freq_min: idx_freq_max+1], fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, bound_inf, bound_sup)
+	matching_layer(threshold, match_list, en_freq_ranking[idx_freq_min: idx_freq_max+1], fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, bound_inf, bound_sup, en_clean_text, fr_clean_text)
 	filtration_layer(match_list, en_clean_text, fr_clean_text)
 
 	# word_matches = [[(en_clean_text[match[0][0][0]][match[0][0][1]][match[0][0][2]], match[0][0][0], match[0][0][1]), (fr_clean_text[match[1][0][0]][match[1][0][1]][match[1][0][2]]], match[1][0][0], match[1][0][1]), match[2]] for match in match_list]
@@ -380,6 +380,7 @@ def align_paragraphs(en_clean_text, fr_clean_text):
 	for idx in range(1, len(aligned_paragraphs)):
 		if aligned_paragraphs[idx][0] == aligned_paragraphs[idx-1][0] and aligned_paragraphs[idx][1] != aligned_paragraphs[idx-1][1]:
 			clustered_aligned_par[-1][1].extend([id for id in range(aligned_paragraphs[idx-1][1]+1, aligned_paragraphs[idx][1]+1)])
+
 		elif aligned_paragraphs[idx][0] != aligned_paragraphs[idx-1][0] and aligned_paragraphs[idx][1] == aligned_paragraphs[idx-1][1]:
 			clustered_aligned_par[-1][0].append(aligned_paragraphs[idx][0])
 		elif aligned_paragraphs[idx][0] != aligned_paragraphs[idx-1][0] and aligned_paragraphs[idx][1] != aligned_paragraphs[idx-1][1]:

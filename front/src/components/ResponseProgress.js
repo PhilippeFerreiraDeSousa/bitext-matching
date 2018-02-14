@@ -6,22 +6,31 @@ import BitextData from './BitextData'
 import { FetchingErrorMessage } from './ErrorMessage'
 
 class ResponseProgress extends Component {
+  state = {
+    progress: 0
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.alignmentsNumberQuery && !nextProps.alignmentsNumberQuery.loading) {
+      const alignmentInfo = nextProps.alignmentsNumberQuery.alignmentInfo
+      this.setState({
+        progress: Math.round(100*alignmentInfo.progressNumber/alignmentInfo.alignmentsNumber)
+      })
+      console.log(alignmentInfo.progressNumber)
+      console.log(alignmentInfo.alignmentsNumber)
+    }
+  }
+
   render() {
-    const alignmentInfo = this.props.alignmentsNumberQuery.alignmentInfo
+    const { progress } = this.state
 
     if (this.props.alignmentsNumberQuery && this.props.alignmentsNumberQuery.error) {
       return <FetchingErrorMessage />
     }
 
-    if (this.props.alignmentsNumberQuery && this.props.alignmentsNumberQuery.loading) {
-      return <div></div>
-    }
-    console.log(alignmentInfo.progressNumber)
-    console.log(alignmentInfo.alignmentsNumber)
-
     return(
       <div>
-        <Progress percent={Math.round(100*alignmentInfo.progressNumber/alignmentInfo.alignmentsNumber) || 0} progress autoSuccess>
+        <Progress percent={progress} progress autoSuccess>
           Alignment in progress
         </Progress>
         <BitextData bitextId={this.props.bitextId}/>
@@ -43,6 +52,7 @@ export default graphql(ALIGNMENTS_NUMBER, {
   name: 'alignmentsNumberQuery',
   options: ({ bitextId }) => ({
     variables: { bitextId },
-    pollInterval: 5000
+    pollInterval: 5000,
+    fetchPolicy: 'no-cache'
   })
 }) (ResponseProgress)

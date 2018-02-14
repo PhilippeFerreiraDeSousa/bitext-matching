@@ -11,7 +11,7 @@ class AlignerResponse extends Component {
     }
 
     if (this.props.alignmentQuery && this.props.alignmentQuery.loading) {
-      return(
+      return (
         <div>
           <br />
           <Loader active inline='centered' />
@@ -88,6 +88,7 @@ const ALIGNMENT = gql`
 export default graphql(ALIGNMENT, {
   name: 'alignmentQuery',
   options: ({bitextId, page}) => ({
-    variables: { bitextId, page }
+    variables: { bitextId, page },
+    fetchPolicy: 'network-only'
   })
 })(AlignerResponse)

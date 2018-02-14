@@ -15,7 +15,7 @@ class Homepage extends Component {
             world to produce more accurate translations taking into account the context
             and the more commonly used expressions of a language.
           </p>
-          <Link to='/aligner'>
+          <Link to='/form'>
             <Button primary align='center'>
               <Icon name='tasks'></Icon>
               Let&#39;s get started !

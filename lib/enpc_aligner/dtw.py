@@ -19,11 +19,17 @@ FR_WORD_RE = r"[\w-]+'?"
 EN_WORD_RE = r"'?[\w-]+"
 SENTENCE_RE = r'[^ ]+"?[^\.\?!;:…"]+[\.\?!;:…"]+'
 PARAGRAPH_RE = r"[^\n]*\w[^\n]*"
+EMPTY_PAR_RE = r"[^ ].*[^ ]"
 
 def paragraphs(text):
 	return re.findall(PARAGRAPH_RE, text)
 def sentences(paragraph):
-	return re.findall(SENTENCE_RE, paragraph)
+	sen = re.findall(SENTENCE_RE, paragraph)
+	if sen:
+		return sen
+	else:
+		return re.findall(EMPTY_PAR_RE, paragraph)
+
 def words(sentence, WORD_RE):
 	return re.findall(WORD_RE, sentence if "'" not in sentence else sentence.replace("n't", " not"))
 
@@ -270,7 +276,7 @@ def matching_layer(threshold, match_list, en_freq_ranking, fr_freq_ranking, en_r
 				for match in path:
 					match_list.append((en_word_indices[en_word][match[0]], fr_word_indices[fr_word][match[1]], value, freq))
 
-	match_list.sort(key=lambda x: x[0][3])	# sort on word index in text
+	match_list.sort(key=lambda x: x[0][3])	# sort on word index in text 1
 
 def filtration_layer(match_list, en_clean_text, fr_clean_text, log=False):
 	if log:
@@ -307,6 +313,8 @@ def filtration_layer(match_list, en_clean_text, fr_clean_text, log=False):
 		print("Per par removed")
 		for match in per_par_removed:
 			print(en_clean_text[match[0][0][0]][match[0][0][1]][match[0][0][2]], "|", fr_clean_text[match[1][0][0]][match[1][0][1]][match[1][0][2]])
+
+	return match_list
 
 def zipf_curve(freq_ranking, nb_words, label, show=True):
 	freqs = [freq_ranking[0][1]]
@@ -363,24 +371,20 @@ def align_paragraphs(en_clean_text, fr_clean_text):
 
 	threshold, match_list, idx_freq_min, idx_freq_max, bound_inf, bound_sup = estimate_threshold(en_freq_ranking, fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, en_nb_words, BOOTSTRAP_FREQ)
 	matching_layer(threshold, match_list, en_freq_ranking[idx_freq_min: idx_freq_max+1], fr_freq_ranking, en_recency_vect, fr_recency_vect, en_word_indices, fr_word_indices, bound_inf, bound_sup, en_clean_text, fr_clean_text)
-	filtration_layer(match_list, en_clean_text, fr_clean_text)
-
+	match_list = filtration_layer(match_list, en_clean_text, fr_clean_text)
 	# word_matches = [[(en_clean_text[match[0][0][0]][match[0][0][1]][match[0][0][2]], match[0][0][0], match[0][0][1]), (fr_clean_text[match[1][0][0]][match[1][0][1]][match[1][0][2]]], match[1][0][0], match[1][0][1]), match[2]] for match in match_list]
 
 	aligned_matches = [(0, 0)]+[(match[0][0][0], match[1][0][0]) for match in match_list]+[(len(en_clean_text)-1, len(fr_clean_text)-1)]
 	aligned_paragraphs = []
-
 	for i in range(1, len(aligned_matches)):
 		aligned_paragraphs.append((aligned_matches[i-1][0], aligned_matches[i-1][1]))
 		for j in range(aligned_matches[i-1][0]+1, aligned_matches[i][0]):
 			aligned_paragraphs.append((j, int(round(lin_interp(j, aligned_matches[i-1][0], aligned_matches[i][0], aligned_matches[i-1][1], aligned_matches[i][1])))))
 	aligned_paragraphs.append((aligned_matches[len(aligned_matches)-1][0], aligned_matches[len(aligned_matches)-1][1]))
-
 	clustered_aligned_par = [([aligned_paragraphs[0][0]], [aligned_paragraphs[0][1]])]
 	for idx in range(1, len(aligned_paragraphs)):
 		if aligned_paragraphs[idx][0] == aligned_paragraphs[idx-1][0] and aligned_paragraphs[idx][1] != aligned_paragraphs[idx-1][1]:
 			clustered_aligned_par[-1][1].extend([id for id in range(aligned_paragraphs[idx-1][1]+1, aligned_paragraphs[idx][1]+1)])
-
 		elif aligned_paragraphs[idx][0] != aligned_paragraphs[idx-1][0] and aligned_paragraphs[idx][1] == aligned_paragraphs[idx-1][1]:
 			clustered_aligned_par[-1][0].append(aligned_paragraphs[idx][0])
 		elif aligned_paragraphs[idx][0] != aligned_paragraphs[idx-1][0] and aligned_paragraphs[idx][1] != aligned_paragraphs[idx-1][1]:

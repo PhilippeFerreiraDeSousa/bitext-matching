@@ -153,9 +153,6 @@ class AlignBitext(graphene.Mutation):
         matches_1 = matches # sorted on word index in text 1
         matches_2 = sorted(matches, key=lambda x: x[1][3]) # sort on word index in text 2
         bitext.alignments_number = len(alignments)
-        for match in matches:
-            print(clean_text_1[match[0][0][0]][match[0][0][1]][match[0][0][2]], match[0][0], "|", clean_text_2[match[1][0][0]][match[1][0][1]][match[1][0][2]], match[1][0])
-        print(alignments)
         bitext.save()
 
         match_cursor_1 = 0

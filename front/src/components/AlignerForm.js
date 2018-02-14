@@ -107,22 +107,27 @@ class AlignerForm extends Component {
         <Form
           className='fluid segment attached'
           onSubmit={this.handleSubmit}
-          disabled={status.get('loading')}
           error={status.get('error')}
         >
           <Form.Group widths='equal'>
-            <Form.Input label='Title' placeholder='Le Petit Prince' required field='title' value={info.get('title')} onChange={this.handleChange}/>
-            <Form.Input label='Author' placeholder='Antoine de Saint-Exupéry' field="author" value={info.get('author')} onChange={this.handleChange}/>
+            <Form.Input label='Title' placeholder='Le Petit Prince' required field='title' value={info.get('title')} onChange={this.handleChange}
+              disabled={status.get('loading')}/>
+            <Form.Input label='Author' placeholder='Antoine de Saint-Exupéry' field="author" value={info.get('author')} onChange={this.handleChange}
+              disabled={status.get('loading')}/>
           </Form.Group>
           <Form.Group widths='equal' onSubmit={this.handleSubmit}>
-            <Form.TextArea label='First text' field='text1' required value={info.get('text1')} placeholder='Il était une fois...' onChange={this.handleChange}/>
-            <Form.TextArea label='Second text' field='text2' required value={info.get('text2')} placeholder='Once upon a time...' onChange={this.handleChange}/>
+            <Form.TextArea label='First text' field='text1' required value={info.get('text1')} placeholder='Il était une fois...' onChange={this.handleChange}
+              disabled={status.get('loading')}/>
+            <Form.TextArea label='Second text' field='text2' required value={info.get('text2')} placeholder='Once upon a time...' onChange={this.handleChange}
+              disabled={status.get('loading')}/>
           </Form.Group>
           <Form.Group widths='equal'>
-            <Form.Dropdown placeholder='Select language' field='language1' required search selection options={languageOptions} onChange={this.handleChange} />
-            <Form.Dropdown placeholder='Select language' field='language2' required search selection options={languageOptions} onChange={this.handleChange} />
+            <Form.Dropdown placeholder='Select language' field='language1' required search selection options={languageOptions} onChange={this.handleChange}
+              disabled={status.get('loading')}/>
+            <Form.Dropdown placeholder='Select language' field='language2' required search selection options={languageOptions} onChange={this.handleChange}
+              disabled={status.get('loading')}/>
           </Form.Group>
-          <Form.Button primary>Send</Form.Button>
+          <Form.Button primary disabled={status.get('loading')}>Send</Form.Button>
           <SendingErrorMessage />
         </Form>
       </div>

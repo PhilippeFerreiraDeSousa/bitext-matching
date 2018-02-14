@@ -19,8 +19,7 @@ class AlignerResponse extends Component {
       )
     }
 
-    var alignmentsToRender = this.props.alignmentQuery.alignments.objects || []       // FIXME : on enlève le premier alignement qui est vide
-    alignmentsToRender = alignmentsToRender.slice(1)
+    var alignmentsToRender = this.props.alignmentQuery.alignments.objects || []
     const languages = this.props.alignmentQuery.bitext.texts.map((text) => text.language)   // it would be proper to group by instead of fetching the languages
 
     return(

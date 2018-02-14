@@ -11,7 +11,7 @@ class ResponseProgress extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.alignmentsNumberQuery && !nextProps.alignmentsNumberQuery.loading) {
+    if (nextProps.alignmentsNumberQuery && !nextProps.alignmentsNumberQuery.loading && nextProps.alignmentsNumberQuery.alignmentInfo) {
       const alignmentInfo = nextProps.alignmentsNumberQuery.alignmentInfo
       this.setState({
         progress: Math.round(100*alignmentInfo.progressNumber/alignmentInfo.alignmentsNumber)

@@ -1,5 +1,5 @@
 from .settings import *
-from .env import SECRET_KEY
+from .env_settings import SECRET_KEY
 
 DEBUG = False
 
@@ -8,6 +8,8 @@ STATIC_ROOT = '/code/static/'
 ALLOWED_HOSTS = [
     'delorean.fdesousa.fr'
 ]
+
+DATABASES['default']['OPTIONS']['read_default_file'] = os.path.join(BASE_DIR, 'db.cnf'),
 
 INSTALLED_APPS.append('mod_wsgi.server')
 

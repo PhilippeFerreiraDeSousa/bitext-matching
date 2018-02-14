@@ -1,0 +1,8 @@
+# RENAME THIS TEMPLATE TO db.cnf after modification for production
+
+[client]
+database = example_db
+user = example_user
+password = example_password
+port = example_port
+default-character-set = utf8

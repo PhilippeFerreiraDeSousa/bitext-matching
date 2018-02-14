@@ -5,4 +5,5 @@ db.sqlite3
 htmlcov
 .cache
 db.cnf
-bitext_matching/env.py
+bitext_matching/env_settings.py
+docker/.env

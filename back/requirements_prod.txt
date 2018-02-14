@@ -3,6 +3,6 @@ graphene
 graphene-django
 django-filter
 django-cors-headers
-uwsgi	# pas mod_wsgi si pas dans docker
+mod_wsgi
 ENPC-Aligner
 mysqlclient

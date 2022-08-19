@@ -6,12 +6,12 @@ Mise en correspondance de bitextes dans des langues différentes
 See Pypi's ENPC-Aligner documentation [here](/lib/README.md)
 
 ## Support ressources
-- Html : https://www.w3schools.com/html/
-- CSS : https://www.w3schools.com/css/
+- Html : https://www.w3schools.com/html/, https://www.scaler.com/topics/html/
+- CSS : https://www.w3schools.com/css/, https://www.scaler.com/topics/css/
 - SASS : http://sass-lang.com/guide
 - BEM : https://en.bem.info/methodology/quick-start/
 - BEM with SASS : https://css-tricks.com/snippets/sass/bem-mixins/
-- Javascript : https://openclassrooms.com/courses/dynamisez-vos-sites-web-avec-javascript
+- Javascript : https://openclassrooms.com/courses/dynamisez-vos-sites-web-avec-javascript, https://www.scaler.com/topics/javascript/
 - Yarn : https://yarnpkg.com
 
 - Reactjs :
